@@ -17,19 +17,27 @@
     -webkit-box-shadow: 0 0 0 30px #f0fdf4 inset !important;
     }
 
-    .button-primary {
-        @apply border-2 w-36 px-2 py-1 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-full
+    .button-contained {
+        @apply border-2 w-36 px-2 py-1 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-full flex justify-center items-center space-x-2
     }
 
-    .button-secondary {
-        @apply border-2 w-36 px-2 py-1 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-full
+    .button-outlined {
+        @apply border-2 w-36 px-2 py-1 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-full flex justify-center items-center space-x-2
     }
 
-    .button-primary-2 {
-        @apply border w-full p-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-lg
+    .button-contained-square {
+        @apply border-2 w-full p-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-lg flex justify-center items-center space-x-2
     }
 
-    .button-secondary-2 {
-        @apply border-2 w-full p-2 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-lg
+    .button-outlined-square {
+        @apply border-2 w-full p-2 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-lg flex justify-center items-center space-x-2
+    }
+
+    .color-primary {
+        @apply border-green-variant text-green-accent hover:hover:bg-green-100
+    }
+
+    .color-secondary {
+        @apply border-gray-500 text-black hover:hover:bg-gray-200
     }
 }

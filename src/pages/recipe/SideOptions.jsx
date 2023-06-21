@@ -12,7 +12,7 @@ const SideOptions = () => {
 	const sideOptions = [{
 		Icon: <AccessingIcon style='w-8 h-8' />,
 		text: 'Find other recipes',
-		onClickFunction: function () { navigate('./global') }
+		onClickFunction: function () { navigate('/global') }
 	}, {
 		Icon: <PlusIcon style='w-8 h-8' />,
 		text: 'Add new recipe',
@@ -53,7 +53,7 @@ const SideOptions = () => {
 		)
 	})
 	const friendListElement = friendList.map(friend => (
-		<div className='flex items-center space-x-4 cursor-pointer p-4 hover:bg-gray-200'>
+		<div key={friend.name} className='flex items-center space-x-4 cursor-pointer p-4 hover:bg-gray-200'>
 			<img src="img/default-user.png" alt="" className='w-8 h-8' />
 			<span className={`text-lg font-medium truncate`}>{friend.name}</span>
 		</div>

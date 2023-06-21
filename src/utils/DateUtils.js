@@ -13,6 +13,10 @@ export const areSameDay = (first, second) =>
   first.getMonth() === second.getMonth() &&
   first.getDate() === second.getDate()
 
+  export const getDayMonthYear = (date) => {
+    const d = date.toDateString().split(" ")
+    return `${d[1]} ${d[3]}`
+  }
 
 export const getMonthYear = (date) => {
   const d = date.toDateString().split(" ")

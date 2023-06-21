@@ -6,8 +6,8 @@ const useAxiosPrivate = () => {
   useEffect(() => {
     const requestIntercept  = axiosPrivate.interceptors.request.use(
       config => {
-        if(!config.headers['Authorization']){
-          config.headers['Authorization'] =  `Bear ${auth?.accessToken}`;
+        if(!config.headers['JWT']){
+          config.headers['JWT'] =  `${auth?.user?.jwtToken}`;
         }
         return config
       }, (error) => Promise.reject(error)

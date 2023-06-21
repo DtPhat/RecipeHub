@@ -38,12 +38,10 @@ function AdminLayout() {
         </div>
         <div>
           <Routes>
-            <Route path='/' element={<DashBoard />} />
-            <Route element={<RequireAuth />} >
-              <Route path='/RecipeManagement' element={<RecipeMP />} />
-              <Route path='/Feedback' element={<FeedbackPage />} />
-              <Route path='/UserManagement' element={<UserMP />} />
-            </Route>
+            <Route path='admin' element={<DashBoard />} />
+              <Route path='RecipeManagement' element={<RecipeMP />} />
+              <Route path='Feedback' element={<FeedbackPage />} />
+              <Route path='UserManagement' element={<UserMP />} />
           </Routes>
         </div>
       </div>

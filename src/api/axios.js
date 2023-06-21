@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = 'https://recipehub.herokuapp.com/api/v1'
+const BASE_URL = 'https://recipehub.herokuapp.com'
 export default axios.create({
   baseURL: BASE_URL
 })

@@ -7,17 +7,16 @@ import StarIcon from '../../assets/StarIcon'
 import msConverter from '../../utils/msConverter'
 
 const ListView = ({ recipeData }) => {
-
   return (
-    <div className='py-2 space-y-4'>
-      {recipeData.map(item => {
+    <div className='space-y-4'>
+      {recipeData.map((item, i) => {
         const { imgUrl, title, tags, rating, prepTime, cookTime, recipeYield, ingredients, isFavourite } = item
-        const stars = []
+          const stars = []
         for (let i = 0; i < 5; i++) {
           stars.push(i < rating ? true : false)
         }
         return (
-          <div className='flex items-center border-2 border-gray-300 rounded p-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'>
+          <div key={i} className='flex items-center border-2 border-gray-300 rounded p-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'>
             <img src={imgUrl} alt="" className='w-32 h-32 rounded' />
             <div className='flex flex-col ml-4 space-y-2'>
               <h1 className='text-xl font-bold text-green-accent'>{title}</h1>
@@ -36,7 +35,7 @@ const ListView = ({ recipeData }) => {
               <div className='gap-2 py-1 flex flex-wrap'>
                 {tags.map((tag) => {
                   return (
-                    <span key={tag} className='border rounded-full py-0.5 px-3 border-green-variant'>
+                    <span key={tag} className='border rounded-full py-0.5 px-3 border-green-variant text-green-accent font-semibold'>
                       {tag}
                     </span>)
                 })}

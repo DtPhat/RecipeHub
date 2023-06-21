@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 import Features from './Features'
 import HomeFooter from './HomeFooter'
 const Home = () => {
   const navigate = useNavigate()
+  const { auth } = useAuth()
+  useEffect(() => {
+    auth.user && navigate('/recipe', { replace: true })
+  }, []);
   return (
     <section>
       <div className='text-green-50 bg-homepage h-[45rem] bg-cover bg-no-repeat flex flex-col items-center justify-center space-y-14'>

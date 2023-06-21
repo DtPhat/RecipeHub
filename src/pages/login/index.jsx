@@ -1,50 +1,32 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import EyeIcon from '../../assets/EyeIcon'
-import { useNavigate } from 'react-router-dom'
-import axios, { axiosGoogle } from '../../api/axios'
-import useAxios from '../../hooks/useAuth'
+import { useLocation, useNavigate } from 'react-router-dom'
+import axios, { axiosGoogle, axiosPrivate } from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [showingPassword, setShowingPassword] = useState(false)
-  const [loginData, setLoginData] = useState({
-    email: 'user@gmail.com',
-    password: '123456',
-  })
+  const [loginData, setLoginData] = useState({ email: '', password: '' })
+  const { auth, setAuth } = useAuth()
+  const location = useLocation()
+  const fromPath = location.state?.from?.pathname || '/'
   const navigate = useNavigate()
   const handleLoginDataChange = (e) => {
     const { name, value } = e.target
-    setLoginData(prevData => { return { ...loginData, [name]: value } })
+    setLoginData(prevData => { return { ...prevData, [name]: value } })
   }
   const loginWithAccount = () => {
-    axios.post('auth/basic/login', loginData).then(response => { console.log(response) })
+    axios.post('/api/v1/auth/basic/login', loginData)
+      .then(response => { setAuth(response.data), navigate(fromPath) })
   }
-  const [user, setUser] = useState()
-  const [profile, setProfile] = useState()
-  console.log(profile);
-  useEffect(() => {
-    getUserProfile()
-  }, [user]);
-
-  const getUserProfile = () => {
-    user && axiosGoogle(user.access_token).get()
-      .then((res) => {
-        setProfile(res.data);
-      })
-      .catch((err) => console.log(err));
-  }
-
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => setUser(tokenResponse),
+    onSuccess: tokenResponse => axios
+      .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
+      .then(response => {setAuth(response.data) }).then(() => navigate(fromPath)),
     onError: (error) => console.log("Login fail", error)
   });
-
-  const logOut = () => {
-    googleLogout();
-    setProfile(null);
-  };
-
   return (
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>
@@ -80,7 +62,7 @@ const Login = () => {
                 </div>
               </div>
               <div className='flex justify-center'>
-                <button className='button-primary-2'
+                <button className='button-contained-square'
                   onClick={loginWithAccount}>Log in</button>
               </div>
             </div>
@@ -88,7 +70,7 @@ const Login = () => {
             <div className='flex justify-center text-center border-b-2 border-gray-300 relative'>
               <span className='absolute top-[-1rem] text-xl bg-gray-50 text-gray-500 px-2'>or</span>
             </div>
-            <button className='button-secondary-2 flex items-center justify-center space-x-4'
+            <button className='button-outlined-square space-x-4'
               onClick={loginWithGoogle}>
               <img src="/img/googleIcon.png" alt="google icon" className='w-6 h-6' />
               <span className='font-semibold'>Continue with google</span>

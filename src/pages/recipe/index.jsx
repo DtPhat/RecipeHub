@@ -28,7 +28,6 @@ const Recipe = () => {
 
     // axios.get('https://recipehub.herokuapp.com/api/v1/global/recipes').then(response => { setData(response.data) })
   }, []);
-  console.log(data);
 
   const [viewOption, setViewOption] = useState('list')
   const [showedFilter, setShowedFilter] = useState(true)
@@ -106,8 +105,10 @@ const Recipe = () => {
           {searchResult && <div className='flex rounded p-2 '>
             <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{searchResult}</span>"</p>
           </div>}
-          {viewOption === 'list' && <ListView recipeData={dummyRecipes} />}
-          {viewOption === 'gallery' && <GalleryView recipeData={dummyRecipes} />}
+          <div className='py-2'>
+            {viewOption === 'list' && <ListView recipeData={dummyRecipes} />}
+            {viewOption === 'gallery' && <GalleryView recipeData={dummyRecipes} />}
+          </div>
         </div>
         <div>
           <SideOptions />

@@ -1,4 +1,5 @@
 import React, { useContext, useState, createContext, useEffect } from "react";
+import { Flowbite } from 'flowbite-react';
 
 const ThemeContext = createContext();
 
@@ -17,17 +18,29 @@ export const ThemeProvider = ({ children }) => {
     else localStorage.setItem("theme", "light");
   };
 
+  const customTheme = {
+    button: {
+      color: {
+        primary: ' border-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold rounded-full',
+        profile: 'rounded-full'
+        
+      },
+    },
+  };
+
   return (
-    <ThemeContext.Provider
-      value={{
-        activeMenu,
-        setActiveMenu,
-        isDarkMode,
-        toggleDarkMode,
-      }}
-    >
-      {children}
-    </ThemeContext.Provider>
+    <Flowbite theme={{ theme: customTheme }}>
+      <ThemeContext.Provider
+        value={{
+          activeMenu,
+          setActiveMenu,
+          isDarkMode,
+          toggleDarkMode,
+        }}
+      >
+        {children}
+      </ThemeContext.Provider>
+    </Flowbite >
   );
 };
 

@@ -22,7 +22,7 @@ const App = () => {
 
 	return (
 		<>
-			{!user ? (
+			{/* {!user ? (
 				<main>
 					<HomeHeader />
 					<Routes>
@@ -35,10 +35,10 @@ const App = () => {
 				<UserLayout />
 			) : (
 				<AdminLayout />
-			)}
+			)} */}
 			{
 				<main>
-					<HomeHeader />
+					{/* <HomeHeader />
 					<Routes>
 						<Route path='/' element={<Home />} />
 						<Route element={<RequireAuth />}>
@@ -48,8 +48,8 @@ const App = () => {
 						<Route path='/login' element={<Login />} />
 						<Route path='/global' element={<GlobalRecipe />} />
 						<Route path='/register' element={<Register />} />
-					</Routes>
-					{/* <AdminLayout /> */}
+					</Routes> */}
+					<AdminLayout />
 				</main>
 			}
 		</>

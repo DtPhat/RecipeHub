@@ -12,19 +12,13 @@ Pagination.defaultProps = {
 };
 
 function Pagination(props) {
-	const { pagination, onPageChange, onSizePick } = props;
-	const { page, size, totalRows } = pagination;
-	const totalPages = Math.ceil(totalRows / size);
+	const { pagination, onPageChange } = props;
+	const { page, size, totalItem } = pagination;
+	const totalPages = Math.ceil(totalItem / size);
 
 	function handlePageChange(newPage) {
 		if (onPageChange) {
 			onPageChange(newPage);
-		}
-	}
-
-	function handleSelectPageSize(newSize) {
-		if (onSizePick) {
-			onSizePick(newSize);
 		}
 	}
 
@@ -48,9 +42,9 @@ function Pagination(props) {
 			</Button.Group>
 			<div className='flex'>
 				<p className='text-center'>
-					Showing{' '}
-					{page * size >= totalRows ? `${totalRows}` : `${page * size}`} of{' '}
-					{totalRows} of entries
+					Showing {page * size + 1 - size} to{' '}
+					{page * size >= totalItem ? `${totalItem}` : `${page * size}`} of{' '}
+					{totalItem} of entries
 				</p>
 			</div>
 		</div>

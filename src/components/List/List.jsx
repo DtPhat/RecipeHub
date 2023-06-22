@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ListView from '../view/ListView';
 import dummyRecipes from '../../dummyRecipes';
-import Pagination from '../Pagination';
+import Pagination from '../DataTable/Pagination';
 
 function List() {
 	const recipeData = dummyRecipes;

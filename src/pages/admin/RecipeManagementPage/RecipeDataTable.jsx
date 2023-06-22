@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import dummyRecipes from '../../../dummyRecipes';
-import DataTableBase from '../../../components/DataTable/DataTableBase';
 import { Button, Checkbox, Spinner, Table } from 'flowbite-react';
-import Pagination from '../../../components/Pagination';
+import Pagination from '../../../components/DataTable/Pagination';
 import axios, { axiosGetAdminRecipes } from '../../../api/axios';
+
+import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
+import SearchBar from '../../../components/DataTable/SearchBar';
 
 const columns = [
 	{
@@ -11,7 +12,7 @@ const columns = [
 		name: 'Title',
 	},
 	{
-		key: 'tags',
+		key: '',
 		name: 'Tags',
 	},
 	{
@@ -23,36 +24,63 @@ const columns = [
 function RecipeDataTable() {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [sortOrder, setSortOrder] = useState(true); // true = asc, false = desc
-	const [sortKey, setSortKey] = useState('');
 	const [allSelected, setAllSelected] = useState(false);
 
 	const [pagination, setPagination] = useState({
 		page: 1,
 		size: 2,
-		totalRows: 4,
+		totalItem: 4,
+	});
+
+	const [filter, setFilter] = useState({
+		page: 1,
+		size: 2,
+		sort: 'recipe_id',
+		direction: 'asc',
+		query: '',
 	});
 
 	function handlePageChange(newPage) {
-		setPagination({
-			...pagination,
+		setFilter({
+			...filter,
 			page: newPage,
 		});
 	}
 
 	function handleSelectPageSize(event) {
-		setPagination({
-			...pagination,
+		setFilter({
+			...filter,
 			size: event.target.value,
 		});
 	}
 
+	function handleTableSearch(value) {
+		setFilter({
+			...filter,
+			query: value,
+		});
+	}
+
 	function handleTableSort(key) {
-		if (key == sortKey) {
-			setSortOrder(!sortOrder);
+		if (key == filter.sort) {
+			let newDirection;
+			if (filter.direction == 'asc') {
+				newDirection = 'desc';
+			} else {
+				newDirection = 'asc';
+			}
+			setFilter({
+				...filter,
+				page: 1,
+				direction: newDirection,
+			});
 		} else {
-			setSortKey(key);
-			setSortOrder(true);
+			setFilter({
+				...filter,
+				page: 1,
+				sort: key,
+				direction: 'asc',
+			});
 		}
 	}
 
@@ -63,38 +91,23 @@ function RecipeDataTable() {
 	useEffect(() => {
 		async function fetchRecipes() {
 			setIsLoading(true);
-			let data = await axiosGetAdminRecipes(pagination);
+			let data = await axiosGetAdminRecipes(filter);
 			setIsLoading(false);
-			setRows(data);
+			setRows(data.data);
+			setPagination({
+				page: filter.page,
+				size: filter.size,
+				totalItem: data.totalItem,
+			});
 		}
 		fetchRecipes();
-	}, [pagination]);
+	}, [filter]);
 
 	return (
 		<>
-			<div class='mb-2'>
-				<label
-					htmlFor='size'
-					class='inline mb-2 text-sm font-medium text-gray-900 dark:text-white'
-				>
-					Showing
-				</label>
-				<select
-					onChange={handleSelectPageSize}
-					id='size'
-					class=' bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 inline p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-				>
-					<option value='5'>5</option>
-					<option value='10'>10</option>
-					<option value='15'>15</option>
-					<option value='20'>20</option>
-				</select>
-				<label
-					for='size'
-					class='inline mb-2 text-sm font-medium text-gray-900 dark:text-white'
-				>
-					records per page
-				</label>
+			<div className='flex justify-between max-h-12 mb-4'>
+				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
+				<SearchBar onSearch={handleTableSearch} />
 			</div>
 			<Table hoverable>
 				<Table.Head>
@@ -109,11 +122,11 @@ function RecipeDataTable() {
 						>
 							{column.name}{' '}
 							<span>
-								{column.key == sortKey
-									? sortOrder
-										? '\u25BC'
-										: '\u25B2'
-									: '\u25B2'}
+								{column.key == filter.sort
+									? filter.direction == 'asc'
+										? '\u25B2'
+										: '\u25BC'
+									: '\u25BC'}
 							</span>
 						</Table.HeadCell>
 					))}
@@ -165,11 +178,7 @@ function RecipeDataTable() {
 				</Table.Body>
 			</Table>
 
-			<Pagination
-				onPageChange={handlePageChange}
-				pagination={pagination}
-				onSizePick={handleSelectPageSize}
-			/>
+			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
 			{isLoading && <Spinner size='xl' className='flex content-center' />}
 		</>

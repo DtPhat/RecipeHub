@@ -2,6 +2,10 @@ import React from 'react';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import SwitchButton from '../SwitchButton';
 import Button from '../Button';
+<<<<<<< HEAD
+=======
+import { Avatar, Dropdown, Tooltip } from 'flowbite-react';
+>>>>>>> ae512bffff52947f38c15fd37509e62591f1cae8
 
 function TopNav() {
 	const { activeMenu, setActiveMenu, toggleDarkMode, isDarkMode } =
@@ -27,11 +31,49 @@ function TopNav() {
 	);
 
 	return (
+<<<<<<< HEAD
 		<div className='z-40 block fixed w-full md:static'>
 			{/* toggleMenuButton */}
 			<Button customFunc={() => handleToggleMenu()} icon={menuToggleIcon} />
 			{/* toggleThemeButton */}
 			<SwitchButton isOn={isDarkMode} customFunc={() => toggleDarkMode()} />
+=======
+		<div className='flex justify-between p-2 md:ml-6 md:mr-6 relative'>
+			{/* toggleMenuButton */}
+			<Tooltip content='Menu'>
+				<Button
+					customFunc={() => handleToggleMenu()}
+					icon={menuToggleIcon}
+				/>
+			</Tooltip>
+
+			{/* toggleThemeButton */}
+			<Dropdown
+				inline
+				label={
+					<Avatar rounded alt='avatar' img='/img/admin-avatar.png'>
+						hello, admin
+					</Avatar>
+				}
+			>
+				<Dropdown.Header>
+					<span className='block text-sm'>Full name</span>
+					<span className='block truncate text-sm font-medium'>
+						email@email.com
+					</span>
+				</Dropdown.Header>
+				<Dropdown.Item>Profile</Dropdown.Item>
+				<Dropdown.Item>
+					<Tooltip content='Change theme'>
+						<SwitchButton
+							isOn={isDarkMode}
+							customFunc={() => toggleDarkMode()}
+						/>
+					</Tooltip>
+				</Dropdown.Item>
+				<Dropdown.Item>Sign out</Dropdown.Item>
+			</Dropdown>
+>>>>>>> ae512bffff52947f38c15fd37509e62591f1cae8
 		</div>
 	);
 }

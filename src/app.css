@@ -1,6 +1,7 @@
 .sidebar {
-  box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
-  @apply transition-all duration-100;
+  /* box-shadow: rgb(113 122 131 / 11%) 0px 7px 10px 0px; */
+  z-index: 10000;
+  @apply transition-all duration-100 shadow-lg;
 }
 
 .switch-btn-label {
@@ -10,3 +11,4 @@
 .switch-slider {
   @apply absolute left-0.5 top-0.5 aspect-square h-5/6 rounded-full bg-white shadow-2xl transition-all duration-300 ease-in-out content-none;
 }
+

@@ -7,3 +7,62 @@
         @apply bg-gray-100
     }
 }
+
+@layer components {
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #f0fdf4 inset !important;
+    }
+
+    .button-primary {
+        @apply border-2 w-36 px-2 py-1 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-full
+    }
+
+    .button-secondary {
+        @apply border-2 w-36 px-2 py-1 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-full
+    }
+
+    .button-primary-2 {
+        @apply border w-full p-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-lg
+    }
+
+    .button-secondary-2 {
+        @apply border-2 w-full p-2 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-lg
+    }
+    
+    .sidebar {
+        /* box-shadow: rgb(113 122 131 / 11%) 0px 7px 10px 0px; */
+        z-index: 10000;
+        @apply transition-all duration-100 shadow-lg
+      }
+    
+      .switch-btn-label {
+        @apply relative flex h-6 w-11 cursor-pointer items-center justify-between rounded-2xl bg-slate-500 transition-colors duration-300 checked:bg-green-300
+      }
+    
+      .switch-slider {
+        @apply absolute left-0.5 top-0.5 aspect-square h-5/6 rounded-full bg-white shadow-2xl transition-all duration-300 ease-in-out content-none
+      }
+    
+      .admin-content {
+        @apply m-2 md:m-5 mt-24 p-2 md:p-10 bg-white dark:bg-gray-900 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
+      }
+}
+
+@layer utilities {
+    
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+    
+  }

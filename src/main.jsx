@@ -4,11 +4,17 @@ import App from "./App.jsx";
 import "./app.css";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
-import { ContextProvider } from "./contexts/PageContext.jsx";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext"
+import { GoogleOAuthProvider } from '@react-oauth/google';
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <ContextProvider>
-      <App />
-    </ContextProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <GoogleOAuthProvider clientId="844497469072-8artnkmavrpdua89f6oqjsm1i1gpmp6n.apps.googleusercontent.com">
+          <App />
+        </GoogleOAuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </BrowserRouter>
 );

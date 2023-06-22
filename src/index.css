@@ -53,7 +53,7 @@
 }
 
 @layer utilities {
-    @variants responsive {
+    
       /* Hide scrollbar for Chrome, Safari and Opera */
       .no-scrollbar::-webkit-scrollbar {
           display: none;
@@ -64,5 +64,5 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
-    }
+    
   }

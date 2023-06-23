@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import CustomLink from './CustomLink';
 import { links } from './SideNavData';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import XCircleIcon from '../../assets/XCircleIcon';
+import { HiOutlineXCircle } from 'react-icons/hi';
 
 function SideNav() {
 	const { setActiveMenu } = useThemeContext();
@@ -22,7 +22,7 @@ function SideNav() {
 					onClick={() => handleTurnOffMenu()}
 					className='aspect-square relative rounded-full p-3 w-auto hover:bg-gray-300 dark:hover:bg-gray-600 md:hidden'
 				>
-					<XCircleIcon />
+					<HiOutlineXCircle />
 				</button>
 			</div>
 			<div className='z-50 '>

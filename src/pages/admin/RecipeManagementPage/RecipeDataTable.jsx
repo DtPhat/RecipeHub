@@ -5,6 +5,7 @@ import axios, { axiosGetAdminRecipes } from '../../../api/axios';
 
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 const columns = [
 	{
@@ -23,6 +24,7 @@ const columns = [
 
 function RecipeDataTable() {
 	const [rows, setRows] = useState([]);
+	const [openModal, setOpenModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [allSelected, setAllSelected] = useState(false);
 
@@ -39,6 +41,18 @@ function RecipeDataTable() {
 		direction: 'asc',
 		query: '',
 	});
+
+	function handleClick(argument) {
+		if (argument === 'confirmRemove') {
+			setOpenModal(true);
+		} else {
+			if (argument === 'remove') {
+				setOpenModal(false);
+			} else {
+				setOpenModal(false);
+			}
+		}
+	}
 
 	function handlePageChange(newPage) {
 		setFilter({
@@ -105,7 +119,7 @@ function RecipeDataTable() {
 
 	return (
 		<>
-			<div className='flex justify-between max-h-12 mb-4'>
+			<div className='flex justify-between max-h-12 mb-1	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
 			</div>
@@ -169,7 +183,12 @@ function RecipeDataTable() {
 								<Table.Cell>{item.rating}</Table.Cell>
 								<Table.Cell>
 									{' '}
-									<Button color='failure' size='sm' outline>
+									<Button
+										color='failure'
+										size='sm'
+										outline
+										onClick={() => handleClick('confirmRemove')}
+									>
 										Remove
 									</Button>{' '}
 								</Table.Cell>
@@ -181,6 +200,12 @@ function RecipeDataTable() {
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
 			{isLoading && <Spinner size='xl' className='flex content-center' />}
+
+			<ConfirmModal
+				content='Are you sure you want to delete this item?'
+				isOpened={openModal}
+				handleClick={handleClick}
+			/>
 		</>
 	);
 }

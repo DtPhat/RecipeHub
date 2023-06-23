@@ -35,7 +35,7 @@ function AdminLayout() {
 						: 'min-h-screen w-full dark:bg-gray-800'
 				}
 			>
-				<div className='fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full '>
+				<div className='static bg-main-bg dark:bg-main-dark-bg navbar w-full '>
 					<TopNav />
 				</div>
 				<div>

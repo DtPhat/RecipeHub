@@ -25,3 +25,14 @@ export const axiosGetAdminRecipes= async(filter) => {
     }
     return data;
 }
+
+export const axiosGetAdminUsers = async(filter) => {
+
+  const resp = await axios.get(BASE_URL + `/admin/users?page=${filter.page - 1}&size=${filter.size}&sort=${filter.sort}&direction=${filter.direction}&query=${filter.query}`, {headers: { 'Content-Type': 'application/json', 'JWT': 
+  "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE2ODc0MTk2NDcsImV4cCI6MTY4ODI4MzY0N30.3ewRu46ursifgYieGbvFmDsRaZhffDxKgh8TC9xPa4I" }})
+  const data = {
+    data: resp.data.users,
+    totalItem: resp.data.totalItem
+  }
+  return data;
+}

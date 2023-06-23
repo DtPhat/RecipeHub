@@ -46,7 +46,7 @@ function SearchBar(props) {
 				onClick={handleClick}
 			>
 				<span
-					className='input-group-text flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200'
+					className='input-group-text flex items-center whitespace-nowrap rounded text-center text-base font-normal text-neutral-700 dark:text-neutral-200'
 					id='basic-addon2'
 				>
 					<svg

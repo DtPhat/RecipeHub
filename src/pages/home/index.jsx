@@ -7,7 +7,7 @@ const Home = () => {
   const navigate = useNavigate()
   const { auth } = useAuth()
   useEffect(() => {
-    auth.user && navigate('/recipe', { replace: true })
+    auth && navigate('/recipe', { replace: true })
   }, []);
   return (
     <section>

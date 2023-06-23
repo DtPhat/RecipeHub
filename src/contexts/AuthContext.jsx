@@ -2,12 +2,13 @@ import { createContext, useEffect, useState } from "react";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const AuthContext = createContext({});
-const INITIAL_AUTH = JSON.parse(localStorage.getItem("auth"))
 
 export const AuthProvider = ({ children }) => {
+    const INITIAL_AUTH = localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")) : null
     const [auth, setAuth] = useState(INITIAL_AUTH);
+
     useEffect(() => {
-        localStorage.setItem('auth', JSON.stringify(auth))
+        auth && localStorage.setItem('auth', JSON.stringify(auth))
     }, [auth]);
     console.log(auth);
     return (

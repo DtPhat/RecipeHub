@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import EyeIcon from '../../assets/EyeIcon'
 import { useLocation, useNavigate } from 'react-router-dom'
-import axios, { axiosGoogle, axiosPrivate } from '../../api/axios'
+import axios, { axiosGoogle} from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 

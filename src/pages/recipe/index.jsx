@@ -11,22 +11,17 @@ import SearchingIcon from '../../assets/SearchingIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
 import SideOptions from './SideOptions'
 import RecipeFilter from './RecipeFilter'
-import axios from 'axios'
 import dummyRecipes from '../../dummyRecipes'
 import { Button } from 'flowbite-react'
 import ListView from '../../components/view/ListView'
 import GalleryView from '../../components/view/GalleryView'
+import axios from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
 const Recipe = () => {
   const [data, setData] = useState()
-
+  const {auth} = useAuth()
   useEffect(() => {
-    // fetch('https://recipehub.herokuapp.com/api/v1/user/recipes', {
-    //   headers: {'JWT' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTY4NDgzMDEzOSwiZXhwIjoxNjg0OTE2NTM5fQ.BMhN_6KHnyT36HE34txmS1pgRDTd9K-cQKeDbB1SwgQ'}
-    // }).then(res => res.json()).then(data => {
-    //   setData(data)
-    // })
-
-    // axios.get('https://recipehub.herokuapp.com/api/v1/global/recipes').then(response => { setData(response.data) })
+ 
   }, []);
 
   const [viewOption, setViewOption] = useState('list')

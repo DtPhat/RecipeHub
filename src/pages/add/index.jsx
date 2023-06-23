@@ -5,8 +5,9 @@ import TrashIcon from '../../assets/TrashIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
 import { useNavigate } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
-import axios, { axiosPrivate } from '../../api/axios'
+import axios from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
+import useAxiosPrivate from '../../hooks/usePrivateAxios'
 const AddRecipe = () => {
   const [recipeData, setRecipeData] = useState({
     title: '',
@@ -34,6 +35,7 @@ const AddRecipe = () => {
   const { auth } = useAuth()
   const imgInput = useRef()
   const navigate = useNavigate()
+  const axiosPrivate = useAxiosPrivate()
   const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`border-2 border-green-variant text-green-accent px-2 py-1 rounded-md font-medium
@@ -156,15 +158,15 @@ const AddRecipe = () => {
     }
     const blobImage = new Blob(recipeData.photos, { type: "image/jpeg" })
     const blobData = new Blob([JSON.stringify(data)], { type: 'application/json' })
-    formData.append('files', blobImage, 'marguerite-729510_1280.jpg');
+    formData.append('files', blobImage, 'recipe');
     formData.append('data', blobData);
 
-    axios.post('/api/v1/user/recipe',
-      formData, {
-      headers: {
-        "JWT": auth.jwtToken,
-      }
-    }).then(response => console.log(response))
+    // axios.post('/api/v1/user/recipe',
+    //   formData, {
+    //   headers: {"JWT": auth.jwtToken}
+    // }).then(response => console.log(response))
+    axiosPrivate.post('/api/v1/user/recipe',
+      formData).then(response => console.log(response))
   }
 
   const style = {

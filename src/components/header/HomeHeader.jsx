@@ -14,12 +14,12 @@ const HomeHeader = () => {
   const { auth, setAuth } = useAuth()
   const navigate = useNavigate()
   const logout = () => {
-    setAuth({ user: '' })
+    localStorage.removeItem('auth')
+    setAuth(null)
     googleLogout();
     navigate('/login')
   }
-  const username = auth.user && emailToUsername(auth.user.email);
-
+  const username = auth && emailToUsername(auth.user.email);
   return (
     <section className={` mb-18 flex`}>
       <div className='fixed flex top-0 border-b-2 shadow-md w-full bg-gray-50 h-18 z-20 px-8 justify-between'>
@@ -50,7 +50,7 @@ const HomeHeader = () => {
           </NavLink>
         </nav>
         {
-          auth.user ? <div className='flex items-center space-x-2 pl-2 my-2 border-l-2'>
+          auth ? <div className='flex items-center space-x-2 pl-2 my-2 border-l-2'>
             <button className='hover:bg-gray-200 p-1 rounded'
               onClick={() => { navigate('./recipe/add') }}>
               <PlusIcon style='w-7 h-7' />

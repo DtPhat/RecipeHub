@@ -65,14 +65,14 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
     <section className='font-semibold border border-green-900 rounded'>
       <div className='flex justify-between border border-green-900 items-center rounded-t-sm bg-green-50'>
         <div className='flex py-3 px-2'>
-          <button className='hover:bg-gray-200 p-1 rounded'
+          <button className='hover:bg-green-100 p-1 rounded'
             onClick={() => {
               daysDisplay === 'month' && movePrevMonth(navigationDate, setNavigationDate)
               daysDisplay === 'week' && movePrevWeek(navigationDate, setNavigationDate)
             }}>
             <ArrowCircleIcon style='w-8 h-8 text-green-accent' />
           </button>
-          <button className='hover:bg-gray-200 p-1 rounded'
+          <button className='hover:bg-green-100 p-1 rounded'
             onClick={() => {
               daysDisplay === 'month' && moveNextMonth(navigationDate, setNavigationDate)
               daysDisplay === 'week' && moveNextWeek(navigationDate, setNavigationDate)

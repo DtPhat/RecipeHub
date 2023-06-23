@@ -9,11 +9,11 @@ const PlannedMeals = ({ chosenDate }) => {
     const { imgUrl, title, tags, rating, prepTime, cookTime, recipeYield, ingredients, isFavourite } = item
     return (
       <div className='flex border-2 border-green-variant p-2 rounded bg-gray-100 relative'>
-        <img src={imgUrl} alt="" className='w-32 h-32 rounded' />
-        <div className='flex flex-col ml-4'>
+        <img src={imgUrl} alt="" className='w-32 h-32 object-fit rounded' />
+        <div className='flex flex-col ml-4 overflow-hidden w-96'>
           <h1 className='text-lg font-bold text-green-variant'>Breakfast</h1>
           <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
-          <div className='flex flex-col font-medium '>
+          <div className='flex flex-col font-medium'>
             <div className='flex items-center space-x-2'><span className='text-gray-600'>Cook time:</span><span>{cookTime}</span></div>
             <div className='flex items-center space-x-2'><span className='text-gray-600'>Prep time:</span><span>{prepTime}</span></div>
             <div className='flex items-center space-x-2'><span className='text-gray-600'>Yield:</span><span>{recipeYield}</span></div>

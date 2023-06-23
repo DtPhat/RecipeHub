@@ -5,6 +5,9 @@ import TrashIcon from '../../assets/TrashIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
 import { useNavigate } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
+import axios from '../../api/axios'
+import useAuth from '../../hooks/useAuth'
+import useAxiosPrivate from '../../hooks/usePrivateAxios'
 const AddRecipe = () => {
   const [recipeData, setRecipeData] = useState({
     title: '',
@@ -23,14 +26,16 @@ const AddRecipe = () => {
     isFavourite: false,
     rating: 0,
     ingredientName: '',
-    ingredientQuantity: '',
+    ingredientQuantity: undefined,
     ingredientMetric: '',
     ingredients: [],
     steps: '',
-    isPrivate: '',
+    isPrivate: true,
   })
+  const { auth } = useAuth()
   const imgInput = useRef()
   const navigate = useNavigate()
+  const axiosPrivate = useAxiosPrivate()
   const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`border-2 border-green-variant text-green-accent px-2 py-1 rounded-md font-medium
@@ -70,31 +75,20 @@ const AddRecipe = () => {
     </button>
   )
   const ingredientsElement = recipeData.ingredients.map((ingredient, i) =>
-    <div key={i} className='flex px-4 cursor-pointer '
+    <li key={i} className='cursor-pointer font-semibold ml-8 hover:line-through'
       onClick={() => {
         const ingredientList = recipeData.ingredients
         ingredientList.splice(ingredientList.indexOf(ingredient), 1)
         setRecipeData(prevData => { return { ...prevData, ingredients: ingredientList } })
       }}>
-      -<span className='pl-2 text-gray-600 hover:line-through'>
-        <span className='font-semibold'>{ingredient.name}</span>{' '}x{' '}
-        <span className='font-semibold'>{ingredient.quantity}</span>{' '}
-        {ingredient.metric}
+      <span className=' '>
+        {ingredient.quantity} {ingredient.metric} {ingredient.name}
       </span>
-    </div>)
+    </li>)
 
-  const handleChange = (e) => {
-    let { name, value, type } = e.target
-    if (type === 'number') {
-      if (value < 0) value = 0
-      if (value > 60 && 'prepTimeHour prepTimeMinute prepTimeSecond cookTimeHour cookTimeMinute cookTimeSecond'.includes(name)) value = 60
-      if (value > 999999) value = 999999
-    }
-    setRecipeData(prevData => { return { ...prevData, [name]: value } })
-  }
   const addIngredient = () => {
     const { ingredientName, ingredientQuantity, ingredientMetric } = recipeData
-    if (!ingredientName || !ingredientQuantity) return
+    if (!ingredientName) return
     const newIngredient = {
       name: ingredientName,
       quantity: ingredientQuantity,
@@ -104,6 +98,77 @@ const AddRecipe = () => {
     ingredientList.push(newIngredient)
     setRecipeData(prevData => { return { ...prevData, ingredientName: '', ingredientQuantity: '', ingredientMetric: '', ingredients: ingredientList } })
   }
+
+  const handleChange = (e) => {
+    let { name, value, type } = e.target
+    if (type === 'number') {
+      if ('prepTimeHour prepTimeMinute prepTimeSecond cookTimeHour cookTimeMinute cookTimeSecond'.includes(name)) {
+        value = value < 0 ? 0 : value > 60 ? 60 : value
+      } else {
+        value = value < 1 ? 1 : value > 99999 ? 99999 : value
+      }
+    }
+    if (type === 'text') {
+      value = name === 'title' && value.length > 100 ? value.substring(0, 100)
+        : name === 'description' && value.length > 200 ? value.substring(0, 200)
+          : name === 'unit' && value.length > 50 ? value.substring(0, 50)
+            : name === 'nutritions' && value.length > 300 ? value.substring(0, 300)
+              : name === 'ingredientName' && value.length > 50 ? value.substring(0, 50)
+                : name === 'ingredientMetric' && value.length > 30 ? value.substring(0, 30)
+                  : name === 'steps' && value.length > 800 ? value.substring(0, 800) : value
+    }
+    setRecipeData(prevData => { return { ...prevData, [name]: value } })
+  }
+
+  const uploadRecipe = () => {
+    const formData = new FormData()
+    const data = {
+      "recipe_id": null,
+      "userId": 0,
+      "ingredients": [
+        {
+          "ingredientId": 0,
+          "ingredientName": "string",
+          "amount": "string"
+        }
+      ],
+      "images": [
+        {
+          "imageId": 0,
+          "imageUrl": "string"
+        }
+      ],
+      "tags": [
+        {
+          "tagId": 0,
+          "tagName": "string"
+        }
+      ],
+      "title": "string",
+      "pre_time": 0,
+      "cook_time": 0,
+      "recipe_yield": 0,
+      "rating": 0,
+      "is_favourite": true,
+      "description": "string",
+      "unit": "string",
+      "steps": "string",
+      "nutrition": "string",
+      "privacyStatus": "string"
+    }
+    const blobImage = new Blob(recipeData.photos, { type: "image/jpeg" })
+    const blobData = new Blob([JSON.stringify(data)], { type: 'application/json' })
+    formData.append('files', blobImage, 'recipe');
+    formData.append('data', blobData);
+
+    // axios.post('/api/v1/user/recipe',
+    //   formData, {
+    //   headers: {"JWT": auth.jwtToken}
+    // }).then(response => console.log(response))
+    axiosPrivate.post('/api/v1/user/recipe',
+      formData).then(response => console.log(response))
+  }
+
   const style = {
     input: 'bg-gray-100 rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
     heading: 'font-semibold text-green-accent text-xl pb-1',
@@ -114,7 +179,7 @@ const AddRecipe = () => {
       <div className='max-w-8xl px-8 pt-2 pb-8 rounded bg-gray-50'>
         <div className=' pb-2 font-semibold mb-4 border-b-2 flex justify-between'>
           <h1 className='text-3xl text-gray-600'>Create new recipe</h1>
-          <button className='flex items-center border-2 text-xl py-1 px-2 text-gray-500 hover:bg-red-200 hover:text-gray-800 hover:border-gray-400 space-x-1 rounded'
+          <button className='flex items-center border-2 text-xl py-1 px-2 text-gray-500 hover:bg-red-200 hover:text-gray-800 hover:border-gray-800 space-x-1 rounded'
             onClick={() => navigate(-1)}>
             <XCircleIcon style='w-6 h-6' />
             <span className=''>Cancel</span>
@@ -124,12 +189,12 @@ const AddRecipe = () => {
           <div className='w-6/12 space-y-6  '>
             <div className='flex flex-col'>
               <label className={`${style.heading}`} htmlFor='title'>Title</label>
-              <input type='text' id='title' className={`${style.input}`} placeholder='Recipe name' name='title'
+              <input type='text' id='title' className={`${style.input}`} placeholder='Recipe name' name='title' value={recipeData.title}
                 onChange={handleChange} />
             </div>
             <div className='flex flex-col'>
               <label className={`${style.heading}`} htmlFor='description'>Description</label>
-              <input type='text' id='description' className={`pb-4 ${style.input}`} placeholder='Recipe description' name='description'
+              <input type='text' id='description' className={`pb-4 ${style.input}`} placeholder='Recipe description' name='description' value={recipeData.description}
                 onChange={handleChange} />
             </div>
             <div className='flex flex-col space-y-2'>
@@ -141,7 +206,7 @@ const AddRecipe = () => {
               <div className='flex gap-2'>
                 <input type='number' className={`w-24 text-center ${style.input}`} placeholder={1} name='yield'
                   onChange={handleChange} value={recipeData.yield} />
-                <input type='text' placeholder='serves' className={`w-32 text-center ${style.input}`} name='unit'
+                <input type='text' placeholder='serves' className={`w-32 text-center ${style.input}`} name='unit' value={recipeData.unit}
                   onChange={handleChange} />
               </div>
             </div>
@@ -166,7 +231,7 @@ const AddRecipe = () => {
             </div>
             <div className='flex flex-col'>
               <label htmlFor='nutritions' className={`${style.heading}`}>Nutrition</label>
-              <textarea rows={5} className={`${style.input}`} placeholder='100 Calories' id='nutritions' name='nutritions' onChange={handleChange}></textarea>
+              <textarea rows={5} className={`${style.input}`} placeholder='100 Calories' id='nutritions' name='nutritions' onChange={handleChange} value={recipeData.nutritions}></textarea>
             </div>
           </div>
           <div className='w-6/12 space-y-8'>
@@ -216,7 +281,9 @@ const AddRecipe = () => {
             </div>
             <div className='flex flex-col justify-center'>
               <h1 className={`${style.heading}`}>Ingredients</h1>
-              <div className='py-1'>{ingredientsElement}</div>
+              <ul className='py-1 list-disc'>
+                {ingredientsElement}
+              </ul>
               <div className='flex space-x-2 text-lg'>
                 <div className='flex flex-col w-7/12'>
                   <label htmlFor='name' className='font-medium text-green-accent text-base'>Name</label>
@@ -242,18 +309,21 @@ const AddRecipe = () => {
             <div className='flex flex-col justify-center'>
               <h1 className={`${style.heading}`}>Instructions</h1>
               <span className='text-base pb-1 italic'>* Each step is separated by new line</span>
-              <textarea name="steps" rows='10' className={`w-full ${style.input}`} placeholder='Step-by-step instructions for this recipe'></textarea>
+              <textarea name="steps" rows='10' className={`w-full ${style.input}`}
+                placeholder='Step-by-step instructions for this recipe'
+                onChange={handleChange} value={recipeData.steps}></textarea>
             </div>
             <div className='flex justify-between pr-4'>
               <div className='flex items-center gap-2'>
                 <h1 className={`${style.heading}`}>Status:</h1>
                 <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
                   onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
-                  <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate}/>
+                  <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
                   <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
                 </button>
               </div>
-              <button className='button-primary w-48'>Save</button>
+              <button className='button-contained w-48'
+                onClick={uploadRecipe}>Save</button>
             </div>
           </div>
         </div>

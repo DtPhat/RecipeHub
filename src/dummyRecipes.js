@@ -1,7 +1,7 @@
 const dummyRecipes = [{
   imgUrl: 'https://natashaskitchen.com/wp-content/uploads/2020/03/Pan-Seared-Steak-4.jpg',
   title: 'Pan Seared Steak',
-  tags: ['breakfast', 'lunch', 'dinner','snack','breakfast', 'lunch', 'dinner',],
+  tags: ['breakfast', 'lunch', 'dinner','snack','appetizer', 'dessert', 'drink',],
   prepTime: '00:05:00',
   cookTime: '00:10:00',
   recipeYield: '2 bowls',

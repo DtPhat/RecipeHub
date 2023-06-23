@@ -23,7 +23,7 @@ const GlobalRecipeFilter = ({ filter, setFilter }) => {
         <div className='flex flex-wrap gap-4'>{tagListElement}</div>
       </div>
       <div className='flex text-xl font-semibold '>
-        <Dropdown label={sortingBy} class='bg-green-accent rounded text-white hover:opacity-90'>
+        <Dropdown label={<div className=''>{sortingBy}</div>} className='bg-green-900 rounded text-white' color='primary'>
           <Dropdown.Item>
             New
           </Dropdown.Item>

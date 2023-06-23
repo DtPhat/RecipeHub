@@ -41,8 +41,8 @@ const UserHeader = () => {
           </div>
         </NavLink> */}
         <div className='flex space-x-4 px-4 items-center'>
-          <button className='button-secondary' onClick={()=>navigate('/register')}>Register</button>
-          <button className='button-primary'  onClick={()=>navigate('/login')}>Login</button>
+          <button className='button-outlined' onClick={()=>navigate('/register')}>Register</button>
+          <button className='button-contained'  onClick={()=>navigate('/login')}>Login</button>
         </div>
       </div >
     </section >

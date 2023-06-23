@@ -3,6 +3,7 @@ import Calendar from './Calendar'
 import ShoppingIcon from '../../assets/ShoppingIcon'
 import PlannedMeals from './PlannedMeals'
 import { useState } from 'react'
+import { Table } from 'flowbite-react'
 const MealPlanner = () => {
   const today = new Date((new Date).getFullYear(), (new Date).getMonth(), (new Date).getDate())
   const [chosenDate, setChosenDate] = useState(today)
@@ -12,7 +13,7 @@ const MealPlanner = () => {
         <div className='flex justify-between py-2'>
           <h1 className='text-4xl font-semibold text-gray-600'>Plan your meals</h1>
           <div className=''>
-            <button className='button-primary-2 flex justify-center items-center space-x-2 w-48 h-12 '>
+            <button className='button-contained-square flex justify-center items-center space-x-2 w-48 h-12 '>
               <h1 className='text-xl font-semibold'>Shopping list</h1>
               <ShoppingIcon style='w-8 h-8 fill-green-accent fill-green-600' />
             </button>

@@ -13,7 +13,7 @@ export const ThemeProvider = ({ children }) => {
 
   const toggleDarkMode = () => {
     const currentMode = !isDarkMode;
-    setIsDarkMode(currentMode);
+    setIsDarkMode(isDarkMode);
     if (currentMode) localStorage.setItem("theme", "dark");
     else localStorage.setItem("theme", "light");
   };
@@ -23,7 +23,6 @@ export const ThemeProvider = ({ children }) => {
       color: {
         primary: ' border-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold rounded-full',
         profile: 'rounded-full'
-        
       },
     },
   };

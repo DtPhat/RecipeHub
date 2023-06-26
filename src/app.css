@@ -10,3 +10,7 @@
 .switch-slider {
   @apply absolute left-0.5 top-0.5 aspect-square h-5/6 rounded-full bg-white shadow-2xl transition-all duration-300 ease-in-out content-none;
 }
+
+.link {
+  @apply font-semibold text-lg text-green-accent hover:underline
+}

@@ -40,4 +40,5 @@
     .color-secondary {
         @apply border-gray-500 text-black hover:hover:bg-gray-200
     }
+
 }

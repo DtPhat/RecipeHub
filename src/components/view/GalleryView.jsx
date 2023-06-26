@@ -4,7 +4,7 @@ import HeartIcon from '../../assets/HeartIcon'
 import KnifeForkIcon from '../../assets/KnifeForkIcon'
 import LeafIcon from '../../assets/LeafIcon'
 import StarIcon from '../../assets/StarIcon'
-import msConverter from '../../utils/msConverter'
+import {msToTime} from '../../utils/TimeUtil'
 
 const GalleryView = ({ recipeData }) => {
 
@@ -20,7 +20,7 @@ const GalleryView = ({ recipeData }) => {
           <div className='w-full h-80 flex flex-col border-2 border-gray-200 rounded p-2 space-y-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'>
             <img src={imgUrl} alt="" className='w-full h-52 object-cover rounded' />
             <h1 className='text-xl font-bold text-green-accent pt-2 truncate'>{title}</h1>
-            <div className='flex font-medium space-x-1'><ClockIcon style='w-6 h-6' /><span>{msConverter(300000)}</span></div>
+            <div className='flex font-medium space-x-1'><ClockIcon style='w-6 h-6' /><span>{msToTime(300000)}</span></div>
             <div className='flex space-x-1'>
               {stars.map((star, i) => {
                 return <StarIcon key={i} style={`w-4 h-4 stroke-transparent ${star ? 'fill-orange-accent' : 'fill-gray-300'}`} />

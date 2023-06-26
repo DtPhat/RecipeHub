@@ -20,7 +20,7 @@ const Profile = () => {
       })}>
       {tag}
     </button>))
-    console.log(userTags)
+  console.log(userTags)
   const displayedTabs = ['All', 'Public', 'Private']
   // const tagListElement = tagList.map(tag => (
   //   <button key={tag} className={`button-outlined-square color-secondary py-1 w-auto`}>
@@ -56,7 +56,7 @@ const Profile = () => {
           <div className='flex border-b-2 border-gray-300 mb-4 space-x-4'>
             {displayedTabs.map(tab =>
               <button key={tab} className={`bg-gray-100 p-4 rounded-t-lg hover:bg-gray-200 text-lg font-semibold w-44 ${chosenTabs === tab ? 'bg-gray-300' : ''}`}
-              onClick={()=> setChosenTabs(tab)}>{tab} recipes</button>
+                onClick={() => setChosenTabs(tab)}>{tab} recipes</button>
             )}
           </div>
           <ListView recipeData={dummyRecipes} />

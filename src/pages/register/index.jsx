@@ -50,7 +50,7 @@ const Register = () => {
               <h1 className='text-4xl pb-2 font-semibold text-center'>Create your account</h1>
               <div className='flex justify-center space-x-2 items-center'>
                 <span className='text-gray-500'>Already have an account?</span>
-                <button className='font-semibold text-lg hover:underline text-green-accent'
+                <button className='link'
                   onClick={() => navigate('/login')}>Log in</button>
               </div>
             </div>

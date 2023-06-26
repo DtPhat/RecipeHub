@@ -2,7 +2,7 @@ import React from "react";
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import RequireAuth from "./pages/RequireAuth";
 import { Route, Routes } from "react-router-dom";
-import HomeHeader from "./components/header/HomeHeader";
+import UserHeader from "./components/header/UserHeader";
 import Home from "./pages/home/index.jsx";
 import Login from "./pages/login/index.jsx";
 import Register from "./pages/register/index.jsx";
@@ -20,15 +20,11 @@ import Settings from "./pages/settings/index.jsx";
 import EditProfile from "./pages/profile/EditProfile.jsx";
 
 const App = () => {
-  const roles = {
-    user: 0,
-    admin: 1,
-  }
   const { auth } = useAuth()
-
+  const isAdmin = auth?.user.role === "ADMIN"
   return (
     <main>
-      <HomeHeader />
+      {isAdmin ? <AdminHeader /> : <UserHeader />}
       <Routes>
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />

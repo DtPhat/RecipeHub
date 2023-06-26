@@ -25,12 +25,7 @@ const imageData = [
   }
 ];
 
-const renderSlides = imageData.map((image) => (
-  <div key={image.alt} className='relative rounded-r-xl h-[52rem]'>
-    <img src={image.url} alt={image.alt} className=' h-full object-cover' />
-    <p className="absolute text-gray-200 bg-black font-bold text-6xl bottom-10 py-2 text-center w-full drop-shadow-xl opacity-75">{image.label}</p>
-  </div>
-));
+
 
 export default function RegisterCarousel() {
   const [currentIndex, setCurrentIndex] = useState();

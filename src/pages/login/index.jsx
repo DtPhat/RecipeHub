@@ -4,7 +4,7 @@ import EyeIcon from '../../assets/EyeIcon'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios, { axiosGoogle} from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
-import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [showingPassword, setShowingPassword] = useState(false)
@@ -77,7 +77,7 @@ const Login = () => {
             </button>
             <div className='flex justify-center space-x-2 items-center'>
               <span>Don't have an account?</span>
-              <button className='font-semibold text-lg text-green-accent hover:underline'
+              <button className='link'
                 onClick={() => navigate('/register')}>Sign up for free</button>
             </div>
           </div>

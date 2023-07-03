@@ -6,27 +6,31 @@ const RecipeFilter = ({ filter, setFilter }) => {
   const [ingredientInput, setIngredientInput] = useState('')
   const sortingOptions = ['title', 'recent', 'time', 'rating', 'yield']
   const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
+
   const sortingOptionsElement = sortingOptions.map(sortingOption => (
     <button key={sortingOption} className={` px-2 rounded font-medium border-2
       ${sortingOption === filter.sortingBy ? 'border-green-accent bg-green-100 text-green-accent  ' : 'border-gray-400 text-gray-500 hover:border-green-accent'} `}
       onClick={() => setFilter(preFilter => { return { ...preFilter, sortingBy: sortingOption !== preFilter.sortingBy ? sortingOption : '' } })}>
       {sortingOption}
     </button>))
+
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`border px-2 rounded-full
       ${filter.tags.includes(tag) ? 'border-green-accent bg-green-200 text-green-accent' : 'border-gray-400 text-gray-600 hover:border-green-accent'}`}
       onClick={() => setFilter(preFilter => {
-        const tagList = preFilter.tags
+        const tagList = [...preFilter.tags]
         tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
         return { ...preFilter, tags: tagList }
       })}>
       {tag}
     </button>))
+
   const ingredientListElement = (filter.ingredients).map(ingredient => (
     <button key={ingredient} className={`text-green-accent hover:line-through`}
       onClick={() => setFilter(preFilter => { return { ...preFilter, ingredients: preFilter.ingredients.filter(item => item !== ingredient) } })}>
       {ingredient}
     </button>))
+
   const addFilteringIngredient = () => {
     ingredientInput && setFilter(preFilter => {
       const newIngredients = preFilter.ingredients
@@ -65,11 +69,6 @@ const RecipeFilter = ({ filter, setFilter }) => {
             onChange={() => setFilter(preFilter => { return { ...preFilter, isFavourite: !preFilter.isFavourite } })} />
           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-variant"></div>
         </label>
-      </div>
-      <div className='flex w-32 space-x-1 rounded p-2 border-gray-200 bg-gray-200 hover:bg-gray-300 cursor-pointer text-gray-500'
-        onClick={() => { setFilter({ sortingBy: '', isAscending: true, tags: [], ingredients: [], isFavourite: false }); setIngredientInput('') }}>
-        <XCircleIcon style='w-6 h-6' />
-        <span className='font-semibold'>Clear filter</span>
       </div>
     </div>
   )

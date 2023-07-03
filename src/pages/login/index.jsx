@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import EyeIcon from '../../assets/EyeIcon'
 import { useLocation, useNavigate } from 'react-router-dom'
-import axios, { axiosGoogle} from '../../api/axios'
+import axios, { axiosGoogle } from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import { useGoogleLogin } from '@react-oauth/google';
 
@@ -19,13 +19,14 @@ const Login = () => {
   }
   const loginWithAccount = () => {
     axios.post('/api/v1/auth/basic/login', loginData)
-      .then(response => { setAuth(response.data), navigate(fromPath) })
+      .then(response => { setAuth(response.data); navigate(fromPath) })
   }
   const loginWithGoogle = useGoogleLogin({
     onSuccess: tokenResponse => axios
       .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
-      .then(response => {setAuth(response.data) }).then(() => navigate(fromPath)),
-    onError: (error) => console.log("Login fail", error)
+      .then(response => { setAuth(response.data) })
+      .then(() => navigate(fromPath)),
+    onError: (error) => console.log("Login google fail", error)
   });
   return (
     <section className='flex justify-center mx-8 items-center'>

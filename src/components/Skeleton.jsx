@@ -9,7 +9,6 @@ const Skeleton = () => {
             <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 max-w-7xl w-full mb-2.5"></div>
             <div className="max-w-6xl w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
           </div>
-          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
         </div>)
       }
       <span className="sr-only">Loading...</span>

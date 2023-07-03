@@ -7,7 +7,6 @@ export const sortDays = (date) => {
   const sortedDays = [...DAYS.slice(dayIndex), ...DAYS.slice(0, dayIndex)]
   return sortedDays
 }
-
 export const areSameDay = (first, second) =>
   first.getFullYear() === second.getFullYear() &&
   first.getMonth() === second.getMonth() &&
@@ -15,7 +14,7 @@ export const areSameDay = (first, second) =>
 
   export const getDayMonthYear = (date) => {
     const d = date.toDateString().split(" ")
-    return `${d[1]} ${d[3]}`
+    return `${d[2]} ${d[1]} ${d[3]}`
   }
 
 export const getMonthYear = (date) => {
@@ -28,6 +27,7 @@ export const getDateMonth = (date) => {
   return `${d[2]} ${d[1]}`
 }
 
+
 export const moveNextMonth = (date, cb) => {
   const mon = date.getMonth()
   if (mon < 11) {
@@ -38,7 +38,6 @@ export const moveNextMonth = (date, cb) => {
   }
   cb(new Date(date))
 }
-
 export const movePrevMonth = (date, cb) => {
   const mon = date.getMonth()
   if (mon > 0) {

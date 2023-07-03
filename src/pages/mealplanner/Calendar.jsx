@@ -1,8 +1,10 @@
 import { data } from 'autoprefixer';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import ArrowCircleIcon from '../../assets/ArrowCircleIcon';
 import PlusCircleIcon from '../../assets/PlusCircleIcon';
+import useOuterClick from '../../hooks/useOuterClick';
+import usePrivateAxios from '../../hooks/usePrivateAxios';
 import {
   getFilledDaysInMonth,
   getDaysInWeek,
@@ -14,37 +16,55 @@ import {
   movePrevWeek,
   areSameDay,
 } from '../../utils/DateUtils'
+import RecipeSelections from './RecipeSelections';
 
 const Calendar = ({ chosenDate, setChosenDate }) => {
+  const privateAxios = usePrivateAxios()
   const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const today = new Date((new Date).getFullYear(), (new Date).getMonth(), (new Date).getDate())
   const [navigationDate, setNavigationDate] = useState(today)
   const [daysDisplay, setDaysDisplay] = useState('month')
   const [showingPlus, setShowingPlus] = useState(false)
+  const { ref, open, setOpen } = useOuterClick(false)
+
+  const daysInWeek = getDaysInWeek(navigationDate)
+  const firstDateOfMonth = new Date(navigationDate.getFullYear(), navigationDate.getMonth(), 1)
+  const lastDateOfMonth = new Date(navigationDate.getFullYear(), navigationDate.getMonth() + 1, 0)
+  const firstDateOfWeek = daysInWeek[0]
+  const lastDateOfWeek = daysInWeek[6]
+
+  useEffect(() => {
+    // privateAxios.get(`/api/v1/user/meal-planers?from=${firstDateOfMonth.getTime()}&to=${lastDateOfMonth.getTime()}`).then(response => console.log(response.data))
+    privateAxios.get(`/api/v1/user/meal-planer/${4}`).then(response => console.log(response.data))
+  }, []);
+
   const style = {
     cell: 'w-full border border-green-900 h-16 p-2 cursor-pointer text-lg relative',
     header: 'w-full border border-green-900 h-16 p-2 text-xl px-4 font-semibold bg-green-variant',
     today: 'rounded-full border bg-green-accent text-white'
   }
+
   const daysOfWeekElement = DAYS.map(dayOfWeek =>
     <div key={dayOfWeek}
       className={`${style.header} `}>
       {dayOfWeek}
     </div>)
-  const daysInMonthElement = getFilledDaysInMonth(navigationDate).map((date, index) =>
+
+ 
+  const daysInMonth = getFilledDaysInMonth(navigationDate)
+  const daysInMonthElement = daysInMonth.map((date, index) =>
     <div key={index} className={` ${style.cell} flex items-center justify-between 
     ${today > date ? 'text-gray-500' : ''}
     ${date && areSameDay(date, chosenDate) ? 'bg-green-200' : 'hover:bg-gray-200'}`}
       onClick={() => date && setChosenDate(date)}>
       <button className={`w-10 h-10 ${date && areSameDay(date, today) ? style.today : ''}`}>{date && date.getDate()}</button>
-      {date &&
-        <button className='rounded-full z-10' onClick={(e) => { e.stopPropagation(); console.log("show recipe list") }}>
+      {date && today <= date &&
+        <button className='rounded-full z-10' onClick={(e) => { e.stopPropagation(); showRecipeSelections() }}>
           <PlusCircleIcon style={`${date && areSameDay(date, chosenDate) ? 'text-green-accent' : ''} w-10 h-10 text-gray-300 hover:fill-green-300 hover:text-green-accent`} />
         </button>}
     </div>)
-  const daysInWeek = getDaysInWeek(navigationDate)
-  const firstDateOfWeek = daysInWeek[0]
-  const lastDateOfWeek = daysInWeek[6]
+
+
   const daysInWeekElement = daysInWeek.map((date) =>
     <div key={date}>
       <div className={`${style.header} text-xl p-4`}>
@@ -61,6 +81,23 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
         </button>
       </div>
     </div>)
+
+
+
+
+const showRecipeSelections = () => {
+  const data = {
+    date: today.getTime(),
+    recipeId: 124,
+    mealType: "DINNER"
+  }
+  privateAxios.post('/api/v1/user/meal-planer',{
+    date: today.getTime(),
+    recipeId: 124,
+    mealType: "DINNER"
+  }).then(response => console.log(response.data))
+}
+
   return (
     <section className='font-semibold border border-green-900 rounded'>
       <div className='flex justify-between border border-green-900 items-center rounded-t-sm bg-green-50'>
@@ -110,6 +147,7 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
           </div>
         }
       </div>
+      {open && <RecipeSelections innerRef={ref} />}
     </section>
   )
 }

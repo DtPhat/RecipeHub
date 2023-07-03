@@ -16,6 +16,8 @@ const GlobalRecipes = () => {
   const [keyword, setKeyword] = useState('')
   const [searchResult, setSearchResult] = useState('')
   const [filter, setFilter] = useState({ sortingBy: '', isAscending: true, tags: [], ingredients: [], isFavourite: false })
+  const [chosenRecipe, setChosenRecipe] = useState()
+
   const isFiltering = filter.sortingBy || filter.tags.length || filter.ingredients.length || filter.isFavourite
   const globalSearchRef = useRef()
   const { ref, open, setOpen } = useOuterClick(false)
@@ -28,10 +30,12 @@ const GlobalRecipes = () => {
     globalSearchRef.current.focus()
   }, []);
   const globalRecipeGalleryElement = dummyRecipes.map(item => {
-    const {recipe_id, images, title, tags, rating, prepTime, cook_time, recipe_yield, unit, ingredients, isFavourite } = item
+    const { recipe_id, images, title, tags, rating, prepTime, cook_time, recipe_yield, unit, ingredients, isFavourite } = item
+    const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
     return (
-      <div key={recipe_id} className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative' onClick={()=>setOpen(true)}>
-        <img src={images[0].imageUrl} alt="" className='w-full h-60 object-cover rounded-t-lg' />
+      <div key={recipe_id} className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative'
+        onClick={() => { setChosenRecipe(item); setOpen(true) }}>
+        <img src={recipeImage} alt="" className='w-full h-60 object-cover rounded-t-lg' />
         <div className='bg-gray-200 flex items-center justify-between px-4'>
           <div className='flex items-center space-x-2 py-2'>
             <img src="https://yt3.googleusercontent.com/bFpwiiOB_NLCVsIcVQ9UcwBjb1RzipnMmtNfLSWpeIaHboyGkBCq4KBitmovRbStk9WvIWIZOyo=s900-c-k-c0x00ffffff-no-rj" alt="" className='w-10 h-10 rounded-full' />
@@ -58,7 +62,6 @@ const GlobalRecipes = () => {
             })}
           </div>
         </div>
-        {open && <RecipeDetails recipe={item} innerRef={ref} setOpen={setOpen}/>}
       </div>)
   })
 
@@ -81,6 +84,7 @@ const GlobalRecipes = () => {
         </div>}
         <div className='py-2 grid xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5'>{globalRecipeGalleryElement}</div>
       </div>
+      {open && <RecipeDetails recipe={chosenRecipe} innerRef={ref} setOpen={setOpen} />}
     </section>
   )
 }

@@ -11,9 +11,10 @@ const dummyRecipes = [{
   unit: 'disc',
   ingredients: [{ ingredientName: 'steak', ingredientId: 1, amount: '2.2 kg' }, { ingredientName: 'garlic', ingredientId: 2, amount: '3' }],
   rating: 5,
-  isFavourite: true,
+  is_favourite: true,
   description: 'This is the description of this recipe, this is the description of this recipe',
-  steps: 'Step 1 \n Step 2 \n Step 3'
+  steps: 'Step 1 \n Step 2 \n Step 3',
+  privacyStatus: 'PRIVATE'
 }, {
   recipe_id: 2,
   images: [{ imageUrl: 'https://tmbidigitalassetsazure.blob.core.windows.net/rms3-prod/attachments/37/1200x1200/Crispy-Fried-Chicken_EXPS_TOHJJ22_6445_DR%20_02_03_11b.jpg', imageId: 3 }],
@@ -24,10 +25,11 @@ const dummyRecipes = [{
   recipe_yield: 4,
   unit: 'bowl',
   ingredients: [{ ingredientName: 'chicken thighs', ingredientId: 3, amount: '4' }, { ingredientName: 'crispy powder', ingredientId: 4, amount: '1' }],
-  rating: 5,
-  isFavourite: true,
+  rating: 3,
+  is_favourite: false,
   description: 'This is the description of this recipe, this is the description of this recipe',
-  steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5'
+  steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5',
+  privacyStatus: 'PUBLIC'
 },
 {
   recipe_id: 3,
@@ -39,10 +41,11 @@ const dummyRecipes = [{
   recipe_yield: 4,
   unit: 'bowl',
   ingredients: [{ ingredientName: 'chicken thighs', ingredientId: 3, amount: '4' }, { ingredientName: 'crispy powder', ingredientId: 4, amount: '1' }],
-  rating: 5,
-  isFavourite: true,
+  rating: 1,
+  is_favourite: true,
   description: 'This is the description of this recipe, this is the description of this recipe',
-  steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5'
+  steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5',
+  privacyStatus: 'PRIVATE'
 }]
 
 export default dummyRecipes

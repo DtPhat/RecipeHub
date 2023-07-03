@@ -1,7 +1,7 @@
 import axios from "../api/axios";
 import { useEffect } from "react";
 import useAuth from "./useAuth"
-const useAxiosPrivate = () => {
+const usePrivateAxios = () => {
   const { auth, logout } = useAuth()
   useEffect(() => {
     const requestIntercept = axios.interceptors.request.use(
@@ -31,4 +31,4 @@ const useAxiosPrivate = () => {
   return axios
 }
 
-export default useAxiosPrivate
+export default usePrivateAxios

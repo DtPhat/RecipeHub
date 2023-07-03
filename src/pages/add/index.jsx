@@ -6,7 +6,7 @@ import XCircleIcon from '../../assets/XCircleIcon'
 import { useNavigate } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
 import useAuth from '../../hooks/useAuth'
-import useAxiosPrivate from '../../hooks/usePrivateAxios'
+import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { timeToMs } from '../../utils/TimeUtil'
 import { Spinner } from 'flowbite-react';
 
@@ -36,19 +36,19 @@ const AddRecipe = () => {
   })
   const imgInput = useRef()
   const navigate = useNavigate()
-  const axiosPrivate = useAxiosPrivate()
+  const privateAxios = usePrivateAxios()
   const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`border-2 border-green-variant text-green-accent px-2 py-1 rounded-md font-medium
     ${recipeData.tags.includes(tag) ? 'text-whitegray bg-green-accent hover:opacity-90' : 'hover:bg-green-100'}`}
       onClick={() => setRecipeData(prevData => {
-        const tagList = prevData.tags
+        const tagList = [...prevData.tags]
         tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
         return { ...prevData, tags: tagList }
       })}>
       {tag}
     </button>))
-  const [loading, setLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
 
   const photosElement = recipeData.photos.map((photo, i) =>
@@ -57,7 +57,7 @@ const AddRecipe = () => {
       <button className='absolute p-2 bottom-2 right-2 hidden group-hover:block rounded-lg bg-gray-100 opacity-50'
         onClick={() => {
           setRecipeData(prevData => {
-            const photoList = prevData.photos
+            const photoList = [...prevData.photos]
             photoList.splice(photoList.indexOf(photo), 1)
             return { ...prevData, photos: photoList }
           })
@@ -80,7 +80,7 @@ const AddRecipe = () => {
   const ingredientsElement = recipeData.ingredients.map((ingredient, i) =>
     <li key={i} className='cursor-pointer font-semibold ml-8 hover:line-through'
       onClick={() => {
-        const ingredientList = recipeData.ingredients
+        const ingredientList = [...recipeData.ingredients]
         ingredientList.splice(ingredientList.indexOf(ingredient), 1)
         setRecipeData(prevData => { return { ...prevData, ingredients: ingredientList } })
       }}>
@@ -127,7 +127,7 @@ const AddRecipe = () => {
   }
 
   const uploadRecipe = () => {
-    setLoading(true)
+    setSubmitting(true)
     const formData = new FormData()
     const data = {
       ingredients: recipeData.ingredients.map(ingredient => {
@@ -148,7 +148,7 @@ const AddRecipe = () => {
       rating: recipeData.rating,
       is_favourite: recipeData.isFavourite,
       description: recipeData.description,
-      unit: recipeData.unit,
+      unit: recipeData.unit || 'serve',
       steps: recipeData.steps,
       nutrition: recipeData.nutritions,
       privacyStatus: recipeData.isPrivate ? 'PRIVATE' : 'PUBLIC'
@@ -160,14 +160,14 @@ const AddRecipe = () => {
     });
     formData.append('data', blobData);
 
-    axiosPrivate.post('/api/v1/user/recipe',
+    privateAxios.post('/api/v1/user/recipe',
       formData)
       .then(response => {
         console.log(response)
         navigate('/recipe')
       })
       .catch(error => console(error))
-      .finally(() => setLoading(false))
+      .finally(() => setSubmitting(false))
 
   }
 
@@ -179,7 +179,7 @@ const AddRecipe = () => {
   return (
     <section className='py-2 flex justify-center'>
       <div className='max-w-8xl px-8 pt-2 pb-8 rounded bg-gray-50'>
-        <div className=' pb-2 font-semibold mb-4 border-b-2 flex justify-between'>
+        <div className=' pb-2 font-semibold mb-8 border-b-2 flex justify-between'>
           <h1 className='text-3xl text-gray-600'>Create new recipe</h1>
           <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
             onClick={() => navigate(-1)}>
@@ -324,10 +324,10 @@ const AddRecipe = () => {
                   <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
                 </button>
               </div>
-              <button className='button-contained w-48' disabled={loading}
+              <button className='button-contained w-48' disabled={submitting}
                 onClick={uploadRecipe}>
                 {
-                  loading ?
+                  submitting ?
                     <Spinner color='success' />
                     : <span>Save</span>
                 }

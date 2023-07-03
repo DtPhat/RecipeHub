@@ -18,13 +18,14 @@ import ShoppingList from "./pages/shoppinglist/index.jsx";
 import Profile from "./pages/profile/index.jsx";
 import Settings from "./pages/settings/index.jsx";
 import EditProfile from "./pages/profile/EditProfile.jsx";
+import EditRecipe from "./pages/edit/index.jsx";
 
 const App = () => {
   const { auth } = useAuth()
   const isAdmin = auth?.user.role === "ADMIN"
   return (
     <main>
-      {isAdmin ? <AdminHeader /> : <UserHeader />}
+      <UserHeader />
       <Routes>
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -34,7 +35,8 @@ const App = () => {
           <Route path='/recipe' >
             <Route index element={<Recipe />} />
             <Route path='add' element={<AddRecipe />} />
-            <Route path='friend' element={<FriendRecipe />} />
+            <Route path='edit' element={<EditRecipe />} />
+            <Route path='friends' element={<FriendRecipe />} />
             <Route path='export' element={<RecipeExport />} />
           </Route>
           <Route path='/mealplanner' element={<MealPlanner />} />
@@ -46,7 +48,11 @@ const App = () => {
             <Route path='settings' element={<Settings />} />
           </Route>
         </Route>
-        <Route path="*" element={<NotFound />} />
+        <Route element={<RequireAuth />} >
+          
+        </Route>
+
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </main>
   )

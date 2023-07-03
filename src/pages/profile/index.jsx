@@ -6,7 +6,6 @@ import ListView from '../../components/view/ListView';
 import dummyRecipes from '../../dummyRecipes';
 import { useState } from 'react';
 const Profile = () => {
-  const { username } = useParams()
   const [chosenTabs, setChosenTabs] = useState('All')
   const [userTags, setUserTags] = useState([])
   const { auth: { user: { userId, email, fullName, gender, birthday, profileImage } } } = useAuth()
@@ -14,7 +13,7 @@ const Profile = () => {
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`${userTags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
       onClick={() => setUserTags((prevUserTags) => {
-        const newTags = prevUserTags
+        const newTags = [...prevUserTags]
         newTags.includes(tag) ? newTags.splice(newTags.indexOf(tag), 1) : newTags.push(tag)
         return [...newTags]
       })}>
@@ -36,11 +35,13 @@ const Profile = () => {
           </div>
           <div className='flex space-x-8'>
             <div className='text-gray-500 flex flex-col space-y-4'>
+              <span>User ID</span>
               <span>Email</span>
               <span className='text-gray-500'>Date of birth</span>
               <span className='text-gray-500'>Gender</span>
             </div>
-            <div className='flex flex-col space-y-2'>
+            <div className='flex flex-col space-y-4'>
+              <span>{userId}</span>
               <span>{email}</span>
               <span>{new Date(birthday).toLocaleDateString()}</span>
               <span>{gender}</span>

@@ -6,51 +6,59 @@ import XCircleIcon from '../../assets/XCircleIcon'
 import GalleryView from '../../components/view/GalleryView'
 import ListView from '../../components/view/ListView'
 import dummyRecipes from '../../dummyRecipes'
-import useAxiosPrivate from '../../hooks/usePrivateAxios'
+import usePrivateAxios from '../../hooks/usePrivateAxios'
 import RecipeFilter from './RecipeFilter'
-import SideOptions from './SideOptions'
-import { Pagination} from 'flowbite-react';
+import { Pagination } from 'flowbite-react';
 import Skeleton from '../../components/Skeleton'
+import NoRecipes from '../../components/view/NoRecipes'
+import RecipeNavigation from './RecipeNavigation'
 
-const INITIAL_FILTER = { sortingBy: '', isAscending: true, tags: [], ingredients: [], isFavourite: false }
+export const initialFilter = {
+  sortingBy: '',
+  isAscending: true,
+  tags: [],
+  ingredients: [],
+  isFavourite: null,
+  title: ''
+}
 
 const Recipe = () => {
-  const [filter, setFilter] = useState(INITIAL_FILTER)
+  const [filter, setFilter] = useState(initialFilter)
   const [recipes, setRecipes] = useState()
   const [viewOption, setViewOption] = useState('list')
-  const [showedFilter, setShowedFilter] = useState(true)
+  const [showingFilter, setShowingFilter] = useState(false)
   const [keyword, setKeyword] = useState('')
-  const [searchResult, setSearchResult] = useState('')
-  const axiosPrivate = useAxiosPrivate()
+  const privateAxios = usePrivateAxios()
   const [currentPage, setCurrentPage] = useState(1)
-  const totalRecipes = 101
+
+  const totalRecipes = recipes?.length || 1
   const pageSize = 10
   const totalPages = Math.ceil(totalRecipes / pageSize)
 
-  const [loading, setLoading] = useState(false)
-  // useEffect(() => {
-  //   axiosPrivate.post(`/api/v1/user/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, {
-  //     tags: filter.tags,
-  //     ingredients: filter.ingredients,
-  //     favorite: false,
-  //     sortBy: filter.sortingBy,
-  //     direction: filter.isAscending ? 'asc' : 'desc',
-  //     title: keyword,
-  //     privacyStatus: null
-  //   })
-  //     .then((response) => { setRecipes(response.data) })
-  //     .catch((error) => console.log(error)).finally(() => setLoading(false))
-  // }, [currentPage]);
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    privateAxios.post(`/api/v1/user/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, {
+      tags: filter.tags,
+      ingredients: filter.ingredients,
+      favorite: filter.isFavourite,
+      sortBy: filter.sortingBy,
+      direction: filter.isAscending ? 'asc' : 'desc',
+      title: filter.title,
+      privacyStatus: null
+    })
+      .then((response) => { setRecipes(response.data) })
+      .catch((error) => console.log(error)).finally(() => setLoading(false))
+  }, [filter, currentPage]);
   console.log(recipes);
+  console.log(filter)
+  
   const isFiltering = filter.sortingBy || filter.tags.length || filter.ingredients.length || filter.isFavourite
 
   const searchByKeyword = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
-      setSearchResult(keyword)
+      setFilter((preFilter) => { return { ...preFilter, title: keyword } })
     }
   }
-
-
   return (
     <section className='flex justify-center mx-8 gap-6'>
       {
@@ -59,8 +67,8 @@ const Recipe = () => {
           <div className='max-w-8xl w-full flex space-x-4 rounded py-4'>
             <div className='border-gray-400 rounded max-w-7xl w-full space-y-4 bg-gray-50 py-4 px-8'>
               <div className='select-none flex justify-between pb-2 border-b-2 border-green-accent text-green-accent'>
-                <div className={`flex items-center rounded cursor-pointer p-2 hover:bg-gray-200 ${isFiltering && !showedFilter ? 'underline underline-offset-2' : ''}`}
-                  onClick={() => setShowedFilter(preState => !preState)}>
+                <div className={`flex items-center rounded cursor-pointer p-2 hover:bg-gray-200 ${isFiltering && !showingFilter ? 'underline underline-offset-2' : ''}`}
+                  onClick={() => setShowingFilter(preState => !preState)}>
                   <FilteringIcon style='w-6 h-6' />
                   <span className='text-xl px-1 font-semibold'>Filter</span>
                 </div>
@@ -76,13 +84,24 @@ const Recipe = () => {
                   <ViewIcon style='w-6 h-6' viewOption={viewOption} />
                 </div>
               </div>
-              {showedFilter && <RecipeFilter filter={filter} setFilter={setFilter} />}
-              {searchResult && <div className='flex rounded p-2 '>
-                <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{searchResult}</span>"</p>
+              {showingFilter && <div>
+                <RecipeFilter filter={filter} setFilter={setFilter} />
+                <div className='flex w-32 space-x-1 rounded p-2 border-gray-200 bg-gray-200 hover:bg-gray-300 cursor-pointer text-gray-500'
+                  onClick={() => setFilter(initialFilter)}>
+                  <XCircleIcon style='w-6 h-6' />
+                  <span className='font-semibold'>Clear filter</span>
+                </div>
               </div>}
-              <div className='py-2'>
-                {viewOption === 'list' && <ListView recipeData={dummyRecipes} />}
-                {viewOption === 'gallery' && <GalleryView recipeData={dummyRecipes} />}
+              {filter.title && <div className='flex rounded p-2 '>
+                <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{filter.title}</span>"</p>
+              </div>}
+              <div>
+                {recipes?.length ? <div className='py-2'>
+                  {viewOption === 'list' && <ListView recipeData={recipes} />}
+                  {viewOption === 'gallery' && <GalleryView recipeData={dummyRecipes} />}
+                </div>
+                  : <NoRecipes />
+                }
               </div>
               <div className='flex justify-end'>
                 <Pagination
@@ -94,7 +113,7 @@ const Recipe = () => {
               </div>
             </div>
             <div>
-              <SideOptions />
+              <RecipeNavigation />
             </div>
           </div>
       }

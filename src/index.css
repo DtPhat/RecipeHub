@@ -41,4 +41,8 @@
         @apply border-gray-500 text-black hover:hover:bg-gray-200
     }
 
+    .color-danger {
+        @apply border-red-400 text-red-500 hover:hover:bg-red-50
+    }
+
 }

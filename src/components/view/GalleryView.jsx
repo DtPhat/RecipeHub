@@ -6,7 +6,7 @@ import useOuterClick from '../../hooks/useOuterClick'
 import { msToTime } from '../../utils/TimeUtil'
 import RecipeDetails from '../RecipeDetails'
 
-const GalleryView = ({ recipeData }) => {
+const GalleryView = ({ recipeData, setRecipeData }) => {
   const { ref, open, setOpen } = useOuterClick(false)
   const [chosenRecipe, setChosenRecipe] = useState()
   return (
@@ -33,7 +33,7 @@ const GalleryView = ({ recipeData }) => {
             {is_favourite && <HeartIcon style='w-8 h-8 absolute fill-red-600 stroke-red-200 right-4 top-44' />}
           </div>)
       })}
-      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} />}
+      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipeData}/>}
     </section>
   )
 }

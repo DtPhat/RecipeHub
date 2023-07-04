@@ -42,7 +42,7 @@
     }
 
     .color-danger {
-        @apply border-red-400 text-red-500 hover:hover:bg-red-50
+        @apply border-orange-accent text-orange-600 hover:hover:bg-red-50
     }
 
 }

@@ -29,7 +29,6 @@ const FriendRecipe = () => {
       })
     }
   }
-  console.log(friendRequest);
   const unfriend = (friend_id) => {
     privateAxios.delete(`/api/v1/user/remove-friend/${friend_id}`)
     setShowingToast(true)

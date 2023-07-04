@@ -11,6 +11,7 @@ import PlusFriendIcon from '../../assets/PlusFriendIcon'
 import { useRef } from 'react'
 import useOuterClick from '../../hooks/useOuterClick'
 import RecipeDetails from '../../components/RecipeDetails'
+import GlobalRecipeDetails from './GlobalRecipeDetails'
 
 const GlobalRecipes = () => {
   const [keyword, setKeyword] = useState('')
@@ -84,7 +85,7 @@ const GlobalRecipes = () => {
         </div>}
         <div className='py-2 grid xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5'>{globalRecipeGalleryElement}</div>
       </div>
-      {open && <RecipeDetails recipe={chosenRecipe} innerRef={ref} setOpen={setOpen} />}
+      {open && <GlobalRecipeDetails recipe={chosenRecipe} innerRef={ref} setOpen={setOpen} />}
     </section>
   )
 }

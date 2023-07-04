@@ -7,11 +7,14 @@ import StarIcon from '../../assets/StarIcon'
 import TrashIcon from '../../assets/TrashIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
 import Skeleton from '../../components/Skeleton'
+import useAuth from '../../hooks/useAuth'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { msToTime, timeToMs } from '../../utils/TimeUtil'
+import { defaultTagList } from '../recipe'
 const EditRecipe = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { auth: { user: { userId } } } = useAuth()
   const recipeId = searchParams.get('recipe_id')
   !recipeId && navigate('/')
   const [recipeData, setRecipeData] = useState({
@@ -38,11 +41,12 @@ const EditRecipe = () => {
     isPrivate: true,
   })
   const privateAxios = usePrivateAxios()
+  const [tagList, setTagList] = useState(defaultTagList)
+  const [tagInput, setTagInput] = useState('')
   const imgInput = useRef()
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
   useEffect(() => {
     privateAxios.get(`/api/v1/user/recipe/${recipeId}`).then(response => setRecipeData((prevData) => {
       const editedRecipe = response.data
@@ -53,7 +57,7 @@ const EditRecipe = () => {
         tags: editedRecipe.tags.map(tag => tag.tagName),
         yield: editedRecipe.recipe_yield,
         unit: editedRecipe.unit,
-        photos: editedRecipe.images.map(image => image.imageUrl),
+        photos: editedRecipe.images,
         nutrition: editedRecipe.nutrition,
         prepTimeHour: msToTime(editedRecipe.pre_time).split(':')[0],
         prepTimeMinute: msToTime(editedRecipe.pre_time).split(':')[1],
@@ -81,20 +85,29 @@ const EditRecipe = () => {
 
   }, []);
 
-  const tagListElement = tagList.map(tag => (
-    <button key={tag} className={`border-2 border-green-variant text-green-accent px-2 py-1 rounded-md font-medium
-    ${recipeData.tags.includes(tag) ? 'text-whitegray bg-green-accent hover:opacity-90' : 'hover:bg-green-100'}`}
-      onClick={() => setRecipeData(prevData => {
-        const tagList = [...prevData.tags]
-        tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
-        return { ...prevData, tags: tagList }
-      })}>
-      {tag}
-    </button>))
+  useEffect(() => {
+    privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
+  }, []);
 
+  const tagListElement = tagList.map(tag => (
+    <div key={tag} className='relative group'>
+      <button className={`${recipeData.tags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
+        onClick={() => setRecipeData(prevData => {
+          const tagList = [...prevData.tags]
+          tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
+          return { ...prevData, tags: tagList }
+        })}>
+        {tag}
+      </button>
+      {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
+        onClick={() => setTagList(list => list.filter(prevTag => prevTag !== tag))}>
+        <XCircleIcon style='w-8 h-8 fill-green-100 text-green-accent opacity-50 hover:opacity-100' />
+      </button>}
+    </div>
+  ))
 
   const photosElement = recipeData.photos.map((photo, i) => {
-    const imageUrl = photo instanceof File ? URL.createObjectURL(photo) : photo
+    const imageUrl = photo instanceof File ? URL.createObjectURL(photo) : photo.imageUrl
     return (
       <div key={i} className='relative group cursor-pointer'>
         <img src={imageUrl} className='w-40 h-40 border-4 border-gray-300 rounded-xl' />
@@ -150,6 +163,12 @@ const EditRecipe = () => {
     setRecipeData(prevData => { return { ...prevData, ingredientName: '', ingredientQuantity: '', ingredientMetric: '', ingredients: ingredientList } })
   }
 
+  const addTag = () => {
+    tagInput && !tagList.includes(tagInput.trim()) && setTagList(prevTagList => [...prevTagList, tagInput])
+    setRecipeData(prevData => {return { ...prevData, tags: [...prevData.tags, tagInput] }} )
+    setTagInput('')
+  }
+
   const handleChange = (e) => {
     let { name, value, type } = e.target
     if (type === 'number') {
@@ -178,7 +197,6 @@ const EditRecipe = () => {
     const formData = new FormData()
     const data = {
       recipe_id: recipeId,
-      userId: 64,
       ingredients: recipeData.ingredients.map(ingredient => {
         return {
           ingredientName: ingredient.name,
@@ -190,12 +208,7 @@ const EditRecipe = () => {
           tagName: tag
         }
       }),
-      images: recipeData.photos.reduce((images, currentPhoto) => {
-        if (!(currentPhoto instanceof File)) images.push({
-          imageUrl: currentPhoto,
-        })
-        return images
-      }, []),
+      images: recipeData.photos.filter(currentPhoto => !(currentPhoto instanceof File)),
       title: recipeData.title,
       pre_time: timeToMs(recipeData.prepTimeHour, recipeData.prepTimeMinute, recipeData.prepTimeSecond),
       cook_time: timeToMs(recipeData.cookTimeHour, recipeData.cookTimeMinute, recipeData.cookTimeSecond),
@@ -261,7 +274,15 @@ const EditRecipe = () => {
               </div>
               <div className='flex flex-col space-y-2'>
                 <h1 className={`${style.heading}`}>Tags</h1>
-                <div className='flex flex-wrap gap-2'>{tagListElement}</div>
+                <div className='flex flex-wrap gap-3'>
+                  {tagListElement}
+                  <div className='flex space-x-1 border-gray-200'>
+                    <input type='text' placeholder='Tag name' className={`text-center w-28 bg-gray-50  border-b border-gray-400 py-1 px-2 focus:outline-none `}
+                      onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
+                      onChange={(e) => setTagInput(e.target.value)} value={tagInput} />
+                    <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-green-accent' /></button>
+                  </div>
+                </div>
               </div>
               <div className='flex flex-col'>
                 <h1 className={`${style.heading}`}>Yield</h1>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const useOuterClick = ({isVisible}) => {
+const useOuterClick = (isVisible) => {
   const [open, setOpen] = useState(isVisible);
   const ref = useRef(null);
 

@@ -34,8 +34,7 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
   const lastDateOfWeek = daysInWeek[6]
 
   useEffect(() => {
-    // privateAxios.get(`/api/v1/user/meal-planers?from=${firstDateOfMonth.getTime()}&to=${lastDateOfMonth.getTime()}`).then(response => console.log(response.data))
-    privateAxios.get(`/api/v1/user/meal-planer/${4}`).then(response => console.log(response.data))
+    privateAxios.get(`/api/v1/user/meal-planers?from=${firstDateOfMonth.getTime()}&to=${lastDateOfMonth.getTime()}`).then(response => console.log(response.data))
   }, []);
 
   const style = {
@@ -50,7 +49,7 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
       {dayOfWeek}
     </div>)
 
- 
+
   const daysInMonth = getFilledDaysInMonth(navigationDate)
   const daysInMonthElement = daysInMonth.map((date, index) =>
     <div key={index} className={` ${style.cell} flex items-center justify-between 
@@ -84,19 +83,9 @@ const Calendar = ({ chosenDate, setChosenDate }) => {
 
 
 
-
-const showRecipeSelections = () => {
-  const data = {
-    date: today.getTime(),
-    recipeId: 124,
-    mealType: "DINNER"
+  const showRecipeSelections = () => {
+    setOpen(true)
   }
-  privateAxios.post('/api/v1/user/meal-planer',{
-    date: today.getTime(),
-    recipeId: 124,
-    mealType: "DINNER"
-  }).then(response => console.log(response.data))
-}
 
   return (
     <section className='font-semibold border border-green-900 rounded'>
@@ -147,7 +136,7 @@ const showRecipeSelections = () => {
           </div>
         }
       </div>
-      {open && <RecipeSelections innerRef={ref} />}
+      {open && <RecipeSelections innerRef={ref} setOpen={setOpen} chosenDate={chosenDate}/>}
     </section>
   )
 }

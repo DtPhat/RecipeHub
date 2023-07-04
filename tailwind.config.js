@@ -38,7 +38,10 @@ export default {
       },
       animation: {
         'spin-slow': 'spin 30s linear infinite',
+      },
+      screens: {
+        'xs': '380px',
       }
-    }, 
+    },
   },
 }

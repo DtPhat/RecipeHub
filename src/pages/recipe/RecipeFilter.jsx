@@ -1,11 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PlusCircleIcon from '../../assets/PlusCircleIcon'
 import SortingIcon from '../../assets/SortingIcon'
-import XCircleIcon from '../../assets/XCircleIcon'
+import useAuth from '../../hooks/useAuth'
+import usePrivateAxios from '../../hooks/usePrivateAxios'
+import { defaultTagList } from './'
 const RecipeFilter = ({ filter, setFilter }) => {
+  const privateAxios = usePrivateAxios()
+  const { auth: { user: { userId } } } = useAuth()
+  const [tagList, setTagList ]= useState(defaultTagList) 
   const [ingredientInput, setIngredientInput] = useState('')
   const sortingOptions = ['title', 'recent', 'time', 'rating', 'yield']
-  const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
+  useEffect(() => {
+    privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
+  }, []);
 
   const sortingOptionsElement = sortingOptions.map(sortingOption => (
     <button key={sortingOption} className={` px-2 rounded font-medium border-2
@@ -25,15 +32,15 @@ const RecipeFilter = ({ filter, setFilter }) => {
       {tag}
     </button>))
 
-  const ingredientListElement = (filter.ingredients).map(ingredient => (
+  const ingredientListElement = filter.ingredients.map(ingredient =>
     <button key={ingredient} className={`text-green-accent hover:line-through`}
       onClick={() => setFilter(preFilter => { return { ...preFilter, ingredients: preFilter.ingredients.filter(item => item !== ingredient) } })}>
       {ingredient}
-    </button>))
+    </button>)
 
   const addFilteringIngredient = () => {
     ingredientInput && setFilter(preFilter => {
-      const newIngredients = preFilter.ingredients
+      const newIngredients = [...preFilter.ingredients]
       newIngredients.push(ingredientInput)
       setIngredientInput('')
       return { ...preFilter, ingredients: newIngredients }
@@ -58,7 +65,7 @@ const RecipeFilter = ({ filter, setFilter }) => {
         <input type="text" className='bg-gray-50 px-0.5 focus:outline-none border-b border-green-accent text-center' value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && addFilteringIngredient(e)} />
         <button onClick={addFilteringIngredient}>
-          <PlusCircleIcon style='w-6 h-6 text-green-accent'/>
+          <PlusCircleIcon style='w-6 h-6 text-green-accent' />
         </button>
         <div className='flex flex-wrap gap-4'>{ingredientListElement}</div>
       </div>

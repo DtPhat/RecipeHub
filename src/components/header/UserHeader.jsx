@@ -37,7 +37,7 @@ const UserHeader = () => {
             {({ isActive }) =>
               <div className={`flex justify-center items-center space-x-2 group`}>
                 <NetworkIcon style={`w-8 h-8 ${isActive ? 'fill-green-200' : 'group-hover:text-green-600'}`} />
-                <span className={`${isActive ? 'text-green-500 dark:bg-green-800 dark:text-green-200text-green-accent' : 'group-hover:text-green-600'}`}>Cooking Network</span>
+                <span className={`${isActive ? 'text-green-accent' : 'group-hover:text-green-600'}`}>Cooking Network</span>
               </div>}
           </NavLink>
         </nav>

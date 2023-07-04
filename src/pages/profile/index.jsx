@@ -1,30 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { Avatar } from 'flowbite-react';
 import ListView from '../../components/view/ListView';
 import dummyRecipes from '../../dummyRecipes';
 import { useState } from 'react';
+import usePrivateAxios from '../../hooks/usePrivateAxios';
+import { defaultTagList } from '../recipe';
 const Profile = () => {
-  const [chosenTabs, setChosenTabs] = useState('All')
-  const [userTags, setUserTags] = useState([])
   const { auth: { user: { userId, email, fullName, gender, birthday, profileImage } } } = useAuth()
-  const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
-  const tagListElement = tagList.map(tag => (
-    <button key={tag} className={`${userTags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
-      onClick={() => setUserTags((prevUserTags) => {
-        const newTags = [...prevUserTags]
+  const privateAxios = usePrivateAxios()
+  const [chosenTabs, setChosenTabs] = useState('All')
+  const [chosenTags, setChosenTags] = useState([])
+  const [userTagList, setUserTagList] = useState(defaultTagList)
+  useEffect(() => {
+    privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setUserTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
+  }, []);
+  const tagListElement = userTagList.map(tag => (
+    <button key={tag} className={`${chosenTags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
+      onClick={() => setChosenTags((prevchosenTags) => {
+        const newTags = [...prevchosenTags]
         newTags.includes(tag) ? newTags.splice(newTags.indexOf(tag), 1) : newTags.push(tag)
-        return [...newTags]
+        return newTags
       })}>
       {tag}
     </button>))
-  console.log(userTags)
+
   const displayedTabs = ['All', 'Public', 'Private']
-  // const tagListElement = tagList.map(tag => (
-  //   <button key={tag} className={`button-outlined-square color-secondary py-1 w-auto`}>
-  //     {tag}
-  //   </button>))
+
   return (
     <section className='flex justify-center py-4 mx-8 gap-6'>
       <div className='border-gray-400 rounded max-w-8xl w-full space-y-4 bg-gray-50 space-x-4 py-4 px-8 flex'>

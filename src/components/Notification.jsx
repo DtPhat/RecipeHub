@@ -78,7 +78,7 @@ const Notification = () => {
                 <div className='flex justify-center gap-2 p-2'>
                   <button className='button-outlined-square p-0'
                     onClick={() => navigate('/mealplanner')}>
-                    Move to meal planner <span className='pt-1 px-2'>⮕</span></button>
+                    Move to meal planner <span className='px-2'>⮕</span></button>
                 </div>
               </div>
             </Dropdown.Item>

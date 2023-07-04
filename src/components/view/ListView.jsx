@@ -9,7 +9,7 @@ import useOuterClick from '../../hooks/useOuterClick'
 import { msToTime } from '../../utils/TimeUtil'
 import RecipeDetails from '../RecipeDetails'
 
-const ListView = ({ recipeData }) => {
+const ListView = ({ recipeData, setRecipeData }) => {
   const { ref, open, setOpen } = useOuterClick(false)
   const [chosenRecipe, setChosenRecipe] = useState()
   return (
@@ -54,7 +54,7 @@ const ListView = ({ recipeData }) => {
           )
         })}
       </div>
-      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} />}
+      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipeData} />}
     </section>
   )
 }

@@ -9,7 +9,7 @@ const PlannedMeals = ({ chosenDate }) => {
   const date = DAYS[chosenDate.getDay()] + ' ' + chosenDate.getDate() + ' ' + MONTHS[chosenDate.getMonth()] + ' ' + chosenDate.getFullYear()
   const { ref, open, setOpen } = useOuterClick(false)
   const [chosenRecipe, setChosenRecipe] = useState()
-
+  const [plannedrecipes, setPlannedRecipes] = useState()
   const recipesElement = dummyRecipes.map(item => {
     const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = item
     const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
@@ -33,7 +33,7 @@ const PlannedMeals = ({ chosenDate }) => {
       <h1 className='font-bold text-2xl'>{date}</h1>
       <div className='grid grid-cols lg:grid-cols-2 gap-4'>
         {recipesElement}
-        {open && <RecipeDetails innerRef={ref} setOpen={setOpen} recipe={chosenRecipe} />}
+        {open && <RecipeDetails innerRef={ref} setOpen={setOpen} recipe={chosenRecipe} setRecipes={setPlannedRecipes}/>}
       </div>
     </div>
   )

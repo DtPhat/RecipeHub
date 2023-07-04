@@ -21,6 +21,7 @@ export const initialFilter = {
   isFavourite: null,
   title: ''
 }
+export const defaultTagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
 
 const Recipe = () => {
   const [filter, setFilter] = useState(initialFilter)
@@ -51,7 +52,7 @@ const Recipe = () => {
   }, [filter, currentPage]);
   console.log(recipes);
   console.log(filter)
-  
+
   const isFiltering = filter.sortingBy || filter.tags.length || filter.ingredients.length || filter.isFavourite
 
   const searchByKeyword = (e) => {
@@ -97,8 +98,8 @@ const Recipe = () => {
               </div>}
               <div>
                 {recipes?.length ? <div className='py-2'>
-                  {viewOption === 'list' && <ListView recipeData={recipes} />}
-                  {viewOption === 'gallery' && <GalleryView recipeData={dummyRecipes} />}
+                  {viewOption === 'list' && <ListView recipeData={recipes} setRecipeData={setRecipes} />}
+                  {viewOption === 'gallery' && <GalleryView recipeData={recipes} setRecipeData={setRecipes} />}
                 </div>
                   : <NoRecipes />
                 }

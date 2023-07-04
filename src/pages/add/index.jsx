@@ -1,16 +1,18 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PlusCircleIcon from '../../assets/PlusCircleIcon'
 import StarIcon from '../../assets/StarIcon'
 import TrashIcon from '../../assets/TrashIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
 import { useNavigate } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
-import useAuth from '../../hooks/useAuth'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { timeToMs } from '../../utils/TimeUtil'
 import { Spinner } from 'flowbite-react';
+import { defaultTagList } from '../recipe'
+import useAuth from '../../hooks/useAuth'
 
 const AddRecipe = () => {
+  const { auth: { user: { userId } } } = useAuth()
   const [recipeData, setRecipeData] = useState({
     title: '',
     description: '',
@@ -34,22 +36,32 @@ const AddRecipe = () => {
     steps: '',
     isPrivate: true,
   })
+  const [tagList, setTagList] = useState(defaultTagList)
+  const [tagInput, setTagInput] = useState('')
   const imgInput = useRef()
   const navigate = useNavigate()
   const privateAxios = usePrivateAxios()
-  const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
   const tagListElement = tagList.map(tag => (
-    <button key={tag} className={`border-2 border-green-variant text-green-accent px-2 py-1 rounded-md font-medium
-    ${recipeData.tags.includes(tag) ? 'text-whitegray bg-green-accent hover:opacity-90' : 'hover:bg-green-100'}`}
-      onClick={() => setRecipeData(prevData => {
-        const tagList = [...prevData.tags]
-        tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
-        return { ...prevData, tags: tagList }
-      })}>
-      {tag}
-    </button>))
+    <div key={tag} className='relative group'>
+      <button className={`${recipeData.tags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
+        onClick={() => setRecipeData(prevData => {
+          const tagList = [...prevData.tags]
+          tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)
+          return { ...prevData, tags: tagList }
+        })}>
+        {tag}
+      </button>
+      {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
+      onClick={()=> setTagList(list => list.filter(prevTag => prevTag !== tag))}>
+          <XCircleIcon style='w-8 h-8 fill-green-100 text-green-accent opacity-50 hover:opacity-100' />
+        </button>}
+    </div>
+  ))
   const [submitting, setSubmitting] = useState(false)
 
+  useEffect(() => {
+    privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
+  }, []);
 
   const photosElement = recipeData.photos.map((photo, i) =>
     <div key={i} className='relative group cursor-pointer'>
@@ -102,6 +114,12 @@ const AddRecipe = () => {
     const ingredientList = recipeData.ingredients
     ingredientList.push(newIngredient)
     setRecipeData(prevData => { return { ...prevData, ingredientName: '', ingredientQuantity: '', ingredientMetric: '', ingredients: ingredientList } })
+  }
+
+  const addTag = () => {
+    tagInput && !tagList.includes(tagInput.trim()) && setTagList(prevTagList => [...prevTagList, tagInput])
+    setRecipeData(prevData => {return { ...prevData, tags: [...prevData.tags, tagInput] }} )
+    setTagInput('')
   }
 
   const handleChange = (e) => {
@@ -201,7 +219,15 @@ const AddRecipe = () => {
             </div>
             <div className='flex flex-col space-y-2'>
               <h1 className={`${style.heading}`}>Tags</h1>
-              <div className='flex flex-wrap gap-2'>{tagListElement}</div>
+              <div className='flex flex-wrap gap-3'>
+                {tagListElement}
+                <div className='flex space-x-1 border-gray-200'>
+                  <input type='text' placeholder='Tag name' className={`text-center w-28 bg-gray-50  border-b border-gray-400 py-1 px-2 focus:outline-none `}
+                    onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
+                    onChange={(e) => setTagInput(e.target.value)} value={tagInput} />
+                  <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-green-accent' /></button>
+                </div>
+              </div>
             </div>
             <div className='flex flex-col'>
               <h1 className={`${style.heading}`}>Yield</h1>

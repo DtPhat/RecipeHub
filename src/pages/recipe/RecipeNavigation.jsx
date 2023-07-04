@@ -9,7 +9,7 @@ import usePrivateAxios from '../../hooks/usePrivateAxios';
 const RecipeNavigation = () => {
 	const navigate = useNavigate();
 	const privateAxios = usePrivateAxios()
-	const [friendList, setFriendList] = useState()
+	const [friendList, setFriendList] = useState([])
 	useEffect(() => {
 		privateAxios.get('/api/v1/user/friends').then(response => setFriendList(response.data))
 	}, []);
@@ -72,10 +72,10 @@ const RecipeNavigation = () => {
 			</div>
 			<div className='mx-4 max-h-96 overflow-auto'>
 				{friendListElement}
-				<div className='flex justify-end px-4'>
+				{friendList.length > 1 && <div className='flex justify-end px-4'>
 					<button className=' text-green-accent font-semibold hover:bg-gray-200 px-2 rounded'
 						onClick={() => navigate('./friends')}>VIEW ALL</button>
-				</div>
+				</div>}
 			</div>
 		</div>
 	)

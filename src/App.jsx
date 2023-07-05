@@ -19,7 +19,7 @@ import Profile from "./pages/profile/index.jsx";
 import Settings from "./pages/settings/index.jsx";
 import EditProfile from "./pages/profile/EditProfile.jsx";
 import EditRecipe from "./pages/edit/index.jsx";
-
+import UserProfile from "./pages/profile/UserProfile.jsx";
 const App = () => {
   const { auth } = useAuth()
   const isAdmin = auth?.user.role === "ADMIN"
@@ -30,8 +30,8 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/global" element={<GlobalRecipe />} />
         <Route element={<RequireAuth />} >
+          <Route path="/global" element={<GlobalRecipe />} />
           <Route path='/recipe' >
             <Route index element={<Recipe />} />
             <Route path='add' element={<AddRecipe />} />
@@ -42,14 +42,14 @@ const App = () => {
           <Route path='/mealplanner' element={<MealPlanner />} />
           <Route path='/shoppinglist' element={<ShoppingList />} />
           <Route path='/user'>
-            <Route path=':username' element={<Profile />} />
+            <Route path=':userId' element={<UserProfile />} />
             <Route path='profile' element={<Profile />} />
             <Route path='profile/edit' element={<EditProfile />} />
             <Route path='settings' element={<Settings />} />
           </Route>
         </Route>
         <Route element={<RequireAuth />} >
-          
+
         </Route>
 
         <Route path="/*" element={<NotFound />} />

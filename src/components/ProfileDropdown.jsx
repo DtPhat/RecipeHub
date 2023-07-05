@@ -7,7 +7,7 @@ import { emailToUsername } from '../utils/StringUtils'
 const ProfileDropdown = () => {
   const navigate = useNavigate()
   const { auth, setAuth, logout } = useAuth()
-  const username = auth && emailToUsername(auth.user.email);
+  // const username = auth && emailToUsername(auth.user.email);
   return (  
     <Dropdown
       arrowIcon={false}
@@ -32,7 +32,7 @@ const ProfileDropdown = () => {
       </Dropdown.Header>
       <Dropdown.Item >Dark mode</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item onClick={() => { navigate(`user/${username}`) }}>
+      <Dropdown.Item onClick={() => { navigate(`user/profile`) }}>
         Profile
       </Dropdown.Item>
       <Dropdown.Item>

@@ -1,70 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { msToTime } from '../../utils/TimeUtil'
-import ClockIcon from '../../assets/ClockIcon'
-import KnifeForkIcon from '../../assets/KnifeForkIcon'
-import LeafIcon from '../../assets/LeafIcon'
+import React, { useEffect, useRef, useState } from 'react'
 import SearchingIcon from '../../assets/SearchingIcon'
 import XCircleIcon from '../../assets/XCircleIcon'
-import GlobalRecipeFilter from './GlobalRecipeFilter'
-import dummyRecipes from '../../dummyRecipes'
-import PlusFriendIcon from '../../assets/PlusFriendIcon'
-import { useRef } from 'react'
+import Skeleton from '../../components/Skeleton'
 import useOuterClick from '../../hooks/useOuterClick'
-import RecipeDetails from '../../components/RecipeDetails'
-import GlobalRecipeDetails from './GlobalRecipeDetails'
+import usePrivateAxios from '../../hooks/usePrivateAxios'
+import GlobalRecipeFilter from './GlobalRecipeFilter'
+import GlobalView from './GlobalView'
 
 const GlobalRecipes = () => {
+  const privateAxios = usePrivateAxios()
   const [keyword, setKeyword] = useState('')
-  const [searchResult, setSearchResult] = useState('')
-  const [filter, setFilter] = useState({ sortingBy: '', isAscending: true, tags: [], ingredients: [], isFavourite: false })
-  const [chosenRecipe, setChosenRecipe] = useState()
-
-  const isFiltering = filter.sortingBy || filter.tags.length || filter.ingredients.length || filter.isFavourite
+  const [filter, setFilter] = useState({ sortingBy: '', isAscending: true, tags: [], ingredients: [], isFavourite: false, title: '' })
+  const [loading, setLoading] = useState(true)
+  const [globalRecipes, setGlobalRecipes] = useState([])
   const globalSearchRef = useRef()
   const { ref, open, setOpen } = useOuterClick(false)
   const searchByKeyword = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
-      setSearchResult(keyword)
+      setFilter(preFilter => { return { ...preFilter, title: keyword } })
+      setKeyword('')
     }
   }
   useEffect(() => {
     globalSearchRef.current.focus()
   }, []);
-  const globalRecipeGalleryElement = dummyRecipes.map(item => {
-    const { recipe_id, images, title, tags, rating, prepTime, cook_time, recipe_yield, unit, ingredients, isFavourite } = item
-    const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
-    return (
-      <div key={recipe_id} className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative'
-        onClick={() => { setChosenRecipe(item); setOpen(true) }}>
-        <img src={recipeImage} alt="" className='w-full h-60 object-cover rounded-t-lg' />
-        <div className='bg-gray-200 flex items-center justify-between px-4'>
-          <div className='flex items-center space-x-2 py-2'>
-            <img src="https://yt3.googleusercontent.com/bFpwiiOB_NLCVsIcVQ9UcwBjb1RzipnMmtNfLSWpeIaHboyGkBCq4KBitmovRbStk9WvIWIZOyo=s900-c-k-c0x00ffffff-no-rj" alt="" className='w-10 h-10 rounded-full' />
-            <span className={`text-lg font-medium truncate hover:underline underline-offset-2`}>Gordon Ramsay</span>
-          </div>
-          <button className='button-contained w-20 text-sm flex items-center'><PlusFriendIcon style='w-6 h-6' /><span>Add</span></button>
-        </div>
-        <div className='mx-4 py-2 space-y-4 overflow-auto'>
-          <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
-          <div className='space-x-1 font-semibold'>
-            <span className='text-gray-600'>Difficulty:</span><span className=''>Hard</span>
-          </div>
-          <div className='flex flex-wrap gap-4 items-center font-medium'>
-            <div className='flex items-center space-x-1'><ClockIcon style='w-6 h-6' /><span>{msToTime(cook_time)}</span></div>
-            <div className='flex items-center space-x-0.5'><LeafIcon style='w-5 h-5 rotate-45' /><span>{ingredients.length}</span><span>Ingredients</span></div>
-            <div className='flex items-center space-x-1'><KnifeForkIcon style='w-5 h-5' /><span>{recipe_yield} {unit}{recipe_yield > 1 ? 's' : ''}</span></div>
-          </div>
-          <div className='gap-2 flex flex-wrap'>
-            {tags.map((tag) => {
-              return (
-                <span key={tag.tagId} className='border rounded-full py-0.5 px-3 border-green-variant'>
-                  {tag.tagName}
-                </span>)
-            })}
-          </div>
-        </div>
-      </div>)
-  })
+
+  useEffect(() => {
+    privateAxios.post(`/api/v1/global/recipes/filter?page=${0}&size=${10}`, {
+      tags: filter.tags,
+      ingredients: [],
+      favorite: '',
+      sortBy: '',
+      direction: 'asc',
+      title: filter.title,
+      privacyStatus: 'PUBLIC'
+    })
+      .then(response => setGlobalRecipes(response.data))
+      .catch(error => console.log(error))
+      .finally(() => setLoading(false))
+  }, [filter]);
+
 
   return (
     <section className='flex justify-center py-4 mx-8 gap-6'>
@@ -80,12 +55,15 @@ const GlobalRecipes = () => {
           </div>
         </div>
         <GlobalRecipeFilter filter={filter} setFilter={setFilter} />
-        {searchResult && <div className='flex rounded p-2 '>
-          <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{searchResult}</span>"</p>
+        {filter.title && <div className='flex rounded p-2 '>
+          <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{filter.title}</span>"</p>
         </div>}
-        <div className='py-2 grid xs:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5'>{globalRecipeGalleryElement}</div>
+        {
+          loading ?
+            <Skeleton />
+            : <GlobalView recipeData={globalRecipes} />
+        }
       </div>
-      {open && <GlobalRecipeDetails recipe={chosenRecipe} innerRef={ref} setOpen={setOpen} />}
     </section>
   )
 }

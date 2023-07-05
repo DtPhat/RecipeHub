@@ -1,16 +1,19 @@
 import { Carousel } from 'flowbite-react'
 import React, { useState } from 'react'
-import { msToTime } from '../../utils/TimeUtil' 
-import { adjustQuantity } from '../../utils/StringUtils' 
+import { msToTime } from '../utils/TimeUtil'
+import { adjustQuantity } from '../utils/StringUtils'
 import { useNavigate } from 'react-router-dom'
-import usePrivateAxios from '../../hooks/usePrivateAxios'
-import ClockIcon from '../../assets/ClockIcon'
-import LeafIcon from '../../assets/LeafIcon'
-import KnifeForkIcon from '../../assets/KnifeForkIcon'
-import MinusCircleIcon from '../../assets/MinusCircleIcon'
-import PlusCircleIcon from '../../assets/PlusCircleIcon'
-const GlobalRecipeDetails = ({ innerRef, recipe, setOpen }) => {
+import usePrivateAxios from '../hooks/usePrivateAxios'
+import ClockIcon from '../assets/ClockIcon'
+import LeafIcon from '../assets/LeafIcon'
+import KnifeForkIcon from '../assets/KnifeForkIcon'
+import MinusCircleIcon from '../assets/MinusCircleIcon'
+import PlusCircleIcon from '../assets/PlusCircleIcon'
+import Toast from './Toast.jsx'
+import CopyingIcon from '../assets/CopyingIcon'
+const GlobalRecipe = ({ innerRef, recipe, setOpen }) => {
   console.log(recipe);
+  const privateAxios = usePrivateAxios()
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = recipe
   const [customeYield, setCustomYield] = useState(recipe_yield)
   const [completedSteps, setCompletedSteps] = useState([])
@@ -18,13 +21,23 @@ const GlobalRecipeDetails = ({ innerRef, recipe, setOpen }) => {
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
+
+  const copyRecipe = () => {
+    privateAxios.post(`/api/v1/user/copy-recipe/${recipe_id}`)
+      .then((responseId) => navigate(`/recipe/edit?recipe_id=${responseId}`))
+      .catch(error => console.log(error))
+  }
   return (
     <section
       className='fixed top-0 mt-20 p-4 left-1/2 translate-x-[-50%] max-w-7xl w-full h-[85vh] z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col gap-8 overflow-auto transition ease-in-out'
       ref={innerRef}>
       <div className='absolute right-5 text-lg flex space-x-4'>
         <div className='flex space-x-2'>
-          <button className='button-outlined-square py-0 w-16'>Copy</button>
+          <button className='button-outlined-square py-0.5 w-auto'
+            onClick={copyRecipe}>
+            <CopyingIcon style='w-6 h-6' />
+            <span>Copy</span>
+          </button>
         </div>
         <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
           onClick={(e) => { e.stopPropagation(); setOpen(false) }}>X</button>
@@ -110,4 +123,4 @@ const GlobalRecipeDetails = ({ innerRef, recipe, setOpen }) => {
   )
 }
 
-export default GlobalRecipeDetails
+export default GlobalRecipe

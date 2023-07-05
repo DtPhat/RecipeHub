@@ -21,13 +21,13 @@ export const initialFilter = {
   isFavourite: null,
   title: ''
 }
-export const defaultTagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack', 'vegetarian']
+export const defaultTagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack']
 
 const Recipe = () => {
   const [filter, setFilter] = useState(initialFilter)
   const [recipes, setRecipes] = useState()
   const [viewOption, setViewOption] = useState('list')
-  const [showingFilter, setShowingFilter] = useState(false)
+  const [showingFilter, setShowingFilter] = useState(true)
   const [keyword, setKeyword] = useState('')
   const privateAxios = usePrivateAxios()
   const [currentPage, setCurrentPage] = useState(1)

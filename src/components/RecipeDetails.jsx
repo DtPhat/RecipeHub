@@ -14,6 +14,9 @@ import HeartIcon from '../assets/HeartIcon'
 import { useNavigate } from 'react-router-dom'
 import TrashIcon from '../assets/TrashIcon'
 import usePrivateAxios from '../hooks/usePrivateAxios'
+import PlanningIcon from '../assets/PlanningIcon'
+import SharingIcon from '../assets/SharingIcon'
+import EditingIcon from '../assets/EditingIcon'
 const RecipeDetails = ({ innerRef, recipe, setOpen, setRecipes }) => {
   console.log(recipe);
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = recipe
@@ -35,17 +38,27 @@ const RecipeDetails = ({ innerRef, recipe, setOpen, setRecipes }) => {
       className='fixed top-0 mt-20 p-4 left-1/2 translate-x-[-50%] max-w-7xl w-full h-[85vh] z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col gap-8 overflow-auto transition ease-in-out'
       ref={innerRef}>
       <div className='absolute right-5 text-lg flex space-x-6'>
-        <button className='button-outlined-square py-0 w-12 color-danger opacity-70 hover:opacity-100'
+        <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100'
           onClick={(e) => { e.stopPropagation(); window.confirm() && deleteRecipe(recipe_id); setOpen(false) }}>
           <TrashIcon style='w-6 h-6' />
         </button>
         <div className='flex space-x-2'>
-          <button className='button-outlined-square py-0 w-16'>Plan</button>
-          <button className='button-outlined-square py-0 w-16'>Share</button>
-          <button className='button-outlined-square py-0 w-16' onClick={() => navigate(`/recipe/edit?recipe_id=${recipe_id}`)}>Edit</button>
+          <button className='button-outlined-square py-0.5 w-24'>
+            <PlanningIcon style='w-6 h-6' />
+            <span>Plan</span>
+          </button>
+          <button className='button-outlined-square py-0.5 w-24'>
+            <SharingIcon style='w-6 h-6' />
+            <span>Share</span>
+          </button>
+          <button className='button-outlined-square py-0.5 w-24' onClick={() => navigate(`/recipe/edit?recipe_id=${recipe_id}`)}>
+            <EditingIcon style='w-6 h-6'/>
+            <span>Edit</span>
+          </button>
         </div>
         <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
-          onClick={(e) => { e.stopPropagation(); setOpen(false) }}>X</button>
+          onClick={(e) => { e.stopPropagation(); setOpen(false) }}>X
+        </button>
       </div>
       <div className='flex space-x-8 pt-4'>
         <div className='w-96 border rounded-xl'>

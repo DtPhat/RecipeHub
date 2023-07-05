@@ -6,10 +6,11 @@ import KnifeForkIcon from '../../assets/KnifeForkIcon'
 import LeafIcon from '../../assets/LeafIcon'
 import StarIcon from '../../assets/StarIcon'
 import useOuterClick from '../../hooks/useOuterClick'
+import GlobalRecip from '../GlobalRecipe'
 import { msToTime } from '../../utils/TimeUtil'
 import RecipeDetails from '../RecipeDetails'
 
-const ListView = ({ recipeData, setRecipeData }) => {
+const ListView = ({ recipeData, setRecipeData, global }) => {
   const { ref, open, setOpen } = useOuterClick(false)
   const [chosenRecipe, setChosenRecipe] = useState()
   return (
@@ -54,7 +55,10 @@ const ListView = ({ recipeData, setRecipeData }) => {
           )
         })}
       </div>
-      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipeData} />}
+      {open && (global ?
+        <GlobalRecip innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} />
+        : <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipeData} />
+      )}
     </section>
   )
 }

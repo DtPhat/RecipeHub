@@ -7,29 +7,36 @@ import dummyRecipes from '../../dummyRecipes';
 import { useState } from 'react';
 import usePrivateAxios from '../../hooks/usePrivateAxios';
 import { defaultTagList } from '../recipe';
-const MyProfile = () => {
-  const { auth: { user: { userId, email, fullName, gender, birthday, profileImage } } } = useAuth()
+import AddingFriendButton from '../../components/AddingFriendButton';
+import Toast from '../../components/Toast';
+const UserProfile = () => {
+  const { userId } = useParams()
+  const myId = useAuth().auth.user.userId
   const privateAxios = usePrivateAxios()
   const [recipes, setRecipes] = useState([])
-  const [chosenTabs, setChosenTabs] = useState('All')
+  const [chosenTabs, setChosenTabs] = useState('Public')
   const [chosenTags, setChosenTags] = useState([])
   const [userTagList, setUserTagList] = useState(defaultTagList)
+  const [userProfile, setUserProfile] = useState({})
+  const [showingToast, setShowingToast] = useState(false)
+  const { email, fullName, gender, birthday, profileImage } = userProfile
   useEffect(() => {
     privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setUserTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
   }, []);
-
   useEffect(() => {
-    privateAxios.post(`/api/v1/user/recipes/filter?page=${0}&size=${10}`, {
+    privateAxios.get(`/api/v1/global/user/profile/${userId}`).then(response => setUserProfile(response.data))
+  }, []);
+  useEffect(() => {
+    privateAxios.post(`/api/v1/global/recipes/filter/${userId}?page=${0}&size=${10}`, {
       tags: chosenTags,
       ingredients: [],
       favorite: '',
       sortBy: '',
       direction: 'asc',
       title: '',
-      privacyStatus: chosenTabs === 'All' ? null : chosenTabs.toUpperCase()
+      privacyStatus: 'PUBLIC'
     }).then(response => setRecipes(response.data))
-  }, [chosenTags, chosenTabs]);
-  
+  }, [chosenTags]);
   const tagListElement = userTagList.map(tag => (
     <button key={tag} className={`${chosenTags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
       onClick={() => setChosenTags((prevchosenTags) => {
@@ -40,7 +47,7 @@ const MyProfile = () => {
       {tag}
     </button>))
 
-  const displayedTabs = ['All', 'Public', 'Private']
+  const displayedTabs = ['Public']
 
   return (
     <section className='flex justify-center py-4 mx-8 gap-6'>
@@ -68,7 +75,7 @@ const MyProfile = () => {
             <h1 className='text-2xl'>Tag Collection</h1>
             <div className='flex flex-wrap gap-2 pt-2'>{tagListElement}</div>
           </div>
-          {/* <div className='pt-4'><button className='button-contained-square'>Edit profile</button></div> */}
+          <AddingFriendButton friendId={userId} onSuccess={() => setShowingToast(true)} />
         </div>
         <div className='w-full'>
           <div className='flex border-b-2 border-gray-300 mb-4 space-x-4'>
@@ -77,11 +84,12 @@ const MyProfile = () => {
                 onClick={() => setChosenTabs(tab)}>{tab} recipes</button>
             )}
           </div>
-          <ListView recipeData={recipes} />
+          <ListView recipeData={recipes} global={true} />
         </div>
       </div>
+      {showingToast && <Toast message='Add friend successfully' />}
     </section>
   )
 }
 
-export default MyProfile
+export default UserProfile

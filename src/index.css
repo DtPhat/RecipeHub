@@ -41,12 +41,10 @@
         @apply border-gray-500 text-black hover:hover:bg-gray-200
     }
 
-<<<<<<< Updated upstream
     .color-danger {
         @apply border-orange-accent text-orange-600 hover:hover:bg-red-50
     }
 
-=======
     .admin-content {
         @apply m-2 md:m-5 mt-24 p-2 md:p-10 bg-white dark:bg-gray-900 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
       }
@@ -68,5 +66,4 @@
         scrollbar-width: none;  /* Firefox */
     }
   
->>>>>>> Stashed changes
 }

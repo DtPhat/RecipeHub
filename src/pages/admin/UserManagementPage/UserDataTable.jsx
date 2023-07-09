@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Spinner, Table } from 'flowbite-react';
+import { Button, Spinner, Table } from 'flowbite-react';
 import Pagination from '../../../components/DataTable/Pagination';
-import axios, { axiosGetAdminRecipes } from '../../../api/axios';
-
+import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 
@@ -24,21 +23,21 @@ const columns = [
 function UserDataTable() {
 	const [rows, setRows] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [allSelected, setAllSelected] = useState(false);
-
 	const [pagination, setPagination] = useState({
 		page: 1,
-		size: 2,
-		totalItem: 4,
+		size: 5,
+		totalItem: 5,
 	});
 
 	const [filter, setFilter] = useState({
 		page: 1,
-		size: 2,
+		size: 5,
 		sort: 'user_id',
 		direction: 'asc',
 		query: '',
 	});
+
+	const privateAxios = usePrivateAxios();
 
 	function handlePageChange(newPage) {
 		setFilter({
@@ -84,23 +83,24 @@ function UserDataTable() {
 		}
 	}
 
-	function handleSelectAll() {
-		setAllSelected(!allSelected);
-	}
-
 	useEffect(() => {
-		async function fetchRecipes() {
+		async function fetchUsers() {
 			setIsLoading(true);
-			let data = await axiosGetAdminRecipes(filter);
+			let resp = privateAxios.get(
+				`/api/v1/users?page=${filter.page - 1}&size=${filter.size}&sort=${
+					filter.sort
+				}&direction=${filter.direction}&query=${filter.query}`,
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
 			setIsLoading(false);
-			setRows(data.data);
+			setRows(resp.data);
 			setPagination({
 				page: filter.page,
 				size: filter.size,
-				totalItem: data.totalItem,
+				totalItem: resp.data.totalItem,
 			});
 		}
-		fetchRecipes();
+		fetchUsers();
 	}, [filter]);
 
 	return (
@@ -133,10 +133,8 @@ function UserDataTable() {
 
 					<Table.HeadCell>Action</Table.HeadCell>
 				</Table.Head>
+				{isLoading && <Spinner size='xl' className='flex content-center' />}
 				<Table.Body className='divide-y'>
-					{isLoading && (
-						<Spinner size='xl' className='flex content-center' />
-					)}
 					{!isLoading &&
 						rows.map((item, i) => (
 							<Table.Row

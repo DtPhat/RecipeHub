@@ -4,9 +4,11 @@ import SwitchButton from '../SwitchButton';
 import Button from '../Button';
 import useAuth from '../../hooks/useAuth';
 import { Avatar, Dropdown, Tooltip } from 'flowbite-react';
+import { useNavigate } from 'react-router-dom';
 
 function TopNav() {
-	const { logout } = useAuth();
+	const navigate = useNavigate();
+	const { auth, logout } = useAuth();
 	const { activeMenu, setActiveMenu, toggleDarkMode, isDarkMode } =
 		useThemeContext();
 
@@ -39,22 +41,28 @@ function TopNav() {
 				/>
 			</Tooltip>
 
-			{/* toggleThemeButton */}
+			{/* toggleAvatarDropdownButton */}
 			<Dropdown
 				inline
 				label={
 					<Avatar rounded alt='avatar' img='/img/admin-avatar.png'>
-						hello, admin
+						{`hello, ${auth.user.fullName}`}
 					</Avatar>
 				}
 			>
 				<Dropdown.Header>
-					<span className='block text-sm'>Full name</span>
+					<span className='block text-sm'>{auth.user.fullName}</span>
 					<span className='block truncate text-sm font-medium'>
-						email@email.com
+						{auth.user.email}
 					</span>
 				</Dropdown.Header>
-				<Dropdown.Item>Profile</Dropdown.Item>
+				<Dropdown.Item
+				// onClick={() => {
+				// 	navigate(`/user/profile`);
+				// }}
+				>
+					Profile
+				</Dropdown.Item>
 				<Dropdown.Item>
 					<Tooltip content='Change theme'>
 						<SwitchButton isOn={isDarkMode} customFunc={toggleDarkMode} />

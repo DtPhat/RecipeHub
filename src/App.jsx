@@ -20,12 +20,16 @@ import Settings from './pages/settings/index.jsx';
 import EditProfile from './pages/profile/EditProfile.jsx';
 import EditRecipe from './pages/edit/index.jsx';
 import UserProfile from './pages/profile/UserProfile.jsx';
+import DashBoard from './pages/admin/DashBoard.jsx';
+import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
+import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
+import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
 const App = () => {
 	const { auth } = useAuth();
 	const isAdmin = auth?.user.role === 'ADMIN';
 	return (
 		<main>
-			<UserHeader />
+			{!isAdmin && <UserHeader />}
 			<Routes>
 				<Route index element={<Home />} />
 				<Route path='/login' element={<Login />} />

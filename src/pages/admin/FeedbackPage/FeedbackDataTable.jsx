@@ -8,29 +8,28 @@ import ConfirmModal from '../../../components/ConfirmModal';
 
 const columns = [
 	{
-		key: 'title',
-		name: 'Title',
-	},
-	{
 		key: '',
-		name: 'Tags',
+		name: 'Feedback',
 	},
 	{
-		key: 'rating',
-		name: 'Rating',
+		key: 'author',
+		name: 'Author',
+	},
+	{
+		key: 'date',
+		name: 'Date',
 	},
 ];
 
-function RecipeDataTable() {
+function FeedbackDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const [pagination, setPagination] = useState({
 		page: 1,
 		size: 5,
-		totalItem: 4,
+		totalItem: 5,
 	});
 
 	const [filter, setFilter] = useState({
@@ -43,22 +42,14 @@ function RecipeDataTable() {
 
 	const privateAxios = usePrivateAxios();
 
-	function handleClick(argument, index) {
-		if (argument === 'confirmRemove') {
+	function handleClick(argument) {
+		if (argument === 'confirmRead') {
 			setOpenModal(true);
-			setSelectedIndex(index);
 		} else {
 			if (argument === 'remove') {
-				if (selectedIndex > -1) {
-					var id = rows[selectedIndex].recipe_id;
-					rows.splice(selectedIndex, 1);
-					privateAxios.delete(`/api/v1/admin/recipe/${id}`);
-					setSelectedIndex(-1);
-				}
 				setOpenModal(false);
 			} else {
 				setOpenModal(false);
-				setSelectedIndex(-1);
 			}
 		}
 	}
@@ -111,7 +102,7 @@ function RecipeDataTable() {
 		async function fetchRecipes() {
 			setIsLoading(true);
 			let resp = await privateAxios.get(
-				`/api/v1/admin/recipes?page=${filter.page - 1}&size=${
+				`api/v1/admin/recipes?page=${filter.page - 1}&size=${
 					filter.size
 				}&sort=${filter.sort}&direction=${filter.direction}&query=${
 					filter.query
@@ -197,12 +188,12 @@ function RecipeDataTable() {
 								<Table.Cell>
 									{' '}
 									<Button
-										color='failure'
+										color='success'
 										size='sm'
 										outline
-										onClick={() => handleClick('confirmRemove', i)}
+										onClick={() => handleClick('confirmRead')}
 									>
-										Remove
+										Read
 									</Button>{' '}
 								</Table.Cell>
 							</Table.Row>
@@ -213,12 +204,14 @@ function RecipeDataTable() {
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
 			<ConfirmModal
-				content='Are you sure you want to delete this item?'
+				content='feedback content**'
 				isOpened={openModal}
 				handleClick={handleClick}
+				buttonYes='Confirm read'
+				buttonNo='Cancel'
 			/>
 		</>
 	);
 }
 
-export default RecipeDataTable;
+export default FeedbackDataTable;

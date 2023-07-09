@@ -1,16 +1,17 @@
+import { Modal } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import ExportingIcon from '../../assets/ExportingIcon'
 import RecipeDetails from '../../components/RecipeDetails'
 import SearchBar from '../../components/SearchBar'
 import useOuterClick from '../../hooks/useOuterClick'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
+import RecipeModal from '../../components/RecipeModal'
 import { msToTime } from '../../utils/TimeUtil'
 import { initialFilter } from '../recipe'
 
 const RecipeExport = () => {
   const privateAxios = usePrivateAxios()
   const [chosenRecipe, setChosenRecipe] = useState()
-  const { ref, open, setOpen } = useOuterClick(false)
   const [keyword, setKeyword] = useState('')
   const [recipes, setRecipes] = useState([])
   const [exportingIds, setExportingIds] = useState([])
@@ -21,12 +22,12 @@ const RecipeExport = () => {
       favorite: initialFilter.isFavourite,
       sortBy: initialFilter.sortingBy,
       direction: initialFilter.isAscending ? 'asc' : 'desc',
-      title: initialFilter.title,
+      title: keyword,
       privacyStatus: null
     })
       .then((response) => { setRecipes(response.data) })
       .catch((error) => console.log(error))
-  }, []);
+  }, [keyword]);
   const handleAddingToList = (e, id) => {
     e.stopPropagation();
     setExportingIds(prevList => {
@@ -51,7 +52,6 @@ const RecipeExport = () => {
     })
   }
   const exportAll = () => {
-    const ids = [...exportingIds]
     privateAxios.get('/api/v1/user/file/recipe/excel', {
       responseType: 'blob',
     }).then(response => {
@@ -66,12 +66,10 @@ const RecipeExport = () => {
     })
   }
   return (
-    <section className='flex justify-center py-4 mx-8 gap-6'>
-      <div className='border-gray-400 rounded max-w-8xl w-full space-y-4 bg-gray-50 py-4 px-8'>
-        <div className='select-none flex flex-col lg:flex-row justify-between border-green-accent text-green-accent gap-8'>
-          <h1 className='text-4xl font-semibold text-gray-600'>Choose your recipes to export</h1>
-          <SearchBar keyword={keyword} setKeyword={setKeyword} handleEnter={() => { }} />
-        </div>
+    <section className='flex justify-center py-4'>
+      <div className='border-gray-400 rounded max-w-8xl w-full space-y-6 bg-gray-50 p-8'>
+        <h1 className='text-4xl font-semibold'>Choose your recipes to export</h1>
+        <SearchBar keyword={keyword} setKeyword={setKeyword} />
         <div>
           <div className='flex gap-4 font-semibold text-2xl flex-col sm:flex-row '>
             <h1 className='underline underline-offset-4'>Exporting list:</h1>
@@ -81,12 +79,14 @@ const RecipeExport = () => {
                   className='hover:line-through cursor-pointer'>{id}</span>
               )}
             </div>
-            <div>
-              <button className='button-contained-square py-1 px-4' onClick={exportChosenRecipes}>
-                <span>Export</span>
-                <ExportingIcon style='w-6 h-6' />
-              </button>
-            </div>
+            {exportingIds.length > 0
+              ? <div>
+                <button className='button-contained-square py-0 px-4' onClick={exportChosenRecipes}>
+                  <span>Export</span>
+                  <ExportingIcon style='w-6 h-6' />
+                </button>
+              </div>
+              : <span className='text-gray-500'>(Empty)</span>}
           </div>
         </div>
         <section className='py-2 grid xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-8 gap-5'>
@@ -94,9 +94,9 @@ const RecipeExport = () => {
             const { recipe_id, images, title, tags, rating, prep_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = recipe
             const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
             return (
-              <div key={recipe_id}
+              <div key={recipe_id}seach
                 className='w-full h-68 flex flex-col border-2 border-gray-200 rounded p-2 space-y-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'
-                onClick={() => { setChosenRecipe(recipe); setOpen(true) }}>
+                onClick={() => setChosenRecipe(recipe)}>
                 <img src={recipeImage} alt="" className='w-full h-40 object-cover rounded' />
                 <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
                 <span className='text-normal font-bold truncate'>ID: {recipe_id}</span>
@@ -105,9 +105,9 @@ const RecipeExport = () => {
                 </button>
               </div>)
           })}
-          {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipes}/>}
+          <RecipeModal chosenRecipe={chosenRecipe} setChosenRecipe={setChosenRecipe} />
         </section>
-        <div className='flex flex-col sm:flex-row py-2 items-center gap-4 pt-4 border-t border-gray-300'>
+        <div className='flex flex-col sm:flex-row py-2 items-center gap-4 pt-4 border-t-2 border-gray-300'>
           <h1 className='text-2xl font-semibold text-gray-600'>Export all recipes at 1 click:</h1>
           <button className='button-outlined-square w-40 color-secondary py-1'
             onClick={exportAll}>

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { timeToMs } from '../../utils/TimeUtil'
-import { Spinner } from 'flowbite-react';
+import { Spinner, Tooltip } from 'flowbite-react';
 import { defaultTagList } from '../recipe'
 import useAuth from '../../hooks/useAuth'
 
@@ -52,9 +52,9 @@ const AddRecipe = () => {
         {tag}
       </button>
       {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
-      onClick={()=> setTagList(list => list.filter(prevTag => prevTag !== tag))}>
-          <XCircleIcon style='w-8 h-8 fill-green-100 text-green-accent opacity-50 hover:opacity-100' />
-        </button>}
+        onClick={() => setTagList(list => list.filter(prevTag => prevTag !== tag))}>
+        <XCircleIcon style='w-8 h-8 fill-green-100 text-green-accent opacity-50 hover:opacity-100' />
+      </button>}
     </div>
   ))
   const [submitting, setSubmitting] = useState(false)
@@ -118,7 +118,7 @@ const AddRecipe = () => {
 
   const addTag = () => {
     tagInput && !tagList.includes(tagInput.trim()) && setTagList(prevTagList => [...prevTagList, tagInput])
-    setRecipeData(prevData => {return { ...prevData, tags: [...prevData.tags, tagInput] }} )
+    setRecipeData(prevData => { return { ...prevData, tags: [...prevData.tags, tagInput] } })
     setTagInput('')
   }
 
@@ -196,7 +196,7 @@ const AddRecipe = () => {
   console.log(recipeData);
   return (
     <section className='py-2 flex justify-center'>
-      <div className='max-w-8xl px-8 pt-2 pb-8 rounded bg-gray-50'>
+      <div className='max-w-8xl w-full px-4 lg:px-8 pt-2 pb-8 rounded bg-gray-50'>
         <div className=' pb-2 font-semibold mb-8 border-b-2 flex justify-between'>
           <h1 className='text-3xl text-gray-600'>Create new recipe</h1>
           <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
@@ -205,8 +205,8 @@ const AddRecipe = () => {
             <span className=''>Cancel</span>
           </button>
         </div>
-        <div className='flex space-x-8 text-lg'>
-          <div className='w-6/12 space-y-6  '>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 text-lg'>
+          <div className='space-y-6'>
             <div className='flex flex-col'>
               <label className={`${style.heading}`} htmlFor='title'>Title</label>
               <input type='text' id='title' className={`${style.input}`} placeholder='Recipe name' name='title' value={recipeData.title}
@@ -262,31 +262,31 @@ const AddRecipe = () => {
               <textarea rows={5} className={`${style.input}`} placeholder='100 Calories' id='nutritions' name='nutritions' onChange={handleChange} value={recipeData.nutritions}></textarea>
             </div>
           </div>
-          <div className='w-6/12 space-y-8'>
+          <div className='space-y-6'>
             <div className='flex gap-16'>
               <div className='flex flex-col'>
                 <h1 className={`${style.heading}`}>Preparation time</h1>
                 <div className='flex gap-2'>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='prepTimeHour' value={recipeData.prepTimeHour}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='prepTimeHour' value={recipeData.prepTimeHour}
                     onChange={handleChange} />
                   <span className={`text-2xl font-semibold`}>:</span>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='prepTimeMinute' value={recipeData.prepTimeMinute}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='prepTimeMinute' value={recipeData.prepTimeMinute}
                     onChange={handleChange} />
                   <span className={`text-2xl font-semibold`}>:</span>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='prepTimeSecond' value={recipeData.prepTimeSecond}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='prepTimeSecond' value={recipeData.prepTimeSecond}
                     onChange={handleChange} />
                 </div>
               </div>
               <div className='flex flex-col'>
                 <h1 className={`${style.heading}`}>Cook time</h1>
                 <div className='flex gap-2'>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='cookTimeHour' value={recipeData.cookTimeHour}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='cookTimeHour' value={recipeData.cookTimeHour}
                     onChange={handleChange} />
                   <span className={`text-2xl font-semibold`}>:</span>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='cookTimeMinute' value={recipeData.cookTimeMinute}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='cookTimeMinute' value={recipeData.cookTimeMinute}
                     onChange={handleChange} />
                   <span className={`text-2xl font-semibold`}>:</span>
-                  <input type='number' className={`w-16 text-center ${style.input}`} placeholder='00' name='cookTimeSecond' value={recipeData.cookTimeSecond}
+                  <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='cookTimeSecond' value={recipeData.cookTimeSecond}
                     onChange={handleChange} />
                 </div>
               </div>
@@ -344,11 +344,13 @@ const AddRecipe = () => {
             <div className='flex justify-between pr-4'>
               <div className='flex items-center gap-2'>
                 <h1 className={`${style.heading}`}>Status:</h1>
-                <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
-                  onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
-                  <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
-                  <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
-                </button>
+                <Tooltip content='Public recipes can be seen by everyone in cooking network' style='auto' >
+                  <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
+                    onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
+                    <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
+                    <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
+                  </button>
+                </Tooltip>
               </div>
               <button className='button-contained w-48' disabled={submitting}
                 onClick={uploadRecipe}>

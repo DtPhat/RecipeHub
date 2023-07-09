@@ -9,8 +9,8 @@ const Features = () => {
     const planningRef = useRef()
     const shoppingRef = useRef()
     const sharingRef = useRef()
-    const iconStyle = 'w-20 h-20 text-green-800 fill-green-200'
-    const bigIconStyle = 'w-36 h-36 text-green-800 fill-green-100'
+    const iconStyle = 'w-12 sm:w-20 text-green-800 fill-green-200'
+    const bigIconStyle = 'w-24 lg:w-36 text-green-800 fill-green-100'
     const features = [{
         text: 'Access your recipes everywhere',
         Icon: <AccessingIcon style={iconStyle} />,
@@ -36,21 +36,21 @@ const Features = () => {
                 onClick={() => ref.current.scrollIntoView({ behavior: 'smooth', block: "center" })}
                 className='flex flex-col items-center justify-center hover:bg-green-100 w-1/4 h-full cursor-pointer space-y-2'>
                 <div>{Icon}</div>
-                <span className='text-2xl text-green-900 font-semibold text-center'>{text}</span>
+                <span className='text-xl md:text-2xl text-green-900 font-semibold text-center px-2 h-12 hidden md:block'>{text}</span>
             </div>
         )
     })
 
     const featureDetails = [{
         title: 'Access your recipes everywhere',
-        content: 'Your recipes are stored in the cloud and will be available on your computer, your tablet or your mobile.',
+        content: 'Your recipes will be available on your computer, your tablet or your mobile.',
         Icon: <AccessingIcon style={bigIconStyle} />,
         ref: accessingRef,
         imgUrl: '/img/home-devices.png'
 
     }, {
         title: 'Plan your daily meals',
-        content: 'Create your weekly or monthly meal plans. Drag your recipes in your calendar, change servings and create your shopping lists.',
+        content: 'Create your weekly or monthly meal plans, add your recipes in your calendar and create your shopping lists.',
         Icon: <PlanningIcon style={bigIconStyle} />,
         ref: planningRef,
         imgUrl: '/img/home-mealplanner.png'
@@ -63,7 +63,7 @@ const Features = () => {
 
     }, {
         title: 'Share your favorite recipes',
-        content: 'Invite your friends to join RecipeHub, share your recipes with them and view their recipes, or share your recipes on Facebook or by email and others.',
+        content: 'Add friends and share your recipes with them by email and view their recipes',
         Icon: <SharingIcon style={bigIconStyle} />,
         ref: sharingRef,
         imgUrl: '/img/home-friends.png'
@@ -73,23 +73,23 @@ const Features = () => {
         return (
             <div key={title}>
                 {index % 2 === 0 ?
-                    <div className='flex text-green-900 h-[24rem]' ref={ref}>
-                        <div className='w-1/2 flex items-center justify-center bg-gray-100'>
+                    <div className='flex text-green-900 flex-col md:flex-row' ref={ref}>
+                        <div className='w-full md:w-1/2 flex items-center justify-center bg-gray-100 px-4 order-1 md:-order-none'>
                             <img src={imgUrl} alt="feature image" className='w-[24rem]' />
                         </div>
-                        <div className='w-1/2 flex flex-col items-start justify-center space-y-8 py-6 pl-12 pr-3 bg-gray-50'>
+                        <div className='w-full md:w-1/2 flex flex-col items-start justify-center space-y-8 py-4 pl-12 pr-3 bg-gray-50'>
                             <div>{Icon}</div>
-                            <h1 className='text-5xl'>{title}</h1>
-                            <span className='text-2xl text-left text-black'>{content}</span>
+                            <h1 className='text-3xl lg:text-5xl'>{title}</h1>
+                            <span className='text-lg lg:text-2xl text-left text-black'>{content}</span>
                         </div>
                     </div > :
-                    <div className='flex text-green-900 h-[24rem]' ref={ref} >
-                        <div className='w-1/2 flex flex-col items-end justify-center space-y-8 py-6 pr-12 pl-3 bg-gray-50'>
+                    <div className='flex text-green-900 flex-col md:flex-row' ref={ref} >
+                        <div className='w-full md:w-1/2 flex flex-col items-end justify-center space-y-8 py-4 pr-12 pl-3 bg-gray-50'>
                             <div>{Icon}</div>
-                            <h1 className='text-5xl text-center'>{title}</h1>
-                            <span className='text-2xl text-right text-black'>{content}</span>
+                            <h1 className='text-3xl lg:text-5xl text-right'>{title}</h1>
+                            <span className='text-lg lg:text-2xl text-right text-black'>{content}</span>
                         </div>
-                        <div className='w-1/2 flex items-center justify-center bg-gray-100'>
+                        <div className='w-full md:w-1/2 flex items-center justify-center bg-gray-100 px-4'>
                             <img src={imgUrl} alt="feature image" className='w-[24rem]' />
                         </div>
                     </div >
@@ -100,7 +100,7 @@ const Features = () => {
     })
     return (
         <section>
-            <div className='bg-green-50 flex justify-around h-48 items-center'>
+            <div className='bg-green-50 flex justify-around h-24 md:h-48 items-center'>
                 {featuresElement}
             </div>
             {featureDetailsElement}

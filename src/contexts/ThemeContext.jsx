@@ -25,16 +25,15 @@ export const ThemeProvider = ({ children }) => {
 		if (currentMode) localStorage.setItem('theme', 'dark');
 		else localStorage.setItem('theme', 'light');
 	};
-
 	const customTheme = {
 		button: {
 			color: {
-				primary:
-					' border-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold rounded-full',
-				profile: 'rounded-full',
+				primary: 'border-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold rounded-full',
+				profile: 'rounded-full'
 			},
 		},
 	};
+
 
 	return (
 		<Flowbite theme={{ theme: customTheme }}>

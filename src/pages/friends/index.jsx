@@ -8,6 +8,9 @@ import Toast from '../../components/Toast';
 import useOuterClick from '../../hooks/useOuterClick';
 import AddingFriendButton from '../../components/AddingFriendButton';
 import { useNavigate } from 'react-router-dom';
+import SearchBar from '../../components/SearchBar';
+import NoFriends from './NoRecipes';
+import Skeleton from '../../components/Skeleton';
 
 const FriendRecipe = () => {
   const privateAxios = usePrivateAxios()
@@ -15,19 +18,20 @@ const FriendRecipe = () => {
   const [friendList, setFriendList] = useState([])
   const [keyword, setKeyword] = useState('')
   const [friendId, setFriendId] = useState('')
-  const [searchResult, setSearchResult] = useState('')
+  const [searchedFriendList, setSearchedFriendList] = useState()
+  const [loading, setLoading] = useState(true)
   const [showingToast, setShowingToast] = useState({
     unfriend: false,
     addFriend: false
   })
   const [newFriendProfile, setNewFriendProfile] = useState()
   useEffect(() => {
-    privateAxios.get('/api/v1/user/friends').then(response => setFriendList(response.data))
+    privateAxios.get('/api/v1/user/friends').then(response => setFriendList(response.data)).catch(error => console.log(error)).finally(() => setLoading(false))
   }, []);
   const searchByKeyword = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
-      setSearchResult(keyword)
-    }
+      setSearchedFriendList(friendList.filter(friend => friend.fullName.toUpperCase().includes(keyword.toUpperCase())))
+  }
   }
   const { ref, open, setOpen } = useOuterClick()
   const findFriendById = async (e) => {
@@ -52,23 +56,18 @@ const FriendRecipe = () => {
   }
 
   return (
-    <section className='flex justify-center py-4 mx-8'>
+    <section className='flex justify-center py-4 lg:mx-8'>
       <div className='max-w-8xl w-full flex flex-col rounded space-y-4 bg-gray-50 px-8 py-4'>
-        <div className='select-none flex justify-between pb-2 border-b-2 border-green-accent text-green-accent'>
-          <h1 className='text-4xl font-semibold text-gray-600 w-1/2'>View friend's recipes</h1>
-          <div className='flex items-center w-1/2 border-2 border-green-accent rounded-xl relative bottom-1 left-4 px-2 mr-4 cursor-pointer'>
-            <label htmlFor='search'><SearchingIcon style='w-8 h-8 cursor-pointer' /></label>
-            <input className='bg-transparent focus:outline-none rounded-full w-full text-lg p-2 text-black'
-              placeholder='Search by name' id='search' autoComplete='off'
-              value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={searchByKeyword} />
-            <button onClick={() => setKeyword('')}><XCircleIcon style='w-8 h-8 text-gray-500 hover:fill-gray-200' /></button>
+        <div className='select-none flex flex-col lg:flex-row gap-4 justify-between pb-2 border-b-2 border-green-accent text-green-accent'>
+          <h1 className='text-4xl font-semibold text-gray-600'>View friend's recipes</h1>
+          <div className='lg:max-w-[33rem] w-full'>
+            <SearchBar keyword={keyword} setKeyword={setKeyword} handleEnter={searchByKeyword} placeholder='Search friends' />
           </div>
         </div>
         <div className=''>
-          <div className='flex justify-between py-2'>
-            <div className='text-3xl font-semibold text-gray-500'>{!friendList.length ? "You have no friends." : ""}</div>
+          <div className='flex py-2'>
             <div className='flex justify-between items-center space-y-2'>
-              <h1 className='font-semibold text-3xl text-green-accent'>Add new friend:</h1>
+              <h1 className='font-semibold text-2xl sm:text-3xl text-green-accent'>Add new friend:</h1>
               <div className='flex items-center gap-2'>
                 <div className='flex items-center w-48 border-2 border-green-accent rounded-xl relative bottom-1 left-4 px-2 mr-4 cursor-pointer'>
                   <label htmlFor='addFriend'>
@@ -84,25 +83,31 @@ const FriendRecipe = () => {
           </div>
           {newFriendProfile === null && <div className='text-end px-4 font-semibold text-lg text-gray-500'>User not found</div>}
         </div>
-        <div className='grid grid-cols-4 gap-4'>
-          {friendList?.map(friend =>
-            <div className='flex border-2 border-gray-300 hover:border-green-accent rounded p-4 gap-8 items-center cursor-pointer hover:bg-gray-100 relative'>
-              <Avatar img={friend.profileImage} size='lg' rounded bordered />
-              <div className='flex flex-col gap-2 over'>
-                <h1 className='text-2xl font-bold w-52 truncate'>{friend.fullName}</h1>
-                <div className='flex gap-2'>
-                  <button className='button-contained-square py-1 w-auto text-base'
-                    onClick={() => navigate(`/user/${friend.userId}`)}>
-                    View profile
-                  </button>
-                  <button className='button-outlined-square py-1 w-auto text-base color-secondary'
-                    onClick={() => window.confirm() && unfriend(friend.userId)}>Unfriend</button>
+        {/* <div className='text-3xl font-semibold text-gray-500'>{!friendList.length ? "You have no friends." : ""}</div> */}
+        {loading ? <Skeleton /> :
+          (!friendList.length || searchedFriendList?.length) ?
+            <NoFriends />
+            : <div className='grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
+              {(searchedFriendList || friendList)?.map(friend =>
+                <div className='flex border-2 border-gray-300 hover:border-green-accent rounded p-4 gap-8 items-center cursor-pointer hover:bg-gray-100 relative'>
+                  <Avatar img={friend.profileImage} size='lg' rounded bordered />
+                  <div className='flex flex-col gap-2 over'>
+                    <h1 className='text-2xl font-bold w-52 truncate'>{friend.fullName}</h1>
+                    <div className='flex gap-2'>
+                      <button className='button-contained-square py-1 w-auto text-base'
+                        onClick={() => navigate(`/user/${friend.userId}`)}>
+                        View profile
+                      </button>
+                      <button className='button-outlined-square py-1 w-auto text-base color-secondary'
+                        onClick={() => window.confirm('Are you sure to unfriend this user?') && unfriend(friend.userId)}>Unfriend</button>
+                    </div>
+                  </div>
+                  <span className='absolute text-gray-500 font-semibold text-sm top-1 right-2'>ID: {friend.userId}</span>
                 </div>
-              </div>
-              <span className='absolute text-gray-500 font-semibold text-sm top-1 right-2'>ID: {friend.userId}</span>
+              )}
             </div>
-          )}
-        </div>
+        }
+
       </div>
       {open && newFriendProfile &&
         <div className='fixed p-8 top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-xl w-full z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col space-y-4 overflow-auto transition ease-in-out'>

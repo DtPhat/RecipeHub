@@ -1,4 +1,4 @@
-import { Spinner } from 'flowbite-react'
+import { Spinner, Tooltip } from 'flowbite-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import EyeIcon from '../../assets/EyeIcon'
@@ -16,7 +16,6 @@ const EditRecipe = () => {
   const [searchParams] = useSearchParams()
   const { auth: { user: { userId } } } = useAuth()
   const recipeId = searchParams.get('recipe_id')
-  !recipeId && navigate('/')
   const [recipeData, setRecipeData] = useState({
     title: '',
     description: '',
@@ -48,7 +47,7 @@ const EditRecipe = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    privateAxios.get(`/api/v1/user/recipe/${recipeId}`).then(response => setRecipeData((prevData) => {
+    recipeId && privateAxios.get(`/api/v1/user/recipe/${recipeId}`).then(response => setRecipeData((prevData) => {
       const editedRecipe = response.data
       console.log(editedRecipe);
       return {
@@ -83,6 +82,7 @@ const EditRecipe = () => {
       .catch(error => console.log(error))
       .finally(() => setLoading(false))
 
+    !recipeId && navigate('/')
   }, []);
 
   useEffect(() => {
@@ -165,7 +165,7 @@ const EditRecipe = () => {
 
   const addTag = () => {
     tagInput && !tagList.includes(tagInput.trim()) && setTagList(prevTagList => [...prevTagList, tagInput])
-    setRecipeData(prevData => {return { ...prevData, tags: [...prevData.tags, tagInput] }} )
+    setRecipeData(prevData => { return { ...prevData, tags: [...prevData.tags, tagInput] } })
     setTagInput('')
   }
 
@@ -244,6 +244,7 @@ const EditRecipe = () => {
   const style = {
     input: 'bg-gray-100 rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
     heading: 'font-semibold text-green-accent text-xl pb-1',
+    input2: `w-28 bg-gray-50 border-b-2 border-gray-400 py-1 focus:outline-none focus:border-green-accent`,
   }
   console.log(recipeData);
 
@@ -251,7 +252,7 @@ const EditRecipe = () => {
     <section className='py-2 flex justify-center'>
       {loading ?
         <Skeleton />
-        : <div className='max-w-8xl px-8 pt-2 pb-8 rounded bg-gray-50'>
+        : <div className='max-w-8xl px-4 lg:px-8 pt-2 pb-8 rounded bg-gray-50'>
           <div className=' pb-2 font-semibold mb-4 border-b-2 flex justify-between'>
             <h1 className='text-3xl text-gray-600'>Edit recipe at ID {recipeId}</h1>
             <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
@@ -260,8 +261,8 @@ const EditRecipe = () => {
               <span className=''>Cancel</span>
             </button>
           </div>
-          <div className='flex space-x-8 text-lg'>
-            <div className='w-6/12 space-y-6  '>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 text-lg'>
+            <div className='space-y-8'>
               <div className='flex flex-col'>
                 <label className={`${style.heading}`} htmlFor='title'>Title</label>
                 <input type='text' id='title' className={`${style.input}`} placeholder='Recipe name' name='title' value={recipeData.title}
@@ -277,7 +278,7 @@ const EditRecipe = () => {
                 <div className='flex flex-wrap gap-3'>
                   {tagListElement}
                   <div className='flex space-x-1 border-gray-200'>
-                    <input type='text' placeholder='Tag name' className={`text-center w-28 bg-gray-50  border-b border-gray-400 py-1 px-2 focus:outline-none `}
+                    <input type='text' placeholder='Tag name' className={`${style.input2} text-center `}
                       onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
                       onChange={(e) => setTagInput(e.target.value)} value={tagInput} />
                     <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-green-accent' /></button>
@@ -317,7 +318,7 @@ const EditRecipe = () => {
                 <textarea rows={5} className={`${style.input}`} placeholder='100 Calories' id='nutrition' name='nutrition' onChange={handleChange} value={recipeData.nutrition}></textarea>
               </div>
             </div>
-            <div className='w-6/12 space-y-8'>
+            <div className='space-y-8'>
               <div className='flex gap-16'>
                 <div className='flex flex-col'>
                   <h1 className={`${style.heading}`}>Preparation time</h1>
@@ -369,20 +370,20 @@ const EditRecipe = () => {
                 </ul>
                 <div className='flex space-x-2 text-lg'>
                   <div className='flex flex-col w-7/12'>
-                    <label htmlFor='name' className='font-medium text-green-accent text-base'>Name</label>
-                    <input type='text' placeholder='Ingredient' className={`w-full ${style.input}`} name='ingredientName'
+                    <label htmlFor='name' className='font-medium text-green-accent'>Name</label>
+                    <input type='text' placeholder='Ingredient name' className={`w-full ${style.input2}`} name='ingredientName'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientName} />
                   </div>
                   <div className='flex flex-col w-2/12'>
-                    <label htmlFor='quantity' className='font-medium text-green-accent text-base'>Quantity</label>
-                    <input type='number' placeholder='1' className={`text-center ${style.input}`} name='ingredientQuantity'
+                    <label htmlFor='quantity' className='font-medium text-green-accent'>Quantity</label>
+                    <input type='number' placeholder='1' className={` ${style.input2}`} name='ingredientQuantity'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientQuantity} />
                   </div>
                   <div className='flex flex-col w-2/12'>
-                    <label htmlFor='metric' className='font-medium text-green-accent text-base'>Metric</label>
-                    <input type='text' placeholder='optional' className={`text-center ${style.input}`} name='ingredientMetric'
+                    <label htmlFor='metric' className='font-medium text-green-accent '>Metric</label>
+                    <input type='text' placeholder='tsp' className={` ${style.input2}`} name='ingredientMetric'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientMetric} />
                   </div>
@@ -397,14 +398,16 @@ const EditRecipe = () => {
                   onChange={handleChange} value={recipeData.steps}></textarea>
               </div>
               <div className='flex justify-between pr-4'>
-                <div className='flex items-center gap-2'>
-                  <h1 className={`${style.heading}`}>Status:</h1>
-                  <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
-                    onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
-                    <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
-                    <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
-                  </button>
-                </div>
+                <Tooltip content='Public recipes can be seen by everyone in cooking network' style='auto' >
+                  <div className='flex items-center gap-2'>
+                    <h1 className={`${style.heading}`}>Status:</h1>
+                    <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
+                      onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
+                      <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
+                      <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>
+                    </button>
+                  </div>
+                </Tooltip>
                 <button className='button-contained w-48' disabled={submitting}
                   onClick={editRecipe}>
                   {

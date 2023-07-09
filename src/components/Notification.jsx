@@ -1,34 +1,36 @@
 import { Avatar, Dropdown, Toast } from 'flowbite-react'
-import { DropdownDivider } from 'flowbite-react/lib/esm/components/Dropdown/DropdownDivider'
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BellIcon from '../assets/BellIcon'
 import usePrivateAxios from '../hooks/usePrivateAxios'
-import { getDayMonthYear } from '../utils/DateUtils'
+import { getDayMonthYear, getStartOfDate } from '../utils/DateUtils'
 
 const Notification = () => {
   const [loading, setLoading] = useState(true)
   const [friendshipRequests, setFriendshipRequests] = useState([])
-  const [todayPlannedMeals, setTodayPlannedMeals] = useState(2)
+  const [todayPlannedMeals, setTodayPlannedMeals] = useState(0)
   const privateAxios = usePrivateAxios()
   useEffect(() => {
-    privateAxios.get('/api/v1/user/friend/requests').then(response => setFriendshipRequests(response.data))
+    privateAxios.get('/api/v1/user/friend/requests')
+      .then(response => setFriendshipRequests(response.data))
+      .catch(error => console.log(error))
+      .finally(() => setLoading(false))
+
+    const today = new Date((new Date).getFullYear(), (new Date).getMonth(), (new Date).getDate())
+    privateAxios.get(`/api/v1/user/meal-planers/${today.getTime()}`)
+      .then(response => setTodayPlannedMeals(response.data.length))
       .catch(error => console.log(error))
       .finally(() => setLoading(false))
   }, []);
-  const dummyNotifications = ['Gordon Ramsay want to be your friend', ' You have 3 recipes for today', 'Joe Biden accepted your request']
-  // const dummyNotifications = [{
-  //   type: 'request',
-  //   content: 'Gordon Ramsay want to be your friend'
-  // }]
+
   const navigate = useNavigate()
   const today = new Date()
   const numberOfNotifications = (friendshipRequests?.length || 0) + (todayPlannedMeals > 0 ? 1 : 0)
   const acceptRequest = (accepting, request_id) => {
     setLoading(true)
     privateAxios.post(`/api/v1/user/${accepting ? 'accept-friend' : 'reject-friend'}/${request_id}`).then(response => console.log(response)).catch(error => { console.log })
-      .finally(() => {setFriendshipRequests(prevRequests => prevRequests.filter(request => request.friendshipRequestId != request_id)); setLoading(false)})
+      .finally(() => { setFriendshipRequests(prevRequests => prevRequests.filter(request => request.friendshipRequestId != request_id)); setLoading(false) })
   }
   return (
     <div className='relative'>

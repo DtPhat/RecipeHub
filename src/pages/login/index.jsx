@@ -31,8 +31,8 @@ const Login = () => {
   return (
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>
-        <img src="/img/logo.png" alt="" className='absolute top-12 left-4 w-20 h-24 select-none' />
-        <div className='w-1/2 bg-gray-50 rounded-l-xl flex items-center justify-center px-4'>
+        {/* <img src="/img/logo-text-bottom.png" alt="" className='absolute top-12 left-4 w-20 h-24 select-none' /> */}
+        <div className='w-full bg-gray-50 rounded-l-xl flex items-center justify-center px-4'>
           <div className='flex flex-col space-y-8 w-96'>
             <div>
               <h1 className='text-4xl pb-2 font-semibold'>Welcome back</h1>
@@ -83,14 +83,14 @@ const Login = () => {
             </div>
           </div>
         </div>
-        <div className='w-1/2 bg-green-variant rounded-r-xl px-8 pt-16 relative'>
-          <div className='pl-8'><img src="/img/rotating-dish.png" alt="" className='animate-spin-slow w-[32rem]' /></div>
-          <h1 className='text-9xl text-green-200 drop-shadow-xl rotate-90 absolute top-64 left-[26rem]'>Organize,</h1>
-          <div className='flex gap-2 py-8'>
-            <h1 className='text-9xl text-green-200 flex flex-wrap drop-shadow-xl'>Plan,</h1>
-            <h1 className='text-9xl text-green-100 flex flex-wrap drop-shadow-xl pt-4'>Simplify</h1>
-            {/* For responsive: <h1 className='text-6xl text-green-100 flex flex-wrap drop-shadow-xl pt-4 text-center leading-[5rem]'>Organize, Plan, Simplify</h1> */}
+        <div className='w-1/2 hidden md:block bg-green-variant rounded-r-xl pt-16 relative px-4'>
+          <div className='flex justify-center 2xl:pr-24'><img src="/img/rotating-dish.png" alt="" className='animate-spin-slow w-[32rem]' /></div>
+          <h1 className='text-9xl text-green-200 drop-shadow-xl rotate-90 absolute top-64 left-[26rem] hidden 2xl:flex'>Organize,</h1>
+          <div className='flex gap-2 p-4'>
+            <h1 className='text-9xl text-green-200 flex-wrap drop-shadow-xl hidden 2xl:flex'>Plan,</h1>
+            <h1 className='text-9xl text-green-100 flex-wrap drop-shadow-xl pt-4 hidden 2xl:flex'>Simplify</h1>
           </div>
+          <h1 className='text-7xl text-green-200 flex flex-wrap drop-shadow-xl px-4 text-center leading-[5rem] 2xl:hidden'>Organize, Plan, Simplify</h1>
         </div>
       </div>
     </section>

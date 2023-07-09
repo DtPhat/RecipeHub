@@ -1,16 +1,17 @@
+import { Modal } from 'flowbite-react'
 import React, { useState } from 'react'
 import ClockIcon from '../../assets/ClockIcon'
 import HeartIcon from '../../assets/HeartIcon'
 import StarIcon from '../../assets/StarIcon'
 import useOuterClick from '../../hooks/useOuterClick'
+import RecipeModal from '../RecipeModal'
 import { msToTime } from '../../utils/TimeUtil'
 import RecipeDetails from '../RecipeDetails'
 
 const GalleryView = ({ recipeData, setRecipeData }) => {
-  const { ref, open, setOpen } = useOuterClick(false)
   const [chosenRecipe, setChosenRecipe] = useState()
   return (
-    <section className='py-2 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5'>
+    <section className='py-2 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4'>
       {recipeData.map(recipe => {
         const { recipe_id, images, title, tags, rating, prep_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = recipe
         const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
@@ -21,8 +22,8 @@ const GalleryView = ({ recipeData, setRecipeData }) => {
         return (
           <div key={recipe_id}
             className='w-full h-80 flex flex-col border-2 border-gray-200 rounded p-2 space-y-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'
-            onClick={() => { setChosenRecipe(recipe); setOpen(true) }}>
-            <img src={recipeImage} alt="" className='w-full h-52 object-cover rounded' />
+            onClick={() => setChosenRecipe(recipe)}>
+            <img src={recipeImage} alt="" className='w-full h-52 rounded' />
             <h1 className='text-xl font-bold text-green-accent pt-2 truncate'>{title}</h1>
             <div className='flex font-medium space-x-1'><ClockIcon style='w-6 h-6' /><span>{msToTime(cook_time)}</span></div>
             <div className='flex space-x-1'>
@@ -33,7 +34,7 @@ const GalleryView = ({ recipeData, setRecipeData }) => {
             {is_favourite && <HeartIcon style='w-8 h-8 absolute fill-red-600 stroke-red-200 right-4 top-44' />}
           </div>)
       })}
-      {open && <RecipeDetails innerRef={ref} recipe={chosenRecipe} setOpen={setOpen} setRecipes={setRecipeData}/>}
+      <RecipeModal chosenRecipe={chosenRecipe} setChosenRecipe={setChosenRecipe} setRecipes={setRecipeData} />
     </section>
   )
 }

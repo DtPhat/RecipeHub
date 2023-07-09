@@ -7,7 +7,7 @@ import { defaultTagList } from './'
 const RecipeFilter = ({ filter, setFilter }) => {
   const privateAxios = usePrivateAxios()
   const { auth: { user: { userId } } } = useAuth()
-  const [tagList, setTagList ]= useState(defaultTagList) 
+  const [tagList, setTagList] = useState(defaultTagList)
   const [ingredientInput, setIngredientInput] = useState('')
   const sortingOptions = ['title', 'recent', 'time', 'rating', 'yield']
   useEffect(() => {
@@ -50,11 +50,13 @@ const RecipeFilter = ({ filter, setFilter }) => {
     <div className='py-4 space-y-4'>
       <div className='flex space-x-4 border-b border-gray-200 pb-2'>
         <h1 className='font-bold'>Sort by:</h1>
-        <div className='flex flex-wrap gap-2'>{sortingOptionsElement}</div>
-        <button className='hover:bg-gray-200 p-1 cursor-pointer rounded'
-          onClick={() => setFilter(preFilter => { return { ...preFilter, isAscending: !preFilter.isAscending } })}>
-          <SortingIcon style='w-6 h-6 text-green-accent' isAscending={filter.isAscending} />
-        </button>
+        <div className='flex flex-wrap gap-2'>
+          {sortingOptionsElement}
+          <button className='hover:bg-gray-200 sm:p-1 cursor-pointer rounded mx-2'
+            onClick={() => setFilter(preFilter => { return { ...preFilter, isAscending: !preFilter.isAscending } })}>
+            <SortingIcon style='w-6 h-6 text-green-accent' isAscending={filter.isAscending} />
+          </button>
+        </div>
       </div>
       <div className='flex space-x-4 border-b border-gray-200 pb-2'>
         <h1 className='font-bold'>Tags:</h1>
@@ -62,7 +64,7 @@ const RecipeFilter = ({ filter, setFilter }) => {
       </div>
       <div className='flex space-x-2 border-b border-gray-200 pb-2'>
         <h1 className='font-bold'>Ingredients:</h1>
-        <input type="text" className='bg-gray-50 px-0.5 focus:outline-none border-b border-green-accent text-center' value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)}
+        <input type="text" className='bg-gray-50 px-0.5 focus:outline-none border-b border-green-accent text-center w-24 xs:w-48 md:w-64' value={ingredientInput} onChange={(e) => setIngredientInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && addFilteringIngredient(e)} />
         <button onClick={addFilteringIngredient}>
           <PlusCircleIcon style='w-6 h-6 text-green-accent' />

@@ -1,13 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import { googleLogout, GoogleOAuthProvider } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom'
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const INITIAL_AUTH = localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")) : null
     const [auth, setAuth] = useState(INITIAL_AUTH);
-    const navigate = useNavigate()
     useEffect(() => {
         auth && localStorage.setItem('auth', JSON.stringify(auth))
     }, [auth]);

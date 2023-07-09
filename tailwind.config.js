@@ -34,13 +34,14 @@ export default {
         88: '22rem'
       },
       maxWidth: {
-        '8xl': '1600px'
+        '8xl': '1536px'
       },
       animation: {
         'spin-slow': 'spin 30s linear infinite',
       },
       screens: {
         'xs': '380px',
+        '3xl': '1620px'
       }
     },
   },

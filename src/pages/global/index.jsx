@@ -6,6 +6,7 @@ import useOuterClick from '../../hooks/useOuterClick'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 import GlobalRecipeFilter from './GlobalRecipeFilter'
 import GlobalView from './GlobalView'
+import ReactGA from 'react-ga'
 
 const GlobalRecipes = () => {
   const privateAxios = usePrivateAxios()
@@ -22,6 +23,7 @@ const GlobalRecipes = () => {
     }
   }
   useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
     globalSearchRef.current.focus()
   }, []);
 

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AdminHeader from '../../components/header/AdminHeader';
+import ReactGA from 'react-ga';
 
 function DashBoard() {
 	return (

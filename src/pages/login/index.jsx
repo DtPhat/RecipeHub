@@ -19,13 +19,15 @@ const Login = () => {
   }
   const loginWithAccount = () => {
     axios.post('/api/v1/auth/basic/login', loginData)
-      .then(response => { setAuth(response.data); navigate(fromPath) })
+      .then(response => {
+        setAuth(response.data);
+        response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath)
+      })
   }
   const loginWithGoogle = useGoogleLogin({
     onSuccess: tokenResponse => axios
       .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
-      .then(response => { setAuth(response.data) })
-      .then(() => navigate(fromPath)),
+      .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath) }),
     onError: (error) => console.log("Login google fail", error)
   });
   return (

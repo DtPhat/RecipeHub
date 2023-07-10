@@ -255,11 +255,13 @@ const EditRecipe = () => {
         : <div className='max-w-8xl px-4 lg:px-8 pt-2 pb-8 rounded bg-gray-50'>
           <div className=' pb-2 font-semibold mb-4 border-b-2 flex justify-between'>
             <h1 className='text-3xl text-gray-600'>Edit recipe at ID {recipeId}</h1>
-            <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
-              onClick={() => navigate(-1)}>
-              <XCircleIcon style='w-6 h-6' />
-              <span className=''>Cancel</span>
-            </button>
+            <div className='my-auto'>
+              <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
+                onClick={() => navigate(-1)}>
+                <XCircleIcon style='w-6 h-6' />
+                <span className=''>Cancel</span>
+              </button>
+            </div>
           </div>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 text-lg'>
             <div className='space-y-8'>
@@ -319,7 +321,7 @@ const EditRecipe = () => {
               </div>
             </div>
             <div className='space-y-8'>
-              <div className='flex gap-16'>
+              <div className='flex gap-16 flex-wrap'>
                 <div className='flex flex-col'>
                   <h1 className={`${style.heading}`}>Preparation time</h1>
                   <div className='flex gap-2'>
@@ -347,7 +349,7 @@ const EditRecipe = () => {
                   </div>
                 </div>
               </div>
-              <div className='flex space-x-32'>
+              <div className='flex space-x-4 xs:space-x-32'>
                 <div>
                   <h1 className={`${style.heading}`}>Favourite</h1>
                   <label className="relative inline-flex items-center cursor-pointer">

@@ -71,7 +71,7 @@ const Recipe = () => {
     }
   }
   return (
-    <section className='pt-4'>
+    <section className=''>
       <div className='w-full flex justify-center'>
         <div className='max-w-8xl w-full flex space-x-4 rounded lg:px-4 py-4 justify-center '>
           <div className='border-gray-400 rounded max-w-6xl w-full justify-center space-y-4 bg-gray-50 py-4 px-8'>

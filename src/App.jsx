@@ -36,7 +36,7 @@ const App = () => {
 				<Route index element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
-				<Route element={<RequireAuth allowRole='USER' />} >
+				<Route element={<RequireAuth allowedRole='USER' />} >
 					<Route path='/recipe' >
 						<Route index element={<Recipe />} />
 						<Route path='add' element={<AddRecipe />} />
@@ -57,7 +57,7 @@ const App = () => {
 						<Route path='feedback' element={<Feedback />} />
 					</Route>
 				</Route>
-				<Route element={<RequireAuth allowRole='ADMIN' />}>
+				<Route element={<RequireAuth allowedRole='ADMIN' />}>
 					<Route path='/admin' element={<AdminLayout />}>
 						<Route index element={<DashBoard />} />
 						<Route path='recipeManagement' element={<RecipeMP />} />

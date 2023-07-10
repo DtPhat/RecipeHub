@@ -66,27 +66,37 @@ const MyProfile = () => {
   const displayedTabs = ['All', 'Public', 'Private']
 
   return (
-    <section className='flex justify-center py-4 mx-8 gap-6'>
+    <section className='flex justify-center sm:py-4 sm:mx-8 gap-6'>
       <div className='border-gray-400 rounded max-w-8xl w-full p-4 gap-4 bg-gray-50 flex flex-col lg:flex-row'>
-        <div className='flex flex-col gap-8 font-semibold mt-4 p-8 bg-gray-100'>
+        <div className='flex flex-col gap-8 font-semibold sm:mt-4 p-8 bg-gray-100'>
           <div className='flex flex-col md:flex-row lg:flex-col gap-8 '>
             <div className='flex flex-col items-start space-y-4 group'>
               <Avatar img={profileImage} size='xl' stacked />
               <h1 className='text-2xl font-bold'>{fullName}</h1>
             </div>
-            <div className='flex space-x-8 text-lg'>
+            <div className='hidden xs:flex gap-1 sm:gap-8 text-lg'>
               <div className='text-gray-500 flex flex-col space-y-4'>
                 <span>User ID</span>
                 <span>Email</span>
                 <span className='text-gray-500'>Date of birth</span>
                 <span className='text-gray-500'>Gender</span>
               </div>
-              <div className='flex flex-col space-y-4 truncate'>
+              <div className='flex flex-col space-y-4 overflow-hidden'>
                 <span>{userId}</span>
-                <span>{email}</span>
+                <span className='break-words'>{email}</span>
                 <span>{new Date(birthday).toLocaleDateString()}</span>
                 <span>{gender}</span>
               </div>
+            </div>
+            <div className='flex xs:hidden flex-col gap-1 text-lg overflow-hidden'>
+              <span className='text-gray-500'>User ID:</span>
+              <span>{userId}</span>
+              <span className='text-gray-500'>Email:</span>
+              <span className='break-words'>{email}</span>
+              <span className='text-gray-500'>Date of birth:</span>
+              <span>{new Date(birthday).toLocaleDateString()}</span>
+              <span className='text-gray-500'>Gender:</span>
+              <span>{gender}</span>
             </div>
           </div>
           <div>
@@ -107,9 +117,9 @@ const MyProfile = () => {
 
         </div>
         <section className='w-full'>
-          <div className='hidden xs:flex border-b-2 border-gray-300 mb-4 space-x-4'>
+          <div className='flex border-b-2 border-gray-300 mb-4 xs:space-x-4'>
             {displayedTabs.map(tab =>
-              <button key={tab} className={`bg-gray-100 p-4 rounded-t-lg hover:bg-gray-200 text-xl font-semibold w-44 ${chosenTabs === tab ? 'bg-gray-200' : ''}`}
+              <button key={tab} className={`bg-gray-100 p-4 rounded-t-lg hover:bg-gray-200 text-sm xs:text-xl font-semibold sm:w-44 ${chosenTabs === tab ? 'bg-gray-200' : ''}`}
                 onClick={() => setChosenTabs(tab)}>{tab} recipes</button>
             )}
           </div>

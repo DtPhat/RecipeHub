@@ -89,14 +89,14 @@ const FriendRecipe = () => {
             <NoFriends />
             : <div className='grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
               {(searchedFriendList || friendList)?.map(friend =>
-                <div className='flex border-2 border-gray-300 hover:border-green-accent rounded p-4 gap-8 items-center cursor-pointer hover:bg-gray-100 relative'>
+                <div className='flex border-2 border-gray-300 hover:border-green-accent rounded p-4 gap-4 items-center cursor-pointer hover:bg-gray-100 relative'>
                   <Avatar img={friend.profileImage} size='lg' rounded bordered />
                   <div className='flex flex-col gap-2 over'>
                     <h1 className='text-2xl font-bold w-52 truncate'>{friend.fullName}</h1>
                     <div className='flex gap-2'>
                       <button className='button-contained-square py-1 w-auto text-base'
                         onClick={() => navigate(`/user/${friend.userId}`)}>
-                        View profile
+                        View details
                       </button>
                       <button className='button-outlined-square py-1 w-auto text-base color-secondary'
                         onClick={() => window.confirm('Are you sure to unfriend this user?') && unfriend(friend.userId)}>Unfriend</button>

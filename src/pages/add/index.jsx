@@ -190,20 +190,23 @@ const AddRecipe = () => {
   }
 
   const style = {
-    input: 'bg-gray-100 rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
     heading: 'font-semibold text-green-accent text-xl pb-1',
+    input: 'bg-gray-100 rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
+    input2: `w-28 bg-gray-50 border-b-2 border-gray-400 py-1 focus:outline-none focus:border-green-accent`,
   }
   console.log(recipeData);
   return (
     <section className='py-2 flex justify-center'>
       <div className='max-w-8xl w-full px-4 lg:px-8 pt-2 pb-8 rounded bg-gray-50'>
-        <div className=' pb-2 font-semibold mb-8 border-b-2 flex justify-between'>
+        <div className=' pb-2 font-semibold mb-8 border-b-2 flex justify-between gap-2'>
           <h1 className='text-3xl text-gray-600'>Create new recipe</h1>
-          <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
-            onClick={() => navigate(-1)}>
-            <XCircleIcon style='w-6 h-6' />
-            <span className=''>Cancel</span>
-          </button>
+          <div className='my-auto'>
+            <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
+              onClick={() => navigate(-1)}>
+              <XCircleIcon style='w-6 h-6' />
+              <span className=''>Cancel</span>
+            </button>
+          </div>
         </div>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 text-lg'>
           <div className='space-y-6'>
@@ -263,7 +266,7 @@ const AddRecipe = () => {
             </div>
           </div>
           <div className='space-y-6'>
-            <div className='flex gap-16'>
+            <div className='flex gap-16 flex-wrap'>
               <div className='flex flex-col'>
                 <h1 className={`${style.heading}`}>Preparation time</h1>
                 <div className='flex gap-2'>
@@ -291,7 +294,7 @@ const AddRecipe = () => {
                 </div>
               </div>
             </div>
-            <div className='flex space-x-32'>
+            <div className='flex space-x-4 xs:space-x-28'>
               <div>
                 <h1 className={`${style.heading}`}>Favourite</h1>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -314,20 +317,20 @@ const AddRecipe = () => {
               </ul>
               <div className='flex space-x-2 text-lg'>
                 <div className='flex flex-col w-7/12'>
-                  <label htmlFor='name' className='font-medium text-green-accent text-base'>Name</label>
-                  <input type='text' placeholder='Ingredient' className={`w-full ${style.input}`} name='ingredientName'
+                  <label htmlFor='name' className='font-medium text-green-accent'>Name</label>
+                  <input type='text' placeholder='Ingredient name' className={`w-full ${style.input2}`} name='ingredientName'
                     onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                     onChange={handleChange} value={recipeData.ingredientName} />
                 </div>
                 <div className='flex flex-col w-2/12'>
-                  <label htmlFor='quantity' className='font-medium text-green-accent text-base'>Quantity</label>
-                  <input type='number' placeholder='1' className={`text-center ${style.input}`} name='ingredientQuantity'
+                  <label htmlFor='quantity' className='font-medium text-green-accent'>Quantity</label>
+                  <input type='number' placeholder='1' className={` ${style.input2}`} name='ingredientQuantity'
                     onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                     onChange={handleChange} value={recipeData.ingredientQuantity} />
                 </div>
                 <div className='flex flex-col w-2/12'>
-                  <label htmlFor='metric' className='font-medium text-green-accent text-base'>Metric</label>
-                  <input type='text' placeholder='optional' className={`text-center ${style.input}`} name='ingredientMetric'
+                  <label htmlFor='metric' className='font-medium text-green-accent '>Metric</label>
+                  <input type='text' placeholder='tsp' className={` ${style.input2}`} name='ingredientMetric'
                     onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                     onChange={handleChange} value={recipeData.ingredientMetric} />
                 </div>

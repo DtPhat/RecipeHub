@@ -12,7 +12,7 @@ const MealPlanner = () => {
   const [newPlannedRecipe, setNewPlannedRecipe] = useState()
   
   return (
-    <section className='flex justify-center py-4 lg:mx-8'>
+    <section className='flex justify-center xs:py-4 lg:mx-8'>
       <div className='max-w-8xl w-full flex flex-col rounded space-y-2 bg-gray-50 px-4 lg:px-8 py-4'>
         <div className='flex flex-col sm:flex-row gap-2 py-2 w-full'>
           <h1 className='text-3xl lg:text-4xl font-semibold text-gray-600 '>Plan your daily meals</h1>

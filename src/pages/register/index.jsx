@@ -23,7 +23,7 @@ const Register = () => {
       const birthdate = new Date(value)
       value = birthdate.getTime()
     }
-    setRegisterData(prevData => {
+    setRegisterData(registerData => {
       return { ...registerData, [name]: value }
     })
   }
@@ -41,13 +41,14 @@ const Register = () => {
   return (
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>
-        <div className='w-1/2 bg-green-variant rounded-l-xl relative '>
+        {/* <img src="/img/logo-text-bottom.png" alt="" className='absolute top-12 right-4 w-20 h-24 select-none' /> */}
+        <div className='hidden md:block w-1/2 bg-green-variant rounded-l-xl relative '>
           <RegisterCarousel />
         </div>
-        <div className='w-1/2 bg-gray-50 rounded-r-xl flex items-center justify-center px-4'>
+        <div className='w-full md:w-1/2 bg-gray-50 rounded-r-xl flex items-center justify-center px-4'>
           <div className='flex flex-col space-y-8 w-96'>
             <div>
-              <h1 className='text-4xl pb-2 font-semibold text-center'>Create your account</h1>
+              <h1 className='text-3xl sm:text-4xl pb-2 font-semibold text-center'>Create your account</h1>
               <div className='flex justify-center space-x-2 items-center'>
                 <span className='text-gray-500'>Already have an account?</span>
                 <button className='link'
@@ -78,7 +79,7 @@ const Register = () => {
               </div>
               <div className='py-2'>
                 <span className='pl-2 text-gray-500'>Gender</span>
-                <div className='flex justify-between px-2 pt-2'>
+                <div className='flex flex-col xs:flex-row justify-between items-center gap-2 px-2 pt-2'>
                   <label htmlFor="male" className={style.radio}>
                     <span>Male</span>
                     <input type='radio' value='MALE' name='gender' id='male' onChange={handleRegisterDataChange} />

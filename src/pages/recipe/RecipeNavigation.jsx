@@ -6,6 +6,7 @@ import FriendIcon from '../../assets/FriendIcon'
 import PlusIcon from '../../assets/PlusIcon'
 import Bars3Icon from '../../assets/Bars3Icon'
 import usePrivateAxios from '../../hooks/usePrivateAxios';
+import { Link } from 'react-router-dom';
 const RecipeNavigation = () => {
 	const navigate = useNavigate();
 	const privateAxios = usePrivateAxios()
@@ -30,23 +31,7 @@ const RecipeNavigation = () => {
 		text: `View friends' recipes`,
 		onClickFunction: function () { navigate('./friends') }
 	}]
-	// const dummyfriendList = [{
-	// 	name: 'Miles Morales'
-	// }, {
-	// 	name: 'Gwen Stacy'
-	// }, {
-	// 	name: 'Hobie Brown'
-	// }, {
-	// 	name: 'Peter Parker'
-	// }, {
-	// 	name: 'Migeal O Hara'
-	// }, {
-	// 	name: 'Character A'
-	// }, {
-	// 	name: 'Character B'
-	// }, {
-	// 	name: 'Character C'
-	// }]
+
 	const optionsElement = options.map(sideOption => {
 		const { Icon, text, onClickFunction } = sideOption
 		return (
@@ -57,13 +42,13 @@ const RecipeNavigation = () => {
 		)
 	})
 	const friendListElement = friendList?.map(friend => (
-		<div key={friend.fullName} className='flex items-center space-x-4 cursor-pointer p-4 hover:bg-gray-200'>
+		<Link to={`/user/${friend.userId}`} key={friend.userId} className='flex items-center space-x-4 cursor-pointer p-4 hover:bg-gray-200'>
 			<img src={friend?.profileImage || "img/default-user.png"} alt="" className='w-9 h-9 rounded-full' />
 			<span className={`text-lg font-medium truncate`}>{friend.fullName}</span>
-		</div>
+		</Link>
 	))
 	return (
-		<div className='fixed flex flex-col rounded w-72 bg-gray-50 pb-8'>
+		<div className='flex flex-col rounded w-full bg-gray-50 pb-8'>
 			<div className='bg-green-accent rounded-t px-3 w-full h-12 flex items-center'>
 				<button className='rounded-full hover:bg-green-700 p-1'><Bars3Icon style='w-8 h-8 text-green-100' /></button>
 			</div>

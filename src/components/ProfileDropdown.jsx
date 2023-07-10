@@ -6,16 +6,16 @@ import { emailToUsername } from '../utils/StringUtils'
 
 const ProfileDropdown = () => {
   const navigate = useNavigate()
-  const { auth, setAuth, logout } = useAuth()
+  const { auth, logout } = useAuth()
   // const username = auth && emailToUsername(auth.user.email);
   return (  
     <Dropdown
       arrowIcon={false}
       inline
       label={
-        <div className='flex items-center space-x-2 p-2 hover:bg-gray-200 rounded bg-gray-100'>
+        <div className='flex items-center space-x-2 p-2 hover:bg-gray-200 rounded'>
           <Avatar img={auth.user.profileImage} rounded />
-          <span className='w-36 truncate text-lg font-medium'>
+          <span className='w-36 truncate text-lg font-medium hidden xl:block'>
             {auth.user.fullName}
           </span>
         </div>
@@ -32,14 +32,14 @@ const ProfileDropdown = () => {
       </Dropdown.Header>
       <Dropdown.Item >Dark mode</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item onClick={() => { navigate(`user/profile`) }}>
+      <Dropdown.Item onClick={() => { navigate(`/user/profile`) }}>
         Profile
       </Dropdown.Item>
       <Dropdown.Item>
         Settings
       </Dropdown.Item>
-      <Dropdown.Item>
-        Help
+      <Dropdown.Item onClick={() => { navigate(`/user/feedback`) }}>
+        Feedback
       </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item onClick={logout}>

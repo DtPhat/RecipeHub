@@ -1,4 +1,16 @@
 
+
+
+export const getStartOfDate = (inputDate) => {
+  const date = new Date(inputDate)
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+// export const getStartOfDate = (date) => {
+//   const startOfDay = new Date(date)
+//   startOfDay.setUTCHours(0, 0, 0, 0);
+//   return startOfDay
+// }
+
 export const getNumberOfDaysInMonth = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
 }
@@ -7,15 +19,22 @@ export const sortDays = (date) => {
   const sortedDays = [...DAYS.slice(dayIndex), ...DAYS.slice(0, dayIndex)]
   return sortedDays
 }
-export const areSameDay = (first, second) =>
-  first.getFullYear() === second.getFullYear() &&
-  first.getMonth() === second.getMonth() &&
-  first.getDate() === second.getDate()
+export const areSameDay = (first, second) => {
+  const startOFirstfDay = new Date(first)
+  startOFirstfDay.setUTCHours(0, 0, 0, 0);
+  const startOfSecondDay = new Date(second)
+  startOfSecondDay.setUTCHours(0, 0, 0, 0);
+  return startOFirstfDay.getTime() === startOfSecondDay.getTime()
+}
+// export const areSameDay = (first, second) =>
+//   first.getFullYear() === second.getFullYear() &&
+//   first.getMonth() === second.getMonth() &&
+//   first.getDate() === second.getDate()
 
-  export const getDayMonthYear = (date) => {
-    const d = date.toDateString().split(" ")
-    return `${d[2]} ${d[1]} ${d[3]}`
-  }
+export const getDayMonthYear = (date) => {
+  const d = date.toDateString().split(" ")
+  return `${d[2]} ${d[1]} ${d[3]}`
+}
 
 export const getMonthYear = (date) => {
   const d = date.toDateString().split(" ")

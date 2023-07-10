@@ -7,19 +7,16 @@ const Home = () => {
 	const navigate = useNavigate();
 	const { auth } = useAuth();
 	useEffect(() => {
-		{
-			auth?.user.role == 'ADMIN'
-				? navigate('/admin', { replace: true })
-				: navigate('/recipe', { replace: true });
-		}
+		auth?.user.role == 'ADMIN' && navigate('/admin', { replace: true })
+		auth?.user.role == 'USER' && navigate('/recipe', { replace: true });
 	}, []);
 	return (
 		<section>
 			<div className='text-green-50 bg-homepage h-[45rem] bg-cover bg-no-repeat flex flex-col items-center justify-center space-y-14'>
-				<h1 className='text-5xl font-bold text-center w-4/5'>
+				<h1 className='text-5xl font-bold text-center px-1 sm:w-4/5'>
 					Organize your favorite recipes online
 				</h1>
-				<span className='text-2xl font-semibold flex w-2/5 text-center leading-relaxed'>
+				<span className='text-2xl font-semibold flex sm:w-2/5 px-4 text-center leading-relaxed'>
 					Build your private cookbook by gathering recipes, making meal
 					plan and creating shopping list for your meal.
 				</span>
@@ -35,5 +32,6 @@ const Home = () => {
 		</section>
 	);
 };
+
 
 export default Home;

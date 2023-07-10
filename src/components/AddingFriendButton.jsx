@@ -6,7 +6,7 @@ import usePrivateAxios from '../hooks/usePrivateAxios'
 
 const AddingFriendButton = ({ friendId, onSuccess }) => {
   const myId = useAuth().auth.user.userId
-  if(friendId == myId) return
+  if (friendId == myId) return
 
   const privateAxios = usePrivateAxios()
   const [pendingRequest, setPendingRequest] = useState(null)
@@ -20,7 +20,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
   useEffect(() => {
     privateAxios.get(`/api/v1/user/friend/requests`)
       .then(response => {
-        if (response.data.filter(request => request.receiver.userId === myId && request.sender.userId === friendId).length > 0) {
+        if (response.data.filter(request => request.receiver.userId === myId && request.sender.userId == friendId).length > 0) {
           setPendingRequest('received')
         }
       })
@@ -29,7 +29,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
 
     privateAxios.get(`/api/v1/user/friend/sended-requests`)
       .then(response => {
-        if (response.data.filter(request => request.receiver.userId === friendId && request.sender.userId === myId).length > 0) {
+        if (response.data.filter(request => request.receiver.userId == friendId && request.sender.userId === myId).length > 0) {
           setPendingRequest('sent')
         }
       })
@@ -38,7 +38,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
 
     privateAxios.get(`/api/v1/user/friends`)
       .then(response => {
-        if (response.data.filter(friend => friend.userId === friendId).length > 0) {
+        if (response.data.filter(friend => friend.userId == friendId).length > 0) {
           setPendingRequest('already friend')
         }
       })
@@ -49,7 +49,8 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
   const addFriend = () => {
     privateAxios.post(`/api/v1/user/request-friend/${friendId}`).then(response => console.log(response))
       .catch(error => console.log(error))
-      .finally(() => onSuccess())
+      .finally(() => { setPendingRequest('sent'); onSuccess() })
+
   }
   console.log(pendingRequest);
   const isLoading = loading.sentRequests || loading.receivedRequests || loading.friends

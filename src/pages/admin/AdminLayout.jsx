@@ -1,15 +1,8 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import DashBoard from './DashBoard';
-import RecipeMP from './RecipeManagementPage/RecipeMP';
-import FeedbackPage from './FeedbackPage/FeedbackPage';
-import UserMP from './UserManagementPage/UserMP';
+import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development';
 import SideNav from '../../components/NavBar/SideNav';
 import TopNav from '../../components/NavBar/TopNav';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import RequireAuth from '../RequireAuth';
-import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development';
-
 function AdminLayout() {
 	const { activeMenu, isDarkMode } = useThemeContext();
 	return (

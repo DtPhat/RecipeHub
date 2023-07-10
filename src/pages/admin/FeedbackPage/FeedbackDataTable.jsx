@@ -25,6 +25,7 @@ function FeedbackDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const [pagination, setPagination] = useState({
 		page: 1,
@@ -42,11 +43,15 @@ function FeedbackDataTable() {
 
 	const privateAxios = usePrivateAxios();
 
-	function handleClick(argument) {
-		if (argument === 'confirmRead') {
-			setOpenModal(true);
-		} else {
-			if (argument === 'remove') {
+	function handleClick(argument, index) {
+		if (argument === 'accept' ) {
+			if (argument === 'yes') {
+				setOpenModal(false);
+			} else {
+				setOpenModal(false);
+			}
+		} else if (argument === 'finish') {
+			if (argument === 'yes') {
 				setOpenModal(false);
 			} else {
 				setOpenModal(false);
@@ -97,27 +102,25 @@ function FeedbackDataTable() {
 			});
 		}
 	}
-
+	// &sort=${filter.sort}&direction=${filter.direction}&query=${filter.query}
 	useEffect(() => {
-		async function fetchRecipes() {
+		async function fetchFeedbacks() {
 			setIsLoading(true);
 			let resp = await privateAxios.get(
-				`api/v1/admin/recipes?page=${filter.page - 1}&size=${
+				`/api/v1/admin/support-tickets?page=${filter.page - 1}&size=${
 					filter.size
-				}&sort=${filter.sort}&direction=${filter.direction}&query=${
-					filter.query
 				}`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
 			setIsLoading(false);
-			setRows(resp.data.recipes);
+			setRows(resp.data.supportTickets);
 			setPagination({
 				page: filter.page,
 				size: filter.size,
 				totalItem: resp.data.totalItem,
 			});
 		}
-		fetchRecipes();
+		fetchFeedbacks();
 	}, [filter]);
 
 	return (
@@ -158,43 +161,31 @@ function FeedbackDataTable() {
 								key={i}
 								className='dark:border-gray-700 dark:bg-gray-800'
 							>
-								{/* <Table.Cell className='!p-4'>
-									<Checkbox checked={allSelected} />
-								</Table.Cell> */}
 								<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
-									<img
-										src={
-											item.images.length > 0
-												? item.images[0].imageUrl
-												: ''
-										}
-										className='inline rounded-full aspect-square w-10 mr-4'
-									/>
-									<span>{item.title}</span>
+									<span>{item.message}</span>
 								</Table.Cell>
-								<Table.Cell className='max-w-xs flex flex-wrap'>
-									{item.tags.map((tag) => {
-										return (
-											<span
-												key={tag.tagId}
-												className='border rounded-full py-0.5 px-3 my-1 inline-block border-green-variant'
-											>
-												{tag.tagName}
-											</span>
-										);
-									})}
-								</Table.Cell>
-								<Table.Cell>{item.rating}</Table.Cell>
+								<Table.Cell>{item.email}</Table.Cell>
+								<Table.Cell>{item.status}</Table.Cell>
 								<Table.Cell>
-									{' '}
-									<Button
-										color='success'
-										size='sm'
-										outline
-										onClick={() => handleClick('confirmRead')}
-									>
-										Read
-									</Button>{' '}
+									{item?.status === 'PENDING' ? (
+										<Button
+											color='success'
+											size='sm'
+											outline
+											onClick={() => handleClick('accept', i)}
+										>
+											Accept
+										</Button>
+									) : (
+										<Button
+											color='success'
+											size='sm'
+											outline
+											onClick={() => handleClick('finish', i)}
+										>
+											Finish
+										</Button>
+									)}
 								</Table.Cell>
 							</Table.Row>
 						))}
@@ -204,7 +195,7 @@ function FeedbackDataTable() {
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
 			<ConfirmModal
-				content='feedback content**'
+				content='Are you sure?'
 				isOpened={openModal}
 				handleClick={handleClick}
 				buttonYes='Confirm read'

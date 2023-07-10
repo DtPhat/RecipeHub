@@ -30,13 +30,13 @@ function ConfirmModal(props) {
 						<div className='flex justify-center gap-4'>
 							<Button
 								color='failure'
-								onClick={() => handleModalClick('remove')}
+								onClick={() => handleModalClick('yes')}
 							>
 								{buttonYes}
 							</Button>
 							<Button
 								color='gray'
-								onClick={() => handleModalClick('cancel')}
+								onClick={() => handleModalClick('no')}
 							>
 								{buttonNo}
 							</Button>

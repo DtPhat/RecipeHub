@@ -44,11 +44,11 @@ function RecipeDataTable() {
 	const privateAxios = usePrivateAxios();
 
 	function handleClick(argument, index) {
-		if (argument === 'confirmRemove') {
+		if (argument === 'openConfirm') {
 			setOpenModal(true);
 			setSelectedIndex(index);
 		} else {
-			if (argument === 'remove') {
+			if (argument === 'yes') {
 				if (selectedIndex > -1) {
 					var id = rows[selectedIndex].recipe_id;
 					rows.splice(selectedIndex, 1);
@@ -200,7 +200,7 @@ function RecipeDataTable() {
 										color='failure'
 										size='sm'
 										outline
-										onClick={() => handleClick('confirmRemove', i)}
+										onClick={() => handleClick('openConfirm', i)}
 									>
 										Remove
 									</Button>{' '}

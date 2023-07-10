@@ -26,10 +26,6 @@ import DashBoard from './pages/admin/DashBoard.jsx';
 import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
 import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
 import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
-import ReactGA from 'react-ga';
-
-ReactGA.initialize('G-FVY5ZCWNMT');
-
 const App = () => {
 	const { auth } = useAuth()
 	const isAdmin = auth?.user.role === "ADMIN"

@@ -24,6 +24,7 @@ const columns = [
 function FeedbackDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
+	const [modalType, setModalType] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -43,19 +44,37 @@ function FeedbackDataTable() {
 
 	const privateAxios = usePrivateAxios();
 
+	function resetRowModalSelect() {
+		setOpenModal(false);
+		setSelectedIndex(-1);
+		setModalType(null);
+	}
+
+	function handleConfirm(argument) {
+		if (argument === 'yes') {
+			if (selectedIndex > -1) {
+				if (modalType === 'accept') {
+					var id = rows[selectedIndex].userId;
+					rows[selectedIndex].status = "ACCEPTED";
+					privateAxios.post(`/api/v1/admin/support-ticket/accept/${id}`);
+				}
+				if(modalType === ' finish'){
+					var id = rows[selectedIndex].userId;
+					rows.splice(selectedIndex, 1);
+					privateAxios.post(`/api/v1/admin/support-ticket/reject/${id}`);
+				}
+			}
+			resetRowModalSelect();
+		} else {
+			resetRowModalSelect();
+		}
+	}
+
 	function handleClick(argument, index) {
-		if (argument === 'accept' ) {
-			if (argument === 'yes') {
-				setOpenModal(false);
-			} else {
-				setOpenModal(false);
-			}
-		} else if (argument === 'finish') {
-			if (argument === 'yes') {
-				setOpenModal(false);
-			} else {
-				setOpenModal(false);
-			}
+		if (argument === 'accept' || argument === 'finish') {
+			setSelectedIndex(index);
+			setOpenModal(true);
+			setModalType(argument);
 		}
 	}
 
@@ -131,9 +150,6 @@ function FeedbackDataTable() {
 			</div>
 			<Table hoverable>
 				<Table.Head>
-					{/* <Table.HeadCell className='!p-4'>
-						<Checkbox onChange={handleSelectAll} />
-					</Table.HeadCell> */}
 					{columns.map((column, i) => (
 						<Table.HeadCell
 							key={i}
@@ -194,13 +210,20 @@ function FeedbackDataTable() {
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
-			<ConfirmModal
-				content='Are you sure?'
-				isOpened={openModal}
-				handleClick={handleClick}
-				buttonYes='Confirm read'
-				buttonNo='Cancel'
-			/>
+			{modalType === 'accept' && (
+				<ConfirmModal
+					content='Do you want to accept this feedback?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
+			{modalType === 'finish' && (
+				<ConfirmModal
+					content='Do you want to finish this feedback?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
 		</>
 	);
 }

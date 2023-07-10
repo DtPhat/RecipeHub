@@ -123,3 +123,9 @@ export const getDaysInWeek = (date) => {
   )
   return result
 }
+
+export const convertLongToDatetime = (time) => {
+  const formattedDate = new Date(time).toLocaleDateString();
+
+  return formattedDate;
+}

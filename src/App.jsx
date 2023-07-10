@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import AdminLayout from "./pages/admin/AdminLayout.jsx";
 import RequireAuth from "./pages/RequireAuth";
 import { Route, Routes } from "react-router-dom";
@@ -26,7 +26,23 @@ import DashBoard from './pages/admin/DashBoard.jsx';
 import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
 import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
 import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
+
+
+
+import ReactGA, { pageview } from 'react-ga';
+
+const TRACKING_ID='G-FVY5ZCWNMT'
+ReactGA.initialize(TRACKING_ID);
+
+
+
+
 const App = () => {
+
+useEffect(() => {
+	ReactGA.pageview(window.location.pathname + window.location.search)
+}, [])
+
 	const { auth } = useAuth()
 	const isAdmin = auth?.user.role === "ADMIN"
 	return (

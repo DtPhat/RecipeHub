@@ -5,10 +5,11 @@ import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
+import { convertLongToDatetime } from '../../../utils/DateUtils';
 
 const columns = [
 	{
-		key: 'name',
+		key: 'full_name',
 		name: 'Name',
 	},
 	{
@@ -16,8 +17,8 @@ const columns = [
 		name: 'Email',
 	},
 	{
-		key: 'age',
-		name: 'Age',
+		key: 'birthday',
+		name: 'Birthday',
 	},
 ];
 
@@ -27,6 +28,7 @@ function UserDataTable() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [openModal, setOpenModal] = useState(false);
+	const [modalType, setModalType] = useState(null);
 
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -39,12 +41,31 @@ function UserDataTable() {
 	const [filter, setFilter] = useState({
 		page: 1,
 		size: 5,
-		sort: 'userId',
+		sort: 'user_id',
 		direction: 'asc',
 		query: '',
 	});
 
 	const privateAxios = usePrivateAxios();
+
+	async function fetchUsers() {
+		setIsLoading(true);
+		let resp = await privateAxios.get(
+			`/api/v1/admin/users?page=${filter.page - 1}&size=${
+				filter.size
+			}&sort=${filter.sort}&direction=${filter.direction}&query=${
+				filter.query
+			}`,
+			{ headers: { 'Content-Type': 'application/json' } }
+		);
+		setIsLoading(false);
+		setRows(resp.data.users);
+		setPagination({
+			page: filter.page,
+			size: filter.size,
+			totalItem: resp.data.totalItem,
+		});
+	}
 
 	function handlePageChange(newPage) {
 		setFilter({
@@ -67,23 +88,37 @@ function UserDataTable() {
 		});
 	}
 
+	function resetRowModalSelect() {
+		setOpenModal(false);
+		setSelectedIndex(-1);
+		setModalType(null);
+	}
+
 	function handleClick(argument, index) {
-		if (argument === 'openConfirm') {
-			setOpenModal(true);
+		if (argument === 'block' || argument === 'unblock') {
 			setSelectedIndex(index);
-		} else {
-			if (argument === 'yes') {
-				if (selectedIndex > -1) {
-					var id = rows[selectedIndex].recipe_id;
-					rows.splice(selectedIndex, 1);
-					privateAxios.delete(`/api/v1/admin/recipe/${id}`);
-					setSelectedIndex(-1);
+			setOpenModal(true);
+			setModalType(argument);
+		}
+	}
+
+	function handleConfirm(argument) {
+		if (argument === 'yes') {
+			if (selectedIndex > -1) {
+				if (modalType === 'block') {
+					var id = rows[selectedIndex].userId;
+					rows[selectedIndex].blocked = true;
+					privateAxios.post(`/api/v1/admin/user/block/${id}`);
 				}
-				setOpenModal(false);
-			} else {
-				setOpenModal(false);
-				setSelectedIndex(-1);
+				if (modalType === 'unblock') {
+					var id = rows[selectedIndex].userId;
+					rows[selectedIndex].blocked = false;
+					privateAxios.post(`/api/v1/admin/user/unblock/${id}`);
+				}
 			}
+			resetRowModalSelect();
+		} else {
+			resetRowModalSelect();
 		}
 	}
 
@@ -109,22 +144,8 @@ function UserDataTable() {
 			});
 		}
 	}
-	// &sort=${filter.sort}&direction=${filter.direction}&query=${filter.query}
+
 	useEffect(() => {
-		async function fetchUsers() {
-			setIsLoading(true);
-			let resp = await privateAxios.get(
-				`/api/v1/admin/users?page=${filter.page - 1}&size=${filter.size}`,
-				{ headers: { 'Content-Type': 'application/json' } }
-			);
-			setIsLoading(false);
-			setRows(resp.data.users);
-			setPagination({
-				page: filter.page,
-				size: filter.size,
-				totalItem: resp.data.totalItem,
-			});
-		}
 		fetchUsers();
 	}, [filter]);
 
@@ -173,23 +194,25 @@ function UserDataTable() {
 								<Table.Cell className='max-w-xs flex flex-wrap'>
 									{item.email}
 								</Table.Cell>
-								<Table.Cell>{item.birthday}</Table.Cell>
 								<Table.Cell>
-									{item.blocked ? (
+									{convertLongToDatetime(item.birthday)}
+								</Table.Cell>
+								<Table.Cell>
+									{item?.blocked ? (
 										<Button
 											color='failure'
 											size='sm'
 											outline
-											onClick={handleClick('unblock')}
+											onClick={() => handleClick('unblock', i)}
 										>
-											unblock
+											Unblock
 										</Button>
 									) : (
 										<Button
 											color='failure'
 											size='sm'
 											outline
-											onClick={handleClick('block')}
+											onClick={() => handleClick('block', i)}
 										>
 											Block
 										</Button>
@@ -201,11 +224,21 @@ function UserDataTable() {
 			</Table>
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
-			<ConfirmModal
-				content='Are you sure?'
-				isOpened={openModal}
-				handleClick={handleClick}
-			/>
+
+			{modalType === 'block' && (
+				<ConfirmModal
+					content='Do you want to block this account?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
+			{modalType === 'unblock' && (
+				<ConfirmModal
+					content='Do you want to un-block this account?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
 		</>
 	);
 }

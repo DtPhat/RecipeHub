@@ -49,6 +49,10 @@
         @apply m-2 md:m-5 mt-24 p-2 md:p-10 bg-white dark:bg-gray-900 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
       }
 
+      .admin-child-content {
+        @apply m-2 md:m-5 mt-24 p-4 xs:w-4/5 md:w-1/4 bg-slate-50 dark:bg-gray-800 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
+      }
+
 
 }
 

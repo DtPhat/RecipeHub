@@ -31,7 +31,7 @@ import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
 
 import ReactGA, { pageview } from 'react-ga';
 
-const TRACKING_ID='G-FVY5ZCWNMT'
+ export const TRACKING_ID='G-FVY5ZCWNMT'
 ReactGA.initialize(TRACKING_ID);
 
 
@@ -39,9 +39,7 @@ ReactGA.initialize(TRACKING_ID);
 
 const App = () => {
 
-useEffect(() => {
-	ReactGA.pageview(window.location.pathname + window.location.search)
-}, [])
+
 
 	const { auth } = useAuth()
 	const isAdmin = auth?.user.role === "ADMIN"

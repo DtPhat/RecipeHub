@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import axios, { axiosGoogle } from '../../api/axios'
 import useAuth from '../../hooks/useAuth'
 import { useGoogleLogin } from '@react-oauth/google';
+import ReactGA from 'react-ga';
 
 const Login = () => {
   const [showingPassword, setShowingPassword] = useState(false)
@@ -30,6 +31,11 @@ const Login = () => {
       .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath) }),
     onError: (error) => console.log("Login google fail", error)
   });
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search)
+  }, [])
+
   return (
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>

@@ -45,7 +45,7 @@ function TopNav() {
 			<Dropdown
 				inline
 				label={
-					<Avatar rounded alt='avatar' img='/img/admin-avatar.png'>
+					<Avatar rounded alt='avatar' img={auth.user.profileImage}>
 						{`hello, ${auth.user.fullName}`}
 					</Avatar>
 				}
@@ -56,13 +56,7 @@ function TopNav() {
 						{auth.user.email}
 					</span>
 				</Dropdown.Header>
-				<Dropdown.Item
-				// onClick={() => {
-				// 	navigate(`/user/profile`);
-				// }}
-				>
-					Profile
-				</Dropdown.Item>
+			
 				<Dropdown.Item>
 					<Tooltip content='Change theme'>
 						<SwitchButton isOn={isDarkMode} customFunc={toggleDarkMode} />

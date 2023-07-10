@@ -4,12 +4,18 @@ import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { getStartOfDate } from '../../utils/DateUtils'
 import Calendar from './Calendar'
 import PlannedMeals from './PlannedMeals'
+import ReactGA from 'react-ga';
+
 const MealPlanner = () => {
   const privateAxios = usePrivateAxios()
   const today = new Date((new Date).getFullYear(), (new Date).getMonth(), (new Date).getDate())
 
   const [chosenDate, setChosenDate] = useState(getStartOfDate(new Date()))
   const [newPlannedRecipe, setNewPlannedRecipe] = useState()
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search)
+  }, [])
   
   return (
     <section className='flex justify-center xs:py-4 lg:mx-8'>

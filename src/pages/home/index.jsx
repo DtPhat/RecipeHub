@@ -3,12 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import Features from './Features';
 import HomeFooter from './HomeFooter';
+import ReactGA from 'react-ga';
+
 const Home = () => {
 	const navigate = useNavigate();
 	const { auth } = useAuth();
 	useEffect(() => {
 		auth?.user.role == 'ADMIN' && navigate('/admin', { replace: true })
 		auth?.user.role == 'USER' && navigate('/recipe', { replace: true });
+		
+		ReactGA.pageview(window.location.pathname + window.location.search)
 	}, []);
 	return (
 		<section>

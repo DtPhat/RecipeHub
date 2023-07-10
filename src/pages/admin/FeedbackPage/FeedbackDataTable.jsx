@@ -5,6 +5,7 @@ import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
+import TypeSelector from '../../../components/DataTable/TypeSelector';
 
 const columns = [
 	{
@@ -16,8 +17,8 @@ const columns = [
 		name: 'Author',
 	},
 	{
-		key: 'date',
-		name: 'Date',
+		key: 'status',
+		name: 'Status',
 	},
 ];
 
@@ -37,8 +38,9 @@ function FeedbackDataTable() {
 	const [filter, setFilter] = useState({
 		page: 1,
 		size: 5,
-		sort: 'recipe_id',
+		sort: 'support_ticket_id',
 		direction: 'asc',
+		status: 'PENDING',
 		query: '',
 	});
 
@@ -54,12 +56,12 @@ function FeedbackDataTable() {
 		if (argument === 'yes') {
 			if (selectedIndex > -1) {
 				if (modalType === 'accept') {
-					var id = rows[selectedIndex].userId;
-					rows[selectedIndex].status = "ACCEPTED";
+					var id = rows[selectedIndex].supportTicketId;
+					rows[selectedIndex].status = 'ACCEPTED';
 					privateAxios.post(`/api/v1/admin/support-ticket/accept/${id}`);
 				}
-				if(modalType === ' finish'){
-					var id = rows[selectedIndex].userId;
+				if (modalType === 'finish') {
+					var id = rows[selectedIndex].supportTicketId;
 					rows.splice(selectedIndex, 1);
 					privateAxios.post(`/api/v1/admin/support-ticket/reject/${id}`);
 				}
@@ -92,6 +94,13 @@ function FeedbackDataTable() {
 		});
 	}
 
+	function handleSelectType(event) {
+		setFilter({
+			...filter,
+			status: event.target.value,
+		});
+	}
+
 	function handleTableSearch(value) {
 		setFilter({
 			...filter,
@@ -121,14 +130,16 @@ function FeedbackDataTable() {
 			});
 		}
 	}
-	// &sort=${filter.sort}&direction=${filter.direction}&query=${filter.query}
+	//
 	useEffect(() => {
 		async function fetchFeedbacks() {
 			setIsLoading(true);
 			let resp = await privateAxios.get(
 				`/api/v1/admin/support-tickets?page=${filter.page - 1}&size=${
 					filter.size
-				}`,
+				}&sortBy=${filter.sort}&direction=${filter.direction}&query=${
+					filter.query
+				}&status=${filter.status}`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
 			setIsLoading(false);
@@ -144,6 +155,9 @@ function FeedbackDataTable() {
 
 	return (
 		<>
+			<div className='flex justify-between max-h-12 mb-1	'>
+				<TypeSelector onTypeSelect={handleSelectType} />
+			</div>
 			<div className='flex justify-between max-h-12 mb-1	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />

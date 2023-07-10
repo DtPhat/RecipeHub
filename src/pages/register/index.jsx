@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import RegisterCarousel from './RegisterCarousel'
 import axios from '../../api/axios'
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import ReactGA from 'react-ga';
 
 const Register = () => {
   const [showingPassword, setShowingPassword] = useState(false)
@@ -38,6 +39,11 @@ const Register = () => {
     input: 'py-2 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full',
     radio: 'space-x-2 border border-gray-400 cursor-pointer flex justify-center w-24 rounded accent-green-600 hover:border-green-600',
   }
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search)
+  }, [])
+
   return (
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>

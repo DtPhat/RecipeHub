@@ -23,7 +23,7 @@ function Pagination(props) {
 	}
 
 	return (
-		<div className='text-gray-900 dark:text-gray-300 flex justify-between content-center w-full '>
+		<div className='text-gray-900 dark:text-gray-300 flex justify-between content-center w-full my-2 '>
 			<Button.Group>
 				<Button
 					disabled={page <= 1}

@@ -6,6 +6,7 @@ import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { convertLongToDatetime } from '../../../utils/DateUtils';
+import TypeSelector from '../../../components/DataTable/TypeSelector';
 
 const columns = [
 	{
@@ -20,6 +21,12 @@ const columns = [
 		key: 'birthday',
 		name: 'Birthday',
 	},
+];
+
+const typeOptions = [
+	{ value: '', html: 'All' },
+	{ value: 0, html: 'Not blocked' },
+	{ value: 1, html: 'Blocked' },
 ];
 
 function UserDataTable() {
@@ -43,6 +50,7 @@ function UserDataTable() {
 		size: 5,
 		sort: 'user_id',
 		direction: 'asc',
+		blocked: 0,
 		query: '',
 	});
 
@@ -78,6 +86,13 @@ function UserDataTable() {
 		setFilter({
 			...filter,
 			size: event.target.value,
+		});
+	}
+
+	function handleSelectType(event) {
+		setFilter({
+			...filter,
+			blocked: event.target.value,
 		});
 	}
 
@@ -151,7 +166,14 @@ function UserDataTable() {
 
 	return (
 		<>
-			<div className='flex justify-between max-h-12 mb-1'>
+			<div className='flex justify-between max-h-12 mb-1	'>
+				<TypeSelector
+				label='User status: '
+					options={typeOptions}
+					onTypeSelect={handleSelectType}
+				/>
+			</div>
+			<div className='flex justify-between max-h-12'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
 			</div>

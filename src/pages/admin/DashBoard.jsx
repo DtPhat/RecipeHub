@@ -1,16 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import AdminHeader from '../../components/header/AdminHeader';
 import ContentHeader from '../../components/header/ContentHeader';
+import usePrivateAxios from '../../hooks/usePrivateAxios';
 
 function DashBoard() {
 	const [recipeTotal, setRecipeTotal] = useState(0);
 	const [userTotal, setUserTotal] = useState(0);
 	const [feedbackTotal, setFeedbackTotal] = useState(0);
 
+	const privateAxios = usePrivateAxios();
 	useEffect(() => {
-		setRecipeTotal(0);
-		setUserTotal(0);
-		setFeedbackTotal(0);
+		async function fetchTotal(){
+			let userResp = await privateAxios.get(
+				`/api/v1/admin/user/total`,
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
+			let recipeResp = await privateAxios.get(
+				`/api/v1/admin/recipe/total`,
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
+			let feedbackResp = await privateAxios.get(
+				`/api/v1/admin/support-ticket/total`,
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
+			console.log(feedbackResp)
+			setRecipeTotal(recipeResp.data);
+			setUserTotal(userResp.data);
+			setFeedbackTotal(feedbackResp.data);
+		}
+		fetchTotal()
+		
 	}, []);
 
 	return (

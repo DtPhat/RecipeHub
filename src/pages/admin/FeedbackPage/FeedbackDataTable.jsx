@@ -22,6 +22,11 @@ const columns = [
 	},
 ];
 
+const typeOptions = [
+	{ value: 'PENDING', html: 'Pending' },
+	{ value: 'ACCEPTED', html: 'Accepted' },
+];
+
 function FeedbackDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
@@ -156,9 +161,13 @@ function FeedbackDataTable() {
 	return (
 		<>
 			<div className='flex justify-between max-h-12 mb-1	'>
-				<TypeSelector onTypeSelect={handleSelectType} />
+				<TypeSelector
+					label='Feedback status: '
+					options={typeOptions}
+					onTypeSelect={handleSelectType}
+				/>
 			</div>
-			<div className='flex justify-between max-h-12 mb-1	'>
+			<div className='flex justify-between max-h-12	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
 			</div>
@@ -186,39 +195,57 @@ function FeedbackDataTable() {
 				{isLoading && <Spinner size='xl' className='flex content-center' />}
 				<Table.Body className='divide-y'>
 					{!isLoading &&
-						rows.map((item, i) => (
-							<Table.Row
-								key={i}
-								className='dark:border-gray-700 dark:bg-gray-800'
-							>
-								<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
-									<span>{item.message}</span>
-								</Table.Cell>
-								<Table.Cell>{item.email}</Table.Cell>
-								<Table.Cell>{item.status}</Table.Cell>
-								<Table.Cell>
-									{item?.status === 'PENDING' ? (
-										<Button
-											color='success'
-											size='sm'
-											outline
-											onClick={() => handleClick('accept', i)}
-										>
-											Accept
-										</Button>
-									) : (
-										<Button
-											color='success'
-											size='sm'
-											outline
-											onClick={() => handleClick('finish', i)}
-										>
-											Finish
-										</Button>
-									)}
-								</Table.Cell>
-							</Table.Row>
-						))}
+						rows.map((item, i) => {
+							if (filter.status === item.status) {
+								return (
+									<Table.Row
+										key={i}
+										className='dark:border-gray-700 dark:bg-gray-800'
+									>
+										<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
+											<span>{item.message}</span>
+										</Table.Cell>
+										<Table.Cell>{item.email}</Table.Cell>
+										<Table.Cell>{item.status}</Table.Cell>
+										<Table.Cell>
+											{item?.status === 'PENDING' ? (
+												<div className='flex gap-1'>
+													<Button
+														color='success'
+														size='sm'
+														outline
+														onClick={() =>
+															handleClick('accept', i)
+														}
+													>
+														Accept
+													</Button>
+													<Button
+														color='failure'
+														size='sm'
+														outline
+														onClick={() =>
+															handleClick('finish', i)
+														}
+													>
+														Reject
+													</Button>
+												</div>
+											) : (
+												<Button
+													color='success'
+													size='sm'
+													outline
+													onClick={() => handleClick('finish', i)}
+												>
+													Finish
+												</Button>
+											)}
+										</Table.Cell>
+									</Table.Row>
+								);
+							}
+						})}
 				</Table.Body>
 			</Table>
 

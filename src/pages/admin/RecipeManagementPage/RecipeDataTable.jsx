@@ -131,15 +131,12 @@ function RecipeDataTable() {
 
 	return (
 		<>
-			<div className='flex justify-between max-h-12 mb-1	'>
+			<div className='flex justify-between max-h-12	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
 			</div>
 			<Table hoverable>
 				<Table.Head>
-					{/* <Table.HeadCell className='!p-4'>
-						<Checkbox onChange={handleSelectAll} />
-					</Table.HeadCell> */}
 					{columns.map((column, i) => (
 						<Table.HeadCell
 							key={i}

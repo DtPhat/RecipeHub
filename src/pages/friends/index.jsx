@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar } from 'flowbite-react';
+import { Avatar, Modal } from 'flowbite-react';
 import SearchingIcon from '../../assets/SearchingIcon';
 import XCircleIcon from '../../assets/XCircleIcon';
 import PlusFriendIcon from '../../assets/PlusFriendIcon';
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar';
 import NoFriends from './NoRecipes';
 import Skeleton from '../../components/Skeleton';
+import ConfirmBox from '../../components/ConfirmBox';
 
 const FriendRecipe = () => {
   const privateAxios = usePrivateAxios()
@@ -20,6 +21,7 @@ const FriendRecipe = () => {
   const [friendId, setFriendId] = useState('')
   const [searchedFriendList, setSearchedFriendList] = useState()
   const [loading, setLoading] = useState(true)
+  const [confirmUnfriend, setConfirmUnfriend] = useState(false)
   const [showingToast, setShowingToast] = useState({
     unfriend: false,
     addFriend: false
@@ -31,22 +33,25 @@ const FriendRecipe = () => {
   const searchByKeyword = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
       setSearchedFriendList(friendList.filter(friend => friend.fullName.toUpperCase().includes(keyword.toUpperCase())))
+    }
   }
-  }
-  const { ref, open, setOpen } = useOuterClick()
-  const findFriendById = async (e) => {
+  const [open, setOpen] = useState()
+  const findFrienddOnEnter = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
-      if (!friendId) setNewFriendProfile(undefined)
-      privateAxios.get(`/api/v1/global/user/profile/${friendId}`).then(response => {
-        setNewFriendProfile(response.data)
-      })
-        .catch(error => {
-          if (error.response.status == '404') setNewFriendProfile(null)
-        })
-        .finally(() => { setFriendId(''); setOpen(true) })
+      findFriendById()
     }
   }
 
+  const findFriendById = () => {
+    if (!friendId) setNewFriendProfile(undefined)
+    privateAxios.get(`/api/v1/global/user/profile/${friendId}`).then(response => {
+      setNewFriendProfile(response.data)
+    })
+      .catch(error => {
+        if (error.response.status == '404') setNewFriendProfile(null)
+      })
+      .finally(() => { setFriendId(''); setOpen(true) })
+  }
   const unfriend = (friend_id) => {
     setFriendList(prevList => prevList.filter(friend => friend.userId != friend_id))
     privateAxios.delete(`/api/v1/user/remove-friend/${friend_id}`).then(response => console.log(response)).catch(error => console.log(error))
@@ -70,13 +75,13 @@ const FriendRecipe = () => {
               <h1 className='font-semibold text-2xl sm:text-3xl text-green-accent'>Add new friend:</h1>
               <div className='flex items-center gap-2'>
                 <div className='flex items-center w-48 border-2 border-green-accent rounded-xl relative bottom-1 left-4 px-2 mr-4 cursor-pointer'>
-                  <label htmlFor='addFriend'>
+                  <button onClick={() => findFriendById()} className=''>
                     <PlusFriendIcon style='w-8 h-8 text-green-accent' />
-                  </label>
+                  </button>
                   <input
                     className='bg-transparent focus:outline-none rounded-full w-full text-lg px-4 py-2 text-black'
                     placeholder='User ID' id='addFriend' autoComplete='off'
-                    value={friendId} onChange={(e) => setFriendId(e.target.value.match(/^\d+$/) ? e.target.value : '')} onKeyDown={findFriendById} />
+                    value={friendId} onChange={(e) => setFriendId(e.target.value.match(/^\d+$/) ? e.target.value : '')} onKeyDown={findFrienddOnEnter} />
                 </div>
               </div>
             </div>
@@ -99,7 +104,12 @@ const FriendRecipe = () => {
                         View details
                       </button>
                       <button className='button-outlined-square py-1 w-auto text-base color-secondary'
-                        onClick={() => window.confirm('Are you sure to unfriend this user?') && unfriend(friend.userId)}>Unfriend</button>
+                        // onClick={() => window.confirm('Are you sure to unfriend this user?') && unfriend(friend.userId)}
+                        onClick={() => setConfirmUnfriend(true)}
+                      >
+                        Unfriend
+                      </button>
+                      <ConfirmBox open={confirmUnfriend} setOpen={setConfirmUnfriend} callback={() => unfriend(friend.userId)} message={`Are you sure you want to unfriend ${friend.fullName}`} />
                     </div>
                   </div>
                   <span className='absolute text-gray-500 font-semibold text-sm top-1 right-2'>ID: {friend.userId}</span>
@@ -107,41 +117,46 @@ const FriendRecipe = () => {
               )}
             </div>
         }
-
       </div>
-      {open && newFriendProfile &&
-        <div className='fixed p-8 top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-xl w-full z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col space-y-4 overflow-auto transition ease-in-out'>
-          <div className='flex justify-end gap-4'>
-            <button className='button-contained-square py-0.5 w-32' onClick={() => navigate(`/user/${newFriendProfile.userId}`)}>View profile</button>
-            <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
-              onClick={(e) => { e.stopPropagation(); setOpen(false); setFriendId(''); setNewFriendProfile() }}>X
-            </button>
-          </div>
-          <div className='flex flex-col items-start space-y-4'>
-            <Avatar img={newFriendProfile.profileImage} size='xl' stacked />
-            <h1 className='text-2xl font-bold'>{newFriendProfile.fullName}</h1>
-          </div>
-          <div className='flex gap-8'>
-            <div className='text-gray-500 flex flex-col space-y-4'>
-              <span>User ID</span>
-              <span>Email</span>
-              <span className='text-gray-500'>Date of birth</span>
-              <span className='text-gray-500'>Gender</span>
+      {newFriendProfile && <Modal show={open} size="md" popup onClose={() => setOpen(false)}>
+        <Modal.Header />
+        <Modal.Body>
+          <div className='fixed p-8 top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-xl w-full z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col space-y-4 overflow-auto transition ease-in-out'>
+            <div className='flex justify-end gap-4'>
+              <button className='button-contained-square py-0.5 w-32' onClick={() => navigate(`/user/${newFriendProfile.userId}`)}>View profile</button>
+              <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
+                onClick={(e) => { e.stopPropagation(); setOpen(false); setFriendId(''); setNewFriendProfile() }}>
+                X
+              </button>
             </div>
-            <div className='flex flex-col space-y-4'>
-              <span>{newFriendProfile.userId}</span>
-              <span>{newFriendProfile.email}</span>
-              <span>{new Date(newFriendProfile.birthday).toLocaleDateString()}</span>
-              <span>{newFriendProfile.gender}</span>
+            <div className='flex flex-col items-start space-y-4'>
+              <Avatar img={newFriendProfile.profileImage} size='xl' stacked />
+              <h1 className='text-2xl font-bold'>{newFriendProfile.fullName}</h1>
             </div>
+            <div className='flex gap-8'>
+              <div className='text-gray-500 flex flex-col space-y-4'>
+                <span>User ID</span>
+                <span>Email</span>
+                <span className='text-gray-500'>Date of birth</span>
+                <span className='text-gray-500'>Gender</span>
+              </div>
+              <div className='flex flex-col space-y-4'>
+                <span>{newFriendProfile.userId}</span>
+                <span>{newFriendProfile.email}</span>
+                <span>{new Date(newFriendProfile.birthday).toLocaleDateString()}</span>
+                <span>{newFriendProfile.gender}</span>
+              </div>
+            </div>
+            <AddingFriendButton
+              friendId={newFriendProfile.userId}
+              onSuccess={() => {
+                setShowingToast(prevState => ({ ...prevState, addFriend: true }));
+                setNewFriendProfile()
+              }} />
           </div>
-          <AddingFriendButton
-            friendId={newFriendProfile.userId}
-            onSuccess={() => {
-              setShowingToast(prevState => { return { ...prevState, addFriend: true } });
-              setNewFriendProfile()
-            }} />
-        </div>}
+        </Modal.Body>
+      </Modal>}
+
       {showingToast.unfriend && <Toast message='Unfriend successfully' />}
       {showingToast.addFriend && <Toast message='Send friend request successfully' />}
     </section >

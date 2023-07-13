@@ -18,7 +18,7 @@ import {
 } from '../../utils/DateUtils'
 import RecipeSelections from './RecipeSelections';
 
-const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRecipe }) => {
+const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRecipe, removedPlannedRecipe }) => {
   const privateAxios = usePrivateAxios()
   const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const today = new Date((new Date).getFullYear(), (new Date).getMonth(), (new Date).getDate())
@@ -38,7 +38,7 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
     const firstDate = daysDisplay == 'month' ? firstDateOfMonth : firstDateOfWeek
     const lastDate = daysDisplay == 'month' ? lastDateOfMonth : lastDateOfWeek
     privateAxios.get(`/api/v1/user/meal-planers?from=${firstDate.getTime()}&to=${lastDate.getTime()}`).then(response => setPlannerData(response.data))
-  }, [daysDisplay, newPlannedRecipe, navigationDate]);
+  }, [daysDisplay, newPlannedRecipe, removedPlannedRecipe, navigationDate]);
 
   const style = {
     cell: 'w-full border border-green-900 h-16 p-2 cursor-pointer text-lg relative',
@@ -147,12 +147,11 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
           </div>
         }
       </div>
-      {openRecipeSelections &&
-        <Modal dismissible show={openRecipeSelections} onClose={() => setOpenRecipeSelections(false)} size='5xl'>
-          <Modal.Body >
-            <RecipeSelections setOpenRecipeSelections={setOpenRecipeSelections} chosenDate={chosenDate} setNewPlannedRecipe={setNewPlannedRecipe} />
-          </Modal.Body>
-        </Modal>}
+      <Modal dismissible show={openRecipeSelections} onClose={() => setOpenRecipeSelections(false)} size='5xl'>
+        <Modal.Body >
+          <RecipeSelections setOpenRecipeSelections={setOpenRecipeSelections} chosenDate={chosenDate} setNewPlannedRecipe={setNewPlannedRecipe} />
+        </Modal.Body>
+      </Modal>
     </section>
   )
 }

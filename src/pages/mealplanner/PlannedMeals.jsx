@@ -7,7 +7,8 @@ import usePrivateAxios from '../../hooks/usePrivateAxios'
 import RecipeModal from '../../components/RecipeModal'
 import { getStartOfDate } from '../../utils/DateUtils'
 import { msToTime } from '../../utils/TimeUtil'
-const PlannedMeals = ({ chosenDate, newPlannedRecipe }) => {
+import useAuth from '../../hooks/useAuth'
+const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe }) => {
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const date = DAYS[chosenDate.getDay()] + ' ' + chosenDate.getDate() + ' ' + MONTHS[chosenDate.getMonth()] + ' ' + chosenDate.getFullYear()
@@ -15,6 +16,7 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe }) => {
   const [chosenRecipe, setChosenRecipe] = useState()
   const [plannedMeals, setPlannedMeals] = useState([])
   const [loading, setLoading] = useState(true)
+  const { auth } = useAuth()
   useEffect(() => {
     setLoading(true)
     privateAxios.get(`/api/v1/user/meal-planers/${chosenDate.getTime()}`)
@@ -24,9 +26,20 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe }) => {
   }, [chosenDate, newPlannedRecipe]);
 
   const removeFromPlanner = (id) => {
+
     setPlannedMeals(meals => meals.filter(meal => meal.mealPlannerId != id))
     privateAxios.delete(`/api/v1/user/meal-planer/${id}`).then(response => console.log(response))
       .catch((error) => console.log(error))
+      .finally(() => setRemovedPlannedRecipe(id))
+  }
+  const addToShoppingList = (ingredients) => {
+    console.log(ingredients);
+    const list = JSON.parse(localStorage.getItem(`shoppinglist_${auth.user.userId}`)) || []
+    ingredients.forEach(element => {
+      list.push(element)
+    });
+    console.log(list);
+    localStorage.setItem(`shoppinglist_${auth.user.userId}`, JSON.stringify(list))
   }
   const recipesElement = plannedMeals.map(meal => {
     const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = meal.recipe
@@ -46,7 +59,7 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe }) => {
         <div className='hidden group-hover:flex gap-2 absolute right-2 top-2'>
           <Tooltip content='Add recipe to shopping list' style='auto'>
             <button className='button-outlined-square py-0'
-              onClick={(e) => { e.stopPropagation(); }}>
+              onClick={(e) => { e.stopPropagation(); addToShoppingList(ingredients) }}>
               <ShoppingIcon style='w-6 h-6' />
               <span>Add</span>
             </button>

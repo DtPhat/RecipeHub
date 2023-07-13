@@ -7,7 +7,7 @@ import LeafIcon from '../../assets/LeafIcon'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 import { msToTime } from '../../utils/TimeUtil'
 
-const GlobalRecipeItem = ({ recipeItem, setChosenRecipe}) => {
+const GlobalRecipeItem = ({ recipeItem, setChosenRecipe }) => {
   const { userId, recipe_id, images, title, tags, rating, prepTime, cook_time, recipe_yield, unit, ingredients, isFavourite, steps } = recipeItem
   const privateAxios = usePrivateAxios()
   const navigate = useNavigate()
@@ -30,7 +30,7 @@ const GlobalRecipeItem = ({ recipeItem, setChosenRecipe}) => {
       <div className='bg-gray-200 flex items-center justify-between px-4'>
         <div className='flex items-center space-x-4 py-2'>
           <Avatar img={author.profileImage} alt="" rounded />
-          <span className={`text-xl font-medium truncate hover:underline underline-offset-2`}
+          <span className={`text-xl font-medium truncate hover:underline underline-offset-2 flex-1`}
             onClick={(e) => { e.stopPropagation(); navigate(`/user/${userId}`) }}>
             {author.fullName}
           </span>

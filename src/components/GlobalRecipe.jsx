@@ -12,12 +12,15 @@ import PlusCircleIcon from '../assets/PlusCircleIcon'
 import Toast from './Toast.jsx'
 import CopyingIcon from '../assets/CopyingIcon'
 import BeakerIcon from '../assets/BeakerIcon'
-const GlobalRecipe = ({ chosenRecipe, setChosenRecipe, }) => {
+import SharingBox from './SharingBox'
+const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
   const privateAxios = usePrivateAxios()
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
   const [customeYield, setCustomYield] = useState(recipe_yield)
   const [completedSteps, setCompletedSteps] = useState([])
   const [submitting, setSubmitting] = useState(false)
+  const [openSharingBox, setOpenSharingBox] = useState(false)
+
   const navigate = useNavigate()
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
@@ -25,6 +28,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe, }) => {
 
   const copyRecipe = () => {
     setSubmitting(true)
+
     privateAxios.post(`/api/v1/user/copy-recipe/${recipe_id}`)
       .then((responseId) => navigate(`/recipe/edit?recipe_id=${responseId.data}`))
       .catch(error => console.log(error))
@@ -48,7 +52,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe, }) => {
           onClick={(e) => { e.stopPropagation(); setChosenRecipe(undefined) }}>X</button>
       </div>
       <div className='flex flex-col gap-8'>
-      <div className='flex flex-col md:flex-row gap-4 md:gap-8'>
+        <div className='flex flex-col md:flex-row gap-4 md:gap-8'>
           <div className=' w-64 h-64 xs:w-96 xs:h-96 border rounded-xl mt-2 md:mt-1'>
             <Carousel>
               {images.map((image) => (
@@ -125,6 +129,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe, }) => {
             {nutrition}
           </div>
         </div>
+        <SharingBox open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
       </div >
     </section>
   )

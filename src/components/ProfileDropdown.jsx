@@ -8,7 +8,7 @@ const ProfileDropdown = () => {
   const navigate = useNavigate()
   const { auth, logout } = useAuth()
   // const username = auth && emailToUsername(auth.user.email);
-  return (  
+  return (
     <Dropdown
       arrowIcon={false}
       inline
@@ -35,7 +35,7 @@ const ProfileDropdown = () => {
       <Dropdown.Item onClick={() => { navigate(`/user/profile`) }}>
         Profile
       </Dropdown.Item>
-      <Dropdown.Item>
+      <Dropdown.Item onClick={() => { navigate('/user/settings') }}>
         Settings
       </Dropdown.Item>
       <Dropdown.Item onClick={() => { navigate(`/user/feedback`) }}>

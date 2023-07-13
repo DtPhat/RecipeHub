@@ -13,7 +13,7 @@ import RecipeDetails from '../../components/RecipeDetails'
 const PlannerView = ({ recipeData, chosenRecipe, setChosenRecipe }) => {
   return (
     <section>
-      <div className='space-y-4'>
+      <div className='space-y-4 py-2'>
         {recipeData.map((recipe, i) => {
           const { recipe_id, images, title, tags, rating, prep_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = recipe
           const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'

@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EyeIcon from '../../assets/EyeIcon'
 import { useNavigate } from 'react-router-dom'
 import RegisterCarousel from './RegisterCarousel'
 import axios from '../../api/axios'
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import ReactGA from 'react-ga';
+import Toast from '../../components/Toast'
+import { Spinner } from 'flowbite-react'
+import useAuth from '../../hooks/useAuth'
 
 const Register = () => {
+  const { auth, setAuth } = useAuth()
   const [showingPassword, setShowingPassword] = useState(false)
   const [registerData, setRegisterData] = useState({
     email: '',
@@ -17,7 +21,13 @@ const Register = () => {
     gender: 'MALE',
   })
   const navigate = useNavigate()
-  const [newAccount, setNewAccount] = useState()
+  const [showingError, setShowingError] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const serverErrors = {
+    EMAIL_DUPLICATED: 'Email has been registered'
+  }
+  const [serverError, setServerError] = useState('')
+  const [success, setSuccess] = useState(false)
   const handleRegisterDataChange = (e) => {
     let { name, value, type } = e.target
     if (type === 'date') {
@@ -29,20 +39,44 @@ const Register = () => {
     })
   }
   const signUp = () => {
-    axios.post('/api/v1/auth/register', registerData).then(response => console.log(response)).catch(err => console.log(err.response))
+    if (errorMessages.fullname || errorMessages.email || errorMessages.password) {
+      setShowingError(true)
+      return
+    }
+    setSubmitting(true)
+    axios.post('/api/v1/auth/register', registerData)
+      .then(response => {
+        console.log(response);
+        if(response.status == '200') {setSuccess(true) ; setServerError('')}
+      })
+      .catch(error => {
+        console.log(error)
+        error.request.status == 400 && setServerError(serverErrors[error.response.data.status])
+      })
+      .finally(() => { setSubmitting(false) })
   }
+
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse.access_token),
-    onError: (error) => console.log("Login fail", error)
+    onSuccess: tokenResponse => axios
+      .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
+      .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate('/recipe') }),
+    onError: (error) => console.log("Login google fail", error)
   });
   const style = {
     input: 'py-2 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full',
     radio: 'space-x-2 border border-gray-400 cursor-pointer flex justify-center w-24 rounded accent-green-600 hover:border-green-600',
   }
-
+  const { fullName, email, password } = registerData
+  const errorMessages = {
+    fullname: !fullName ? 'Full name is required' : !fullName.match(/^[A-Za-z0-9 ]*$/) ? 'Name should contain no special character' : '',
+    email: !email ? 'Email is required' : !email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ? 'Email should be valid' : '',
+    password: !password ? 'Password is required' : password.length < 6 ? 'Password should have at least 6 characters' : '',
+  }
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
+
+
 
   return (
     <section className='flex justify-center mx-8 items-center'>
@@ -64,11 +98,11 @@ const Register = () => {
             <div className='flex flex-col space-y-4'>
               <div>
                 <input type="text" className={style.input} name='fullName' id='fullname' placeholder='Full name' onChange={handleRegisterDataChange} />
-                <span className='invisible text-sm'>Warning here</span>
+                <div className='text-orange-accent text-sm h-2'>{showingError && errorMessages.fullname}</div>
               </div>
               <div>
                 <input type="text" className={style.input} name='email' id='email' placeholder='Email' onChange={handleRegisterDataChange} />
-                <span className='invisible text-sm'>Warning here</span>
+                <div className='text-orange-accent text-sm h-2'>{showingError && errorMessages.email}</div>
               </div>
               <div className='relative'>
                 <input type={showingPassword ? 'text' : 'password'} className={`${style.input} pr-12`} name='password' id='password' placeholder='Password'
@@ -77,7 +111,7 @@ const Register = () => {
                   onClick={() => setShowingPassword(prevState => !prevState)} >
                   <EyeIcon style='w-6 h-6' isOn={showingPassword} />
                 </button>}
-                <span className='invisible text-sm'>Warning here</span>
+                <div className='text-orange-accent text-sm h-4'>{showingError && errorMessages.password}</div>
               </div>
               <div>
                 <span className='pl-2 text-gray-500'>Date of birth</span>
@@ -100,9 +134,14 @@ const Register = () => {
                   </label>
                 </div>
               </div>
+              <span className='text-red-500 font-semibold m-auto'>{serverError}</span>
               <div className='flex justify-center'>
-                <button className='button-contained-square'
-                  onClick={signUp}>Sign up</button>
+                <button className='button-contained-square' disabled={submitting}
+                  onClick={signUp}>
+                  {submitting ?
+                    <Spinner color='success' />
+                    : <span>Sign up</span>}
+                </button>
               </div>
             </div>
             <div className='flex justify-center text-center border-b-2 border-gray-300 relative'>
@@ -114,6 +153,7 @@ const Register = () => {
               <span className='font-semibold'>Continue with Google</span>
             </button>
           </div>
+          {success && <Toast message='Account created successfully. Please verify in your email' direction='right' />}
         </div>
       </div>
     </section >

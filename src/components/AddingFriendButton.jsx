@@ -15,7 +15,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
     receivedRequests: true,
     friends: true,
   })
-
+  const [submitting, setSubmitting] = useState(false)
   console.log(pendingRequest);
   useEffect(() => {
     privateAxios.get(`/api/v1/user/friend/requests`)
@@ -47,9 +47,11 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
   }, []);
 
   const addFriend = () => {
-    privateAxios.post(`/api/v1/user/request-friend/${friendId}`).then(response => console.log(response))
+    setSubmitting(true)
+    privateAxios.post(`/api/v1/user/request-friend/${friendId}`)
+      .then(response => console.log(response))
       .catch(error => console.log(error))
-      .finally(() => { setPendingRequest('sent'); onSuccess() })
+      .finally(() => { setPendingRequest('sent'); onSuccess(); setSubmitting(false) })
 
   }
   console.log(pendingRequest);
@@ -59,7 +61,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
       <button className={`${pendingRequest ? 'button-outlined-square color-secondary bg-gray-200' : 'button-contained-square '} w-full`}
         onClick={addFriend} disabled={isLoading || pendingRequest}>
         {
-          isLoading ?
+          isLoading || submitting ?
             <Spinner color='success' />
             : !pendingRequest ?
               <>

@@ -17,6 +17,7 @@ import TrashIcon from '../assets/TrashIcon'
 import usePrivateAxios from '../hooks/usePrivateAxios'
 import { adjustQuantity } from '../utils/StringUtils'
 import { msToTime } from '../utils/TimeUtil'
+import ConfirmBox from './ConfirmBox'
 import RecipePlanner from './RecipePlanner'
 import SharingBox from './SharingBox'
 const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
@@ -27,6 +28,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
   const [openRecipePlanner, setOpenRecipePlanner] = useState(false)
   const navigate = useNavigate()
   const privateAxios = usePrivateAxios()
+  const [confirmDeletion, setConfirmDeletion] = useState(false)
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
@@ -43,7 +45,8 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100'
             onClick={(e) => {
               e.stopPropagation();
-              window.confirm('Are you sure to delete this recipe?') && (deleteRecipe(recipe_id) && setChosenRecipe(undefined))
+              // window.confirm('Are you sure to delete this recipe?') && (deleteRecipe(recipe_id) && setChosenRecipe(undefined))
+              setConfirmDeletion(true)
             }}>
             <TrashIcon style='w-6 h-6' />
           </button>}
@@ -158,6 +161,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
             {nutrition}
           </div>
         </div>
+        <ConfirmBox open={confirmDeletion} setOpen={setConfirmDeletion} callback={() => deleteRecipe(recipe_id)} message='Are you sure you want to delete this recipe' />
         <SharingBox open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
         <RecipePlanner open={openRecipePlanner} setOpen={setOpenRecipePlanner} id={recipe_id} />
       </div >

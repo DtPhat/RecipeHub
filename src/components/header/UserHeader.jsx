@@ -59,7 +59,7 @@ const UserHeader = () => {
               <Notification />
               <ProfileDropdown />
             </div>
-            : <div className='flex gap-4 items-center justify-between pl-2 my-2 border-l-2'>
+            : <div className='flex gap-4 items-center justify-between pl-2 my-2 border-l-2 xl:border-none'>
               <button className='button-outlined hidden md:block' onClick={() => navigate('/register')}>Register</button>
               <button className='button-contained w-20 xs:w-36' onClick={() => navigate('/login')}>Login</button>
             </div>

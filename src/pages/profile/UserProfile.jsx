@@ -121,7 +121,7 @@ const UserProfile = () => {
               <ListView recipeData={recipes} global={true} />
               <div className='flex justify-end mt-4'>
                 <Pagination
-                  currentPage={currentPage} q
+                  currentPage={currentPage}
                   onPageChange={(page) => { setCurrentPage(page) }}
                   showIcons
                   totalPages={totalPages}

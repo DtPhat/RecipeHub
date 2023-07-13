@@ -94,7 +94,7 @@ const RecipeExport = () => {
             const { recipe_id, images, title, tags, rating, prep_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = recipe
             const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
             return (
-              <div key={recipe_id}seach
+              <div key={recipe_id} seach
                 className='w-full h-68 flex flex-col border-2 border-gray-200 rounded p-2 space-y-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'
                 onClick={() => setChosenRecipe(recipe)}>
                 <img src={recipeImage} alt="" className='w-full h-40 object-cover rounded' />

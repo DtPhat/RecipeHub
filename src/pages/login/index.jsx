@@ -1,29 +1,39 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react'
-import EyeIcon from '../../assets/EyeIcon'
+import { useGoogleLogin } from '@react-oauth/google'
+import React, { useEffect, useState } from 'react'
+import ReactGA from 'react-ga'
 import { useLocation, useNavigate } from 'react-router-dom'
-import axios, { axiosGoogle } from '../../api/axios'
+import axios from '../../api/axios'
+import EyeIcon from '../../assets/EyeIcon'
 import useAuth from '../../hooks/useAuth'
-import { useGoogleLogin } from '@react-oauth/google';
-import ReactGA from 'react-ga';
+import ForgottenPassword from './ForgottenPassword'
+import { Spinner } from 'flowbite-react'
 
 const Login = () => {
   const [showingPassword, setShowingPassword] = useState(false)
-  const [loginData, setLoginData] = useState({ email: '', password: '' })
+  const [loginData, setLoginData] = useState({ email: '', password: '', isRememberMe: false })
   const { auth, setAuth } = useAuth()
   const location = useLocation()
   const fromPath = location.state?.from?.pathname || '/'
   const navigate = useNavigate()
+  const [submitting, setSubmitting] = useState(false)
+  const [serverError, setServerError] = useState('')
+  const [openForgottenPasswordBox, setOpenForgottenPasswordBox] = useState(false)
+console.log(loginData);
   const handleLoginDataChange = (e) => {
-    const { name, value } = e.target
-    setLoginData(prevData => { return { ...prevData, [name]: value } })
+    const { name, value, type } = e.target
+    setLoginData(prevData => { return { ...prevData, [name]: type == 'checkbox' ? !prevData[name] : value } })
   }
+
   const loginWithAccount = () => {
+    setSubmitting(true)
     axios.post('/api/v1/auth/basic/login', loginData)
       .then(response => {
         setAuth(response.data);
         response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath)
-      })
+      }).catch(error => {
+        console.log(error)
+        error.request.status == 403 && setServerError('Wrong email or password')
+      }).finally(() => setSubmitting(false))
   }
   const loginWithGoogle = useGoogleLogin({
     onSuccess: tokenResponse => axios
@@ -35,6 +45,7 @@ const Login = () => {
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
+
 
   return (
     <section className='flex justify-center mx-8 items-center'>
@@ -63,16 +74,22 @@ const Login = () => {
               </div>
               <div className='flex justify-between'>
                 <div className='space-x-2 flex items-center text-gray-600 select-none'>
-                  <input type="checkbox" name='remember' id='remember' className='w-5 h-5 accent-gray-300' />
-                  <label htmlFor='remember'>Remmeber me</label>
+                  <input type="checkbox" name='isRememberMe' id='isRememberMe' className='w-5 h-5 accent-gray-300' checked={loginData.isRememberMe} onChange={handleLoginDataChange} />
+                  <label htmlFor='isRememberMe'>Remmeber me</label>
                 </div>
-                <div className='text-green-accent cursor-pointer flex justify-center px-2'>
+                <div className='text-green-accent cursor-pointer flex justify-center px-2' onClick={() => setOpenForgottenPasswordBox(true)}>
                   <span className='underline'>Forgotten password?</span>
                 </div>
+                <ForgottenPassword openForgottenPasswordBox={openForgottenPasswordBox} setOpenForgottenPasswordBox={setOpenForgottenPasswordBox} />
               </div>
+              <span className='text-red-500 font-semibold m-auto'>{serverError}</span>
               <div className='flex justify-center'>
                 <button className='button-contained-square'
-                  onClick={loginWithAccount}>Log in</button>
+                  onClick={loginWithAccount}>
+                  {submitting ?
+                    <Spinner color='success' />
+                    : <span>Log in</span>}
+                </button>
               </div>
             </div>
 

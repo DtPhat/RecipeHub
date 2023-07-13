@@ -201,7 +201,7 @@ const AddRecipe = () => {
         <div className=' pb-2 font-semibold mb-8 border-b-2 flex justify-between gap-2'>
           <h1 className='text-3xl text-gray-600'>Create new recipe</h1>
           <div className='my-auto'>
-            <button className='button-outlined-square w-28 py-0 color-secondary opacity-50 hover:opacity-100'
+            <button className='button-outlined-square w-28 py-0.5 color-secondary opacity-50 hover:opacity-100'
               onClick={() => navigate(-1)}>
               <XCircleIcon style='w-6 h-6' />
               <span className=''>Cancel</span>
@@ -246,9 +246,9 @@ const AddRecipe = () => {
               <div className='flex flex-wrap gap-2 max-w-2xl'>
                 {photosElement}
                 {(recipeData.photos.length < 8) &&
-                  <div className='w-40 h-40 border-4 bg-gray-100 border-gray-300 border-dashed rounded-xl flex items-center justify-center cursor-pointer'
+                  <div className='w-40 h-40 group border-4 bg-gray-100 border-gray-300 border-dashed hover:border-solid rounded-xl flex items-center justify-center cursor-pointer '
                     onClick={() => imgInput.current.click()}>
-                    <PlusCircleIcon style='w-24 h-24 text-gray-200' />
+                    <PlusCircleIcon style='w-24 h-24 text-gray-200 group-hover:text-gray-300' />
                   </div>}
                 <input type='file' className='hidden' accept="image/*" ref={imgInput} onChange={(e) => {
                   const image = e.target.files[0]

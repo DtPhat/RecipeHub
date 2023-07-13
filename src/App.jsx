@@ -26,20 +26,15 @@ import DashBoard from './pages/admin/DashBoard.jsx';
 import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
 import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
 import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
-
-
-
 import ReactGA, { pageview } from 'react-ga';
 
- export const TRACKING_ID='G-FVY5ZCWNMT'
+export const TRACKING_ID = 'G-FVY5ZCWNMT'
 ReactGA.initialize(TRACKING_ID);
 
 
 
 
 const App = () => {
-
-
 
 	const { auth } = useAuth()
 	const isAdmin = auth?.user.role === "ADMIN"
@@ -50,6 +45,10 @@ const App = () => {
 				<Route index element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
+				<Route path="/global" >
+					<Route index element={<GlobalRecipes />} />
+					<Route path=":recipeId" element={<GlobalRecipeDetails />} />
+				</Route>
 				<Route element={<RequireAuth allowedRole='USER' />} >
 					<Route path='/recipe' >
 						<Route index element={<Recipe />} />
@@ -57,10 +56,6 @@ const App = () => {
 						<Route path='edit' element={<EditRecipe />} />
 						<Route path='friends' element={<FriendRecipe />} />
 						<Route path='export' element={<RecipeExport />} />
-					</Route>
-					<Route path="/global" >
-						<Route index element={<GlobalRecipes />} />
-						<Route path=":recipeId" element={<GlobalRecipeDetails />} />
 					</Route>
 					<Route path='/mealplanner' element={<MealPlanner />} />
 					<Route path='/shoppinglist' element={<ShoppingList />} />

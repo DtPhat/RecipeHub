@@ -84,7 +84,6 @@ const GlobalRecipes = () => {
           />
         </div>
       </div>
-
     </section>
   )
 }

@@ -13,6 +13,7 @@ import Toast from './Toast.jsx'
 import CopyingIcon from '../assets/CopyingIcon'
 import BeakerIcon from '../assets/BeakerIcon'
 import SharingBox from './SharingBox'
+import useAuth from '../hooks/useAuth'
 const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
   const privateAxios = usePrivateAxios()
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
@@ -20,25 +21,25 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
   const [completedSteps, setCompletedSteps] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [openSharingBox, setOpenSharingBox] = useState(false)
-
+  const [showingToast, setShowingToast] = useState(false)
   const navigate = useNavigate()
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
-
+  const { auth } = useAuth()
   const copyRecipe = () => {
     setSubmitting(true)
-
+    setShowingToast(true)
     privateAxios.post(`/api/v1/user/copy-recipe/${recipe_id}`)
       .then((responseId) => navigate(`/recipe/edit?recipe_id=${responseId.data}`))
       .catch(error => console.log(error))
       .finally(() => setSubmitting(false))
   }
   return (
-    <section className='h-[85vh] z-30'>
+    <section className='min-h-[85vh]'>
       <div className='text-lg flex space-x-6 justify-end'>
         <div className='flex space-x-2'>
-          <button className='button-outlined-square py-0.5 w-auto' disabled={submitting}
+          <button className={`button-outlined-square py-0.5 w-auto ${!auth?.user ? 'color-secondary opacity-30' : ''}`} disabled={submitting || !auth?.user}
             onClick={copyRecipe}>
             <CopyingIcon style='w-6 h-6' />
             {
@@ -130,6 +131,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
           </div>
         </div>
         <SharingBox open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
+        {showingToast && <Toast message='Recipe is added to your repository' direction='right' />}
       </div >
     </section>
   )

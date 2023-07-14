@@ -21,10 +21,12 @@ const GlobalRecipeItem = ({ recipeItem, setChosenRecipe }) => {
       fullName: response.data.fullName
     }))
   }, []);
-  const difficulty = steps.length < 5 ? 'easy' : steps.length < 10 ? 'medium' : steps.length < 15 ? 'hard' : 'master'
+  const method = steps.split('\n')
+  console.log(method);
+  const difficulty = method.length < 5 ? 'easy' : method.length < 10 ? 'medium' : method.length < 15 ? 'hard' : 'master'
   const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
   return (
-    <div className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative'
+    <div className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative shadow-md'
       onClick={() => setChosenRecipe(recipeItem)}>
       <img src={recipeImage} alt="" className='w-full h-60 object-cover rounded-t-lg' />
       <div className='bg-gray-200 flex items-center justify-between px-4'>

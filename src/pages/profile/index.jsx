@@ -68,7 +68,7 @@ const MyProfile = () => {
   return (
     <section className='flex justify-center sm:py-4 sm:mx-8 gap-6'>
       <div className='border-gray-400 rounded max-w-8xl w-full p-4 gap-4 bg-gray-50 flex flex-col lg:flex-row'>
-        <div className='flex flex-col gap-8 font-semibold sm:mt-4 p-8 bg-gray-100'>
+        <div className='flex flex-col gap-8 font-semibold p-8 bg-gray-100'>
           <div className='flex flex-col md:flex-row lg:flex-col gap-8 '>
             <div className='flex flex-col items-start space-y-4 group'>
               <Avatar img={profileImage} size='xl' stacked />

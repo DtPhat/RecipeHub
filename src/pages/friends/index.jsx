@@ -86,7 +86,7 @@ const FriendRecipe = () => {
               </div>
             </div>
           </div>
-          {newFriendProfile === null && <div className='text-end px-4 font-semibold text-lg text-gray-500'>User not found</div>}
+          {newFriendProfile === null && <div className='px-4 font-semibold text-lg text-gray-500'>User not found</div>}
         </div>
         {/* <div className='text-3xl font-semibold text-gray-500'>{!friendList.length ? "You have no friends." : ""}</div> */}
         {loading ? <Skeleton /> :
@@ -94,7 +94,7 @@ const FriendRecipe = () => {
             <NoFriends />
             : <div className='grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
               {(searchedFriendList || friendList)?.map(friend =>
-                <div className='flex border-2 border-gray-300 hover:border-green-accent rounded p-4 gap-4 items-center cursor-pointer hover:bg-gray-100 relative'>
+                <div className='flex border border-gray-300 hover:border-green-accent rounded p-4 gap-4 items-center cursor-pointer hover:bg-gray-100 relative shadow'>
                   <Avatar img={friend.profileImage} size='lg' rounded bordered />
                   <div className='flex flex-col gap-2 over'>
                     <h1 className='text-2xl font-bold w-52 truncate'>{friend.fullName}</h1>
@@ -118,44 +118,44 @@ const FriendRecipe = () => {
             </div>
         }
       </div>
-      {newFriendProfile && <Modal show={open} size="md" popup onClose={() => setOpen(false)}>
-        <Modal.Header />
-        <Modal.Body>
-          <div className='fixed p-8 top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] max-w-xl w-full z-30 border-2 border-gray-300 rounded bg-gray-50 flex flex-col space-y-4 overflow-auto transition ease-in-out'>
-            <div className='flex justify-end gap-4'>
-              <button className='button-contained-square py-0.5 w-32' onClick={() => navigate(`/user/${newFriendProfile.userId}`)}>View profile</button>
-              <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
-                onClick={(e) => { e.stopPropagation(); setOpen(false); setFriendId(''); setNewFriendProfile() }}>
-                X
-              </button>
-            </div>
-            <div className='flex flex-col items-start space-y-4'>
-              <Avatar img={newFriendProfile.profileImage} size='xl' stacked />
-              <h1 className='text-2xl font-bold'>{newFriendProfile.fullName}</h1>
-            </div>
-            <div className='flex gap-8'>
-              <div className='text-gray-500 flex flex-col space-y-4'>
-                <span>User ID</span>
-                <span>Email</span>
-                <span className='text-gray-500'>Date of birth</span>
-                <span className='text-gray-500'>Gender</span>
+      {newFriendProfile &&
+        <Modal show={open} size="xl" onClose={() => { setOpen(false); setFriendId(''); setNewFriendProfile() }}>
+          <Modal.Body>
+            <div className='rounded flex flex-col space-y-4 '>
+              <div className='flex justify-end gap-4'>
+                <button className='button-contained-square py-0.5 w-32' onClick={() => navigate(`/user/${newFriendProfile.userId}`)}>View profile</button>
+                <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
+                  onClick={(e) => { setOpen(false); setFriendId(''); setNewFriendProfile() }}>
+                  X
+                </button>
               </div>
-              <div className='flex flex-col space-y-4'>
-                <span>{newFriendProfile.userId}</span>
-                <span>{newFriendProfile.email}</span>
-                <span>{new Date(newFriendProfile.birthday).toLocaleDateString()}</span>
-                <span>{newFriendProfile.gender}</span>
+              <div className='flex flex-col items-start space-y-4'>
+                <Avatar img={newFriendProfile.profileImage} size='xl' stacked />
+                <h1 className='text-2xl font-bold'>{newFriendProfile.fullName}</h1>
               </div>
+              <div className='flex gap-8'>
+                <div className='text-gray-500 flex flex-col space-y-4'>
+                  <span>User ID</span>
+                  <span>Email</span>
+                  <span className='text-gray-500'>Date of birth</span>
+                  <span className='text-gray-500'>Gender</span>
+                </div>
+                <div className='flex flex-col space-y-4'>
+                  <span>{newFriendProfile.userId}</span>
+                  <span>{newFriendProfile.email}</span>
+                  <span>{new Date(newFriendProfile.birthday).toLocaleDateString()}</span>
+                  <span>{newFriendProfile.gender}</span>
+                </div>
+              </div>
+              <AddingFriendButton
+                friendId={newFriendProfile.userId}
+                onSuccess={() => {
+                  setShowingToast(prevState => ({ ...prevState, addFriend: true }));
+                  setNewFriendProfile()
+                }} />
             </div>
-            <AddingFriendButton
-              friendId={newFriendProfile.userId}
-              onSuccess={() => {
-                setShowingToast(prevState => ({ ...prevState, addFriend: true }));
-                setNewFriendProfile()
-              }} />
-          </div>
-        </Modal.Body>
-      </Modal>}
+          </Modal.Body>
+        </Modal>}
 
       {showingToast.unfriend && <Toast message='Unfriend successfully' />}
       {showingToast.addFriend && <Toast message='Send friend request successfully' />}

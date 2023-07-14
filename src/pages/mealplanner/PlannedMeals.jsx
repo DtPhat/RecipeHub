@@ -8,6 +8,7 @@ import RecipeModal from '../../components/RecipeModal'
 import { getStartOfDate } from '../../utils/DateUtils'
 import { msToTime } from '../../utils/TimeUtil'
 import useAuth from '../../hooks/useAuth'
+import ConfirmBox from '../../components/ConfirmBox'
 const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe }) => {
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -16,6 +17,7 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
   const [chosenRecipe, setChosenRecipe] = useState()
   const [plannedMeals, setPlannedMeals] = useState([])
   const [loading, setLoading] = useState(true)
+  const [confirmRemovePlannedRecipe, setConfirmRemovePlannedRecipe] = useState(false)
   const { auth } = useAuth()
   useEffect(() => {
     setLoading(true)
@@ -25,8 +27,11 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
       .finally(() => setLoading(false))
   }, [chosenDate, newPlannedRecipe]);
 
+  const removing = (e, id)=> {
+    e.stopPropagation()
+    removeFromPlanner(id)
+  }
   const removeFromPlanner = (id) => {
-
     setPlannedMeals(meals => meals.filter(meal => meal.mealPlannerId != id))
     privateAxios.delete(`/api/v1/user/meal-planer/${id}`).then(response => console.log(response))
       .catch((error) => console.log(error))
@@ -46,7 +51,7 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
     const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
     return (
       <div key={meal.mealPlannerId} className='flex border-2 border-green-variant p-2 rounded bg-gray-100 relative cursor-pointer group'
-        onClick={() => setChosenRecipe(meal.recipe)}>
+        onClick={() => !confirmRemovePlannedRecipe && setChosenRecipe(meal.recipe)}>
         <img src={recipeImage} alt="" className='w-32 h-32 rounded' />
         <div className='flex flex-col ml-4 overflow-hidden gap-2'>
           <h1 className='text-lg font-bold text-green-variant capitalize'>{meal.mealType}</h1>
@@ -65,9 +70,14 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
             </button>
           </Tooltip>
           <button className='button-outlined-square py-0'
-            onClick={(e) => { e.stopPropagation(); window.confirm('Are you sure to remove this recipe from planned list?') && removeFromPlanner(meal.mealPlannerId) }}>
+            onClick={(e) => {
+              e.stopPropagation()
+              // window.confirm('Are you sure to remove this recipe from planned list?') && removeFromPlanner(meal.mealPlannerId)
+              setConfirmRemovePlannedRecipe(true)
+            }}>
             <span>Remove</span>
           </button>
+          <ConfirmBox open={confirmRemovePlannedRecipe} setOpen={setConfirmRemovePlannedRecipe} callback={() => removeFromPlanner(meal.mealPlannerId)} message={`Are you sure you want to remove this recipe from planner?`} />
         </div>
       </div>)
   })
@@ -95,7 +105,6 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
             <RecipeModal chosenRecipe={chosenRecipe} setChosenRecipe={setChosenRecipe} />
           </div>
       }
-
     </div>
   )
 }

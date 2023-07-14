@@ -33,13 +33,14 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
   const deleteRecipe = (id) => {
-    setRecipes && setRecipes(recipes => recipes.filter(recipe => recipe.recipe_id != id))
+    setRecipes(recipes => recipes.filter(recipe => recipe.recipe_id != id))
+    setChosenRecipe(undefined)
     privateAxios.delete(`/api/v1/user/recipe/${id}`)
       .then(response => console.log(response.data))
       .catch(error => console.log(error))
   }
   return (
-    <section className='h-[85vh]'>
+    <section className='min-h-[85vh]'>
       <div className='text-lg flex space-x-1 xs:space-x-6 justify-end'>
         {setRecipes !== undefined &&
           <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100'

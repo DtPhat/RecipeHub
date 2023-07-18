@@ -6,53 +6,81 @@
     body {
         @apply bg-gray-100
     }
+    .app {
+        @apply bg-gray-100 dark:bg-gray-800 dark:text-whitegray
+    }
+
+    .bg-container{
+        @apply bg-gray-50 dark:bg-gray-900
+    }
+
+    .bg-item{
+        @apply bg-gray-100 dark:bg-gray-800
+    }
+
+    .text-accent{
+        @apply text-green-accent dark:text-green-variant
+    }
+    .border-accent{
+        @apply border-green-accent dark:border-green-variant
+    }
+    .bg-gray{
+        @apply bg-gray-200 dark:bg-gray-700
+    }
+    .border-gray{
+        @apply border-gray-200 dark:border-gray-600
+    }
 }
 
 @layer components {
+    
 
     input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
-    input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px #f0fdf4 inset !important;
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #f0fdf4 inset !important;
     }
 
     .button-contained {
-        @apply border-2 w-36 px-2 py-1 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-full flex justify-center items-center space-x-2
+        @apply border-2 w-36 px-2 py-1 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-full flex justify-center items-center space-x-2 disabled:opacity-50
     }
 
     .button-outlined {
-        @apply border-2 w-36 px-2 py-1 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-full flex justify-center items-center space-x-2
+        @apply border-2 w-36 px-2 py-1 border-green-variant text-accent text-lg hover:bg-green-100 dark:hover:bg-green-900 font-semibold rounded-full flex justify-center items-center space-x-2 disabled:opacity-30
     }
 
     .button-contained-square {
-        @apply border-2 w-full p-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-lg flex justify-center items-center space-x-2
+        @apply border-2 w-full p-2 bg-green-accent border-green-variant text-lg text-whitegray font-semibold hover:opacity-90 rounded-lg flex justify-center items-center space-x-2 disabled:opacity-50
     }
 
     .button-outlined-square {
-        @apply border-2 w-full p-2 border-green-variant text-green-accent text-lg hover:bg-green-100 font-semibold rounded-lg flex justify-center items-center space-x-2
+        @apply border-2 w-full p-2 border-green-variant text-accent text-lg hover:bg-green-100 dark:hover:bg-green-900 font-semibold rounded-lg flex justify-center items-center space-x-2 disabled:opacity-30
     }
 
+    .link {
+        @apply font-semibold text-lg text-accent hover:underline
+      }
+
     .color-primary {
-        @apply border-green-variant text-green-accent hover:hover:bg-green-100
+        @apply border-green-variant text-accent hover:bg-green-100
     }
 
     .color-secondary {
-        @apply border-gray-500 text-black hover:hover:bg-gray-200
+        @apply border-gray-500 text-black dark:text-white hover:bg-gray
     }
 
     .color-danger {
-        @apply border-orange-accent text-orange-600 hover:hover:bg-red-50
+        @apply border-orange-accent text-orange-600 dark:text-orange-300 hover:bg-red-50 dark:hover:bg-red-900
     }
 
     .admin-content {
         @apply m-2 md:m-5 mt-24 p-2 md:p-10 bg-white dark:bg-gray-900 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
-      }
+    }
 
-      .admin-child-content {
+    .admin-child-content {
         @apply m-2 md:m-5 mt-24 p-4 xs:w-4/5 md:w-1/4 bg-slate-50 dark:bg-gray-800 rounded-3xl overflow-x-scroll no-scrollbar shadow-md
-      }
-
+    }
 
 }
 
@@ -66,8 +94,10 @@
 
     /* Hide scrollbar for IE, Edge and Firefox */
     .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
     }
-  
+
 }

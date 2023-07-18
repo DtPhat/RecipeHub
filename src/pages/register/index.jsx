@@ -63,7 +63,7 @@ const Register = () => {
     onError: (error) => console.log("Login google fail", error)
   });
   const style = {
-    input: 'py-2 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full',
+    input: 'py-2 text-lg px-2 bg-inherit border-b-2 focus:outline-gray-200 w-full',
     radio: 'space-x-2 border border-gray-400 cursor-pointer flex justify-center w-24 rounded accent-green-600 hover:border-green-600',
   }
   const { fullName, email, password } = registerData
@@ -85,12 +85,12 @@ const Register = () => {
         <div className='hidden md:block w-1/2 bg-green-variant rounded-l-xl relative '>
           <RegisterCarousel />
         </div>
-        <div className='w-full md:w-1/2 bg-gray-50 rounded-r-xl flex items-center justify-center px-4'>
+        <div className='w-full md:w-1/2 bg-container rounded-r-xl flex items-center justify-center px-4'>
           <div className='flex flex-col space-y-8 w-96'>
             <div>
               <h1 className='text-3xl sm:text-4xl pb-2 font-semibold text-center'>Create your account</h1>
               <div className='flex justify-center space-x-2 items-center'>
-                <span className='text-gray-500'>Already have an account?</span>
+                <span className='text-gray'>Already have an account?</span>
                 <button className='link'
                   onClick={() => navigate('/login')}>Log in</button>
               </div>
@@ -107,7 +107,7 @@ const Register = () => {
               <div className='relative'>
                 <input type={showingPassword ? 'text' : 'password'} className={`${style.input} pr-12`} name='password' id='password' placeholder='Password'
                   onChange={handleRegisterDataChange} />
-                {registerData.password && <button className='absolute top-3 right-3 text-gray-400 hover:text-gray-800 bg-gray-50 z-10'
+                {registerData.password && <button className='absolute top-3 right-3 text-gray-400 hover:text-gray-600 z-10'
                   onClick={() => setShowingPassword(prevState => !prevState)} >
                   <EyeIcon style='w-6 h-6' isOn={showingPassword} />
                 </button>}
@@ -115,7 +115,7 @@ const Register = () => {
               </div>
               <div>
                 <span className='pl-2 text-gray-500'>Date of birth</span>
-                <input type="date" className={style.input} name='birthday' id='birthdate' onChange={handleRegisterDataChange} />
+                <input type="date" className={`${style.input} dark:bg-gray-800`} name='birthday' id='birthdate' onChange={handleRegisterDataChange} />
               </div>
               <div className='py-2'>
                 <span className='pl-2 text-gray-500'>Gender</span>
@@ -145,7 +145,7 @@ const Register = () => {
               </div>
             </div>
             <div className='flex justify-center text-center border-b-2 border-gray-300 relative'>
-              <span className='absolute top-[-1rem] text-xl bg-gray-50 text-gray-500 px-2'>or</span>
+              <span className='absolute top-[-1rem] text-xl bg-container text-gray-500 px-2'>or</span>
             </div>
             <button className='button-outlined-square flex items-center justify-center space-x-4'
               onClick={loginWithGoogle}>

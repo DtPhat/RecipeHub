@@ -58,7 +58,7 @@ const AddingFriendButton = ({ friendId, onSuccess }) => {
   const isLoading = loading.sentRequests || loading.receivedRequests || loading.friends
   return (
     <div>
-      <button className={`${pendingRequest ? 'button-outlined-square color-secondary bg-gray-200' : 'button-contained-square '} w-full`}
+      <button className={`${pendingRequest ? 'button-outlined-square color-secondary bg-gray' : 'button-contained-square '} w-full`}
         onClick={addFriend} disabled={isLoading || pendingRequest}>
         {
           isLoading || submitting ?

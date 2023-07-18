@@ -51,7 +51,7 @@ console.log(loginData);
     <section className='flex justify-center mx-8 items-center'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>
         {/* <img src="/img/logo-text-bottom.png" alt="" className='absolute top-12 left-4 w-20 h-24 select-none' /> */}
-        <div className='w-full bg-gray-50 rounded-l-xl flex items-center justify-center px-4'>
+        <div className='w-full bg-container rounded-l-xl flex items-center justify-center px-4'>
           <div className='flex flex-col space-y-8 w-96'>
             <div>
               <h1 className='text-4xl pb-2 font-semibold'>Welcome back</h1>
@@ -59,25 +59,25 @@ console.log(loginData);
             </div>
             <div className='flex flex-col space-y-4'>
               <div>
-                <input type="text" className='pb-2 pt-4 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full' name='email' id='email' placeholder='Email'
+                <input type="text" className='pb-2 pt-4 text-lg px-2 bg-inherit border-b-2 focus:outline-gray-200 w-full' name='email' id='email' placeholder='Email'
                   onChange={handleLoginDataChange} />
                 <span className='invisible text-sm'>Warning here</span>
               </div>
               <div className='relative'>
-                <input type={showingPassword ? 'text' : 'password'} className='pb-2 pt-4 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full pr-12' name='password' id='password' placeholder='Password'
+                <input type={showingPassword ? 'text' : 'password'} className='pb-2 pt-4 text-lg px-2 bg-inherit border-b-2 focus:outline-gray-200 w-full pr-12' name='password' id='password' placeholder='Password'
                   onChange={handleLoginDataChange} />
-                {loginData.password && <button className='absolute top-4 right-3 text-gray-400 hover:text-gray-800 bg-gray-50 z-10'
+                {loginData.password && <button className='absolute top-4 right-3 text-gray-400 hover:text-gray-600 z-10'
                   onClick={() => setShowingPassword(prevState => !prevState)}>
                   <EyeIcon style='w-6 h-6' isOn={showingPassword} />
                 </button>}
                 <span className='invisible text-sm'>Warning here</span>
               </div>
               <div className='flex justify-between'>
-                <div className='space-x-2 flex items-center text-gray-600 select-none'>
+                <div className='space-x-2 flex items-center text-gray select-none'>
                   <input type="checkbox" name='isRememberMe' id='isRememberMe' className='w-5 h-5 accent-gray-300' checked={loginData.isRememberMe} onChange={handleLoginDataChange} />
                   <label htmlFor='isRememberMe'>Remmeber me</label>
                 </div>
-                <div className='text-green-accent cursor-pointer flex justify-center px-2' onClick={() => setOpenForgottenPasswordBox(true)}>
+                <div className='text-accent cursor-pointer flex justify-center px-2' onClick={() => setOpenForgottenPasswordBox(true)}>
                   <span className='underline'>Forgotten password?</span>
                 </div>
                 <ForgottenPassword openForgottenPasswordBox={openForgottenPasswordBox} setOpenForgottenPasswordBox={setOpenForgottenPasswordBox} />
@@ -94,7 +94,7 @@ console.log(loginData);
             </div>
 
             <div className='flex justify-center text-center border-b-2 border-gray-300 relative'>
-              <span className='absolute top-[-1rem] text-xl bg-gray-50 text-gray-500 px-2'>or</span>
+              <span className='absolute top-[-1rem] text-xl bg-container text-gray-500 px-2'>or</span>
             </div>
             <button className='button-outlined-square space-x-4'
               onClick={loginWithGoogle}>
@@ -108,7 +108,7 @@ console.log(loginData);
             </div>
           </div>
         </div>
-        <div className='w-1/2 hidden md:block bg-green-variant rounded-r-xl pt-16 relative px-4'>
+        <div className='w-1/2 hidden md:block bg-green-variant dark:bg-green-dark rounded-r-xl pt-16 relative px-4'>
           <div className='flex justify-center 2xl:pr-24'><img src="/img/rotating-dish.png" alt="" className='animate-spin-slow w-[32rem]' /></div>
           <h1 className='text-9xl text-green-200 drop-shadow-xl rotate-90 absolute top-64 left-[26rem] hidden 2xl:flex'>Organize,</h1>
           <div className='flex gap-2 p-4'>

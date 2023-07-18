@@ -27,6 +27,7 @@ export default {
         'green-accent': '#1d6d03',
         'green-variant': '#8ac775',
         'orange-accent': '#f2b963',
+        'green-dark' : '#1e453e',
       },
       spacing: {
         18: '4.5rem',

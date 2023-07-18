@@ -58,18 +58,18 @@ const GlobalRecipes = () => {
 
   return (
     <section className='flex justify-center py-4 lg:mx-8 gap-6'>
-      <div className='border-gray-400 rounded max-w-8xl w-full space-y-4 bg-gray-50 py-4 px-8'>
-        <div className='select-none flex flex-col 2xl:flex-row gap-4 justify-between pb-2 border-b-2 border-green-accent text-green-accent'>
-          <h1 className='text-2xl md:text-4xl font-semibold text-gray-600 '>Explore our network of various recipes</h1>
+      <div className='border-gray-400 rounded max-w-8xl w-full space-y-4 bg-container py-4 px-8 '>
+        <div className='select-none flex flex-col 2xl:flex-row gap-4 justify-between pb-2 border-b-2 border-accent text-accent'>
+          <h1 className='text-2xl md:text-4xl font-semibold text-gray-500 '>Explore our network of various recipes</h1>
           <div className='w-full 2xl:w-1/2'>
             <SearchBar keyword={keyword} setKeyword={setKeyword} handleEnter={searchByKeyword} autoFocus={true} placeholder='Search our public recipes' />
           </div>
         </div>
         <GlobalRecipeFilter filter={filter} setFilter={setFilter} />
         {filter.title && <div className='flex rounded p-2 '>
-          <p className='font-semibold text-2xl'>Search results for "<span className='text-green-accent'>{filter.title}</span>"</p>
+          <p className='font-semibold text-2xl'>Search results for "<span className='text-accent'>{filter.title}</span>"</p>
         </div>}
-        <div>
+        <div className='min-h-[70vh]'>
           {loading ?
             <Skeleton />
             : <GlobalView recipeData={globalRecipes} />

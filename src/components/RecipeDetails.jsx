@@ -19,7 +19,7 @@ import { adjustQuantity } from '../utils/StringUtils'
 import { msToTime } from '../utils/TimeUtil'
 import ConfirmBox from './ConfirmBox'
 import RecipePlanner from './RecipePlanner'
-import SharingBox from './SharingBox'
+import SharingModal from './SharingModal'
 const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
   const [customeYield, setCustomYield] = useState(recipe_yield)
@@ -82,7 +82,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
             </Carousel>
           </div>
           <div className='space-y-6 flex-1 pt-2'>
-            <h1 className='text-3xl font-bold text-green-accent break-words pt-2'>{title}</h1>
+            <h1 className='text-3xl font-bold text-accent break-words pt-2'>{title}</h1>
             <div className='flex flex-wrap items-center justify-between gap-2'>
               <p className='flex gap-1'>
                 {Array.apply(null, Array(5)).map((star, i) => <StarIcon key={i} style={`w-6 h-6 stroke-transparent ${i < rating ? 'fill-orange-accent' : 'fill-gray-300 outline-none'}`} />)}
@@ -118,14 +118,14 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           <div className='w-full md:w-96'>
             <h1 className={`${style.heading} text-center`}>Ingredients</h1>
             <div className='flex justify-center gap-8 py-1 text-lg '>
-              <button className='rounded-full text-green-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100'
                 onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
               </button>
               <div className='flex gap-2'>
                 <span>Yield:</span>
-                <h2 className='font-bold text-green-accent'>{customeYield}</h2>
+                <h2 className='font-bold text-accent'>{customeYield}</h2>
               </div>
-              <button className='rounded-full text-green-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100'
                 onClick={() => setCustomYield(preYield => preYield + 1)}><PlusCircleIcon style='w-8 w-8' />
               </button>
             </div>
@@ -135,7 +135,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
                 const metric = ingredient.amount.replace(quantity, '').trim()
                 const originalYield = recipe_yield
                 return (
-                  <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                  <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray' : ''}`}>
                     <span>{adjustQuantity(quantity, customeYield, originalYield)} {metric} {ingredient.ingredientName}</span>
                   </li>)
               })
@@ -149,7 +149,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
                 (<li key={i} onClick={() => setCompletedSteps(prevCompletedSteps =>
                   prevCompletedSteps.includes(i) ? prevCompletedSteps.filter(stepIndex => stepIndex !== i) : [...prevCompletedSteps, i])}
                   className={`list-decimal capitalize font-semibold ml-8 pl-4 text-lg break-words hover:line-through py-1 cursor-pointer 
-                ${i % 2 === 0 ? 'bg-gray-100' : ''}
+                ${i % 2 === 0 ? 'bg-gray' : ''}
                 ${completedSteps.includes(i) ? 'line-through' : 'hover:line-through'}`}>
                   <span>{step}</span>
                 </li>))}
@@ -163,7 +163,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           </div>
         </div>
         <ConfirmBox open={confirmDeletion} setOpen={setConfirmDeletion} callback={() => deleteRecipe(recipe_id)} message='Are you sure you want to delete this recipe' />
-        <SharingBox open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
+        <SharingModal open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
         <RecipePlanner open={openRecipePlanner} setOpen={setOpenRecipePlanner} id={recipe_id} />
       </div >
     </section>

@@ -1,8 +1,9 @@
 import { Button, Modal } from 'flowbite-react';
-
+import useTheme from '../hooks/useTheme';
 export default function ConfirmBox({ open, setOpen, callback, message }) {
+  const {isDarkMode} = useTheme()
   return (
-    <Modal show={open} size="md" popup onClose={() => setOpen(false)}>
+    <Modal show={open} size="md" popup onClose={() => setOpen(false)} className={isDarkMode ? 'dark' : ''}>
       <Modal.Header />
       <Modal.Body>
         <div className="text-center">

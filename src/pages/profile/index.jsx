@@ -10,6 +10,7 @@ import { defaultTagList } from '../recipe';
 import Skeleton from '../../components/Skeleton';
 import EditingIcon from '../../assets/EditingIcon';
 import EditProfile from './EditProfile';
+import useTheme from '../../hooks/useTheme';
 const MyProfile = () => {
   const { auth: { user: { userId, email, fullName, gender, birthday, profileImage } } } = useAuth()
   const privateAxios = usePrivateAxios()
@@ -24,8 +25,8 @@ const MyProfile = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalRecipes, setTotalRecipes] = useState(1)
   const pageSize = 4
-  const totalPages = Math.ceil(totalRecipes / pageSize)
-
+  const totalPages = Math.ceil(totalRecipes / pageSize) || 1
+  const {isDarkMode} = useTheme()
   useEffect(() => {
     privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setUserTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
   }, []);
@@ -39,7 +40,7 @@ const MyProfile = () => {
       sortBy: '',
       direction: 'asc',
       title: '',
-      privacyStatus: chosenTabs === 'All' ? null : chosenTabs.toUpperCase()
+      privacyStatus: chosenTabs == 'All' ? null : chosenTabs.toUpperCase()
     }
 
     privateAxios.post(`/api/v1/user/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
@@ -67,8 +68,8 @@ const MyProfile = () => {
 
   return (
     <section className='flex justify-center sm:py-4 sm:mx-8 gap-6'>
-      <div className='border-gray-400 rounded max-w-8xl w-full p-4 gap-4 bg-gray-50 flex flex-col lg:flex-row'>
-        <div className='flex flex-col gap-8 font-semibold p-8 bg-gray-100'>
+      <div className='border-gray-400 rounded max-w-8xl w-full p-4 gap-4 bg-container flex flex-col lg:flex-row min-h-[90vh]'>
+        <div className='flex flex-col gap-8 font-semibold p-8 bg-item'>
           <div className='flex flex-col md:flex-row lg:flex-col gap-8 '>
             <div className='flex flex-col items-start space-y-4 group'>
               <Avatar img={profileImage} size='xl' stacked />
@@ -105,9 +106,9 @@ const MyProfile = () => {
               <EditingIcon style='w-6 h-6' />
               <span>Edit profile</span>
             </button>
-            <Modal dismissible show={editing} onClose={() => setEditing(false)}>
+            <Modal dismissible show={editing} onClose={() => setEditing(false)} className={isDarkMode ? 'dark' : ''}>
               <Modal.Header>Edit profile</Modal.Header>
-              <Modal.Body><EditProfile setEditing={setEditing} /></Modal.Body>
+              <Modal.Body className='app'><EditProfile setEditing={setEditing} /></Modal.Body>
             </Modal>
           </div>
           <div className='space-y-2'>
@@ -119,7 +120,7 @@ const MyProfile = () => {
         <section className='w-full'>
           <div className='flex border-b-2 border-gray-300 mb-4 xs:space-x-4'>
             {displayedTabs.map(tab =>
-              <button key={tab} className={`bg-gray-100 p-4 rounded-t-lg hover:bg-gray-200 text-sm xs:text-xl font-semibold sm:w-44 ${chosenTabs === tab ? 'bg-gray-200' : ''}`}
+              <button key={tab} className={`bg-item p-4 rounded-t-lg hover:bg-gray text-sm xs:text-xl font-semibold sm:w-44 ${chosenTabs == tab ? 'bg-gray' : ''}`}
                 onClick={() => setChosenTabs(tab)}>{tab} recipes</button>
             )}
           </div>

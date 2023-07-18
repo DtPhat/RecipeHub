@@ -24,13 +24,13 @@ const ListView = ({ recipeData, setRecipeData, global }) => {
             stars.push(i < rating ? true : false)
           }
           return (
-            <div key={recipe_id} className='flex items-center border-2 border-gray-300 rounded p-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'
+            <div key={recipe_id} className='flex items-center border shadow-md p-1 border-gray-300 rounded bg-item hover:border-accent cursor-pointer relative'
               onClick={() => { setChosenRecipe(recipe) }}>
               <div className='w-32 h-32'>
                 <img src={recipeImage} alt="" className='w-full h-full rounded' />
               </div>
-              <div className='flex flex-col ml-4 space-y-2 overflow-hidden flex-1'>
-                <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
+              <div className='flex flex-col ml-4 space-y-2 overflow-hidden flex-1 py-1'>
+                <h1 className='text-xl font-bold text-accent truncate'>{title}</h1>
                 <div className='space-x-2'>
                   <div className='flex space-x-1'>
                     {stars.map((star, i) => {
@@ -46,7 +46,7 @@ const ListView = ({ recipeData, setRecipeData, global }) => {
                 <div className='gap-2 flex flex-wrap max-h-[2rem] overflow-auto'>
                   {tags.map((tag) => {
                     return (
-                      <span key={tag.tagId} className='border rounded-full py-0.5 px-3 border-green-variant text-green-accent font-semibold'>
+                      <span key={tag.tagId} className='border rounded-full py-0.5 px-3 border-green-variant text-accent font-semibold'>
                         {tag.tagName}
                       </span>)
                   })}

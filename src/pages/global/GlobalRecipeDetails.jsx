@@ -45,10 +45,10 @@ const GlobalRecipeDetails = () => {
       .finally(() => setSubmitting(false))
   }
   return (
-    <main className='flex justify-center items-center'>
+    <main className='flex justify-center min-h-[95vh]'>
       {loading ?
         <Skeleton />
-        : <section className='w-full max-w-7xl h-[85vh] p-4 bg-gray-50 my-4 rounded'>
+        : <section className='w-full max-w-7xl h-[85vh] p-4 my-4 bg-container rounded'>
           <div className='text-lg flex space-x-6 justify-end'>
             <div className='flex space-x-2'>
               <button className='button-outlined-square py-0.5 w-auto' disabled={submitting}
@@ -75,7 +75,7 @@ const GlobalRecipeDetails = () => {
                 </Carousel>
               </div>
               <div className='space-y-6 flex-1 pt-2'>
-                <h1 className='text-3xl font-bold text-green-accent break-words pt-2'>{title}</h1>
+                <h1 className='text-3xl font-bold text-accent break-words pt-2'>{title}</h1>
                 <div className='flex flex-wrap justify-between text-lg font-semibold gap-4'>
                   <div className='flex items-center space-x-1'><ClockIcon style='w-6 h-6' /><span>Cook time: {msToTime(cook_time)}</span></div>
                   <div className='flex items-center space-x-0.5'><LeafIcon style='w-5 h-5 rotate-45' /><span>{ingredients.length} Ingredient{ingredients.length > 1 ? 's' : ''}</span></div>
@@ -98,14 +98,14 @@ const GlobalRecipeDetails = () => {
               <div className='w-full md:w-96'>
                 <h1 className={`${style.heading} text-center`}>Ingredients</h1>
                 <div className='flex justify-center gap-8 py-1 text-lg '>
-                  <button className='rounded-full text-green-accent hover:bg-green-100'
+                  <button className='rounded-full text-accent hover:bg-green-100'
                     onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
                   </button>
                   <div className='flex gap-2'>
                     <span>Yield:</span>
-                    <h2 className='font-bold text-green-accent'>{customeYield}</h2>
+                    <h2 className='font-bold text-accent'>{customeYield}</h2>
                   </div>
-                  <button className='rounded-full text-green-accent hover:bg-green-100'
+                  <button className='rounded-full text-accent hover:bg-green-100'
                     onClick={() => setCustomYield(preYield => preYield + 1)}><PlusCircleIcon style='w-8 w-8' />
                   </button>
                 </div>

@@ -19,20 +19,20 @@ const Feedback = () => {
 
   return (
     <section className='flex justify-center lg:mx-8 py-4 items-center'>
-      <div className='max-w-8xl w-full flex flex-col px-8 py-4 gap-4 relative bg-gray-50'>
+      <div className='max-w-8xl w-full flex flex-col px-8 py-4 gap-4 relative bg-container'>
         <div className='flex justify-center pr-8'>
           <img src="/img/logo-text-bottom.png" alt="" className=' w-32 h-36 select-none' />
         </div>
         <div className='w-full flex justify-center'>
           <div className='flex flex-col space-y-8 w-full'>
-            <h1 className='text-3xl font-bold text-green-accent'>Send support ticket to our system</h1>
+            <h1 className='text-3xl font-bold text-accent'>Send support ticket to our system</h1>
             <div className='flex flex-col space-y-4'>
               <div>
-                <input type="text" className='py-2 text-lg px-2 bg-gray-100 border-2 rounded outline-gray-500 w-full' name='email' id='email' placeholder='Email' onChange={handleFeedbackChange} />
+                <input type="text" className='py-2 text-lg px-2 bg-inherit border-2 rounded outline-gray-500 w-full' name='email' id='email' placeholder='Email' onChange={handleFeedbackChange} />
                 <span className='invisible text-sm'>Warning here</span>
               </div>
               <div>
-                <textarea type="text" className='py-2 text-lg px-2 bg-gray-100 border-2 rounded outline-gray-500 w-full' rows='10' name='message' id='message' placeholder='Message' onChange={handleFeedbackChange} />
+                <textarea type="text" className='py-2 text-lg px-2 bg-inherit border-2 rounded outline-gray-500 w-full' rows='10' name='message' id='message' placeholder='Message' onChange={handleFeedbackChange} />
                 <span className='invisible text-sm'>Warning here</span>
               </div>
               <div className='flex justify-center'>
@@ -42,8 +42,8 @@ const Feedback = () => {
             </div>
           </div>
         </div>
-        <div className='flex justify-center text-center border-b-2 border-green-accent relative mt-4'>
-          <span className='absolute top-[-1rem] text-xl bg-gray-50 px-2'>or</span>
+        <div className='flex justify-center text-center border-b-2 border-accent relative mt-4'>
+          <span className='absolute top-[-1rem] text-xl bg-container px-2'>or</span>
         </div>
         <div className='flex items-center justify-end gap-2'>
           <span className='text-2xl font-bold'>Contact us directly: </span>

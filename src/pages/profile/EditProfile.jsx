@@ -88,7 +88,7 @@ const EditProfile = ({ setEditing }) => {
   // const completeEditing = (submitting.information !== null) && (newAvatar ? submitting.avatar !== null : true) && !editing
   console.log(profileData);
   const style = {
-    input: 'py-2 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full',
+    input: 'py-2 text-lg px-2 bg-container border-b-2 focus:outline-gray-200 w-full',
     radio: 'space-x-2 border border-gray-400 cursor-pointer flex justify-center w-24 rounded accent-green-600 hover:border-green-600',
   }
 
@@ -100,7 +100,7 @@ const EditProfile = ({ setEditing }) => {
           <Tooltip content='Upload new avatar'>
             <button className='relative group flex hover:opacity-90' onClick={() => avatarInput.current.click()}>
               <Avatar img={newAvatar ? `${URL.createObjectURL(newAvatar)}` : profileImage} size='xl' stacked />
-              <div className='absolute top-1 right-1 bg-gray-500 opacity-50 group-hover:opacity-100 text-white rounded'>
+              <div className='absolute top-1 right-1 bg-container0 opacity-50 group-hover:opacity-100 text-white rounded'>
                 <EditingIcon style='w-8 h-8' />
               </div>
               <input type='file' className='hidden' accept="image/*" ref={avatarInput} onChange={(e) => {

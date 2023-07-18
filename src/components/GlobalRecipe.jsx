@@ -12,7 +12,7 @@ import PlusCircleIcon from '../assets/PlusCircleIcon'
 import Toast from './Toast.jsx'
 import CopyingIcon from '../assets/CopyingIcon'
 import BeakerIcon from '../assets/BeakerIcon'
-import SharingBox from './SharingBox'
+import SharingModal from './SharingModal'
 import useAuth from '../hooks/useAuth'
 const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
   const privateAxios = usePrivateAxios()
@@ -39,7 +39,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
     <section className='min-h-[85vh]'>
       <div className='text-lg flex space-x-6 justify-end'>
         <div className='flex space-x-2'>
-          <button className={`button-outlined-square py-0.5 w-auto ${!auth?.user ? 'color-secondary opacity-30' : ''}`} disabled={submitting || !auth?.user}
+          <button className={`button-outlined-square py-0.5 w-auto`} disabled={submitting || !auth?.user}
             onClick={copyRecipe}>
             <CopyingIcon style='w-6 h-6' />
             {
@@ -63,7 +63,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
             </Carousel>
           </div>
           <div className='space-y-6 flex-1 pt-2'>
-            <h1 className='text-3xl font-bold text-green-accent break-words pt-2'>{title}</h1>
+            <h1 className='text-3xl font-bold text-accent break-words pt-2'>{title}</h1>
             <div className='flex flex-wrap justify-between text-lg font-semibold gap-4'>
               <div className='flex items-center space-x-1'><ClockIcon style='w-6 h-6' /><span>Cook time: {msToTime(cook_time)}</span></div>
               <div className='flex items-center space-x-0.5'><LeafIcon style='w-5 h-5 rotate-45' /><span>{ingredients.length} Ingredient{ingredients.length > 1 ? 's' : ''}</span></div>
@@ -86,14 +86,14 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
           <div className='w-full md:w-96'>
             <h1 className={`${style.heading} text-center`}>Ingredients</h1>
             <div className='flex justify-center gap-8 py-1 text-lg '>
-              <button className='rounded-full text-green-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100'
                 onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
               </button>
               <div className='flex gap-2'>
                 <span>Yield:</span>
-                <h2 className='font-bold text-green-accent'>{customeYield}</h2>
+                <h2 className='font-bold text-accent'>{customeYield}</h2>
               </div>
-              <button className='rounded-full text-green-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100'
                 onClick={() => setCustomYield(preYield => preYield + 1)}><PlusCircleIcon style='w-8 w-8' />
               </button>
             </div>
@@ -103,7 +103,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
                 const metric = ingredient.amount.replace(quantity, '').trim()
                 const originalYield = recipe_yield
                 return (
-                  <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                  <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray' : ''}`}>
                     <span>{adjustQuantity(quantity, customeYield, originalYield)} {metric} {ingredient.ingredientName}</span>
                   </li>)
               })
@@ -117,7 +117,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
                 (<li key={i} onClick={() => setCompletedSteps(prevCompletedSteps =>
                   prevCompletedSteps.includes(i) ? prevCompletedSteps.filter(stepIndex => stepIndex !== i) : [...prevCompletedSteps, i])}
                   className={`list-decimal capitalize font-semibold ml-8 pl-4 text-lg break-words hover:line-through py-1 cursor-pointer 
-                ${i % 2 === 0 ? 'bg-gray-100' : ''}
+                ${i % 2 === 0 ? 'bg-gray' : ''}
                 ${completedSteps.includes(i) ? 'line-through' : 'hover:line-through'}`}>
                   <span>{step}</span>
                 </li>))}
@@ -130,7 +130,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
             {nutrition}
           </div>
         </div>
-        <SharingBox open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
+        <SharingModal open={openSharingBox} setOpen={setOpenSharingBox} id={recipe_id} />
         {showingToast && <Toast message='Recipe is added to your repository' direction='right' />}
       </div >
     </section>

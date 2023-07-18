@@ -22,14 +22,13 @@ const GlobalRecipeItem = ({ recipeItem, setChosenRecipe }) => {
     }))
   }, []);
   const method = steps.split('\n')
-  console.log(method);
   const difficulty = method.length < 5 ? 'easy' : method.length < 10 ? 'medium' : method.length < 15 ? 'hard' : 'master'
   const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
   return (
-    <div className='w-full h-[32rem] flex flex-col rounded-lg bg-gray-100 border border-gray-200 hover:border-green-accent cursor-pointer relative shadow-md'
+    <div className='w-full h-[32rem] flex flex-col rounded-lg bg-item border border-gray hover:border-accent cursor-pointer relative shadow-md'
       onClick={() => setChosenRecipe(recipeItem)}>
       <img src={recipeImage} alt="" className='w-full h-60 object-cover rounded-t-lg' />
-      <div className='bg-gray-200 flex items-center justify-between px-4'>
+      <div className='bg-gray-200 dark:bg-gray-700 flex items-center justify-between px-4'>
         <div className='flex items-center space-x-4 py-2'>
           <Avatar img={author.profileImage} alt="" rounded />
           <span className={`text-xl font-medium truncate hover:underline underline-offset-2 flex-1`}
@@ -39,7 +38,7 @@ const GlobalRecipeItem = ({ recipeItem, setChosenRecipe }) => {
         </div>
       </div>
       <div className='mx-4 py-2 space-y-4 overflow-auto'>
-        <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
+        <h1 className='text-xl font-bold text-accent truncate'>{title}</h1>
         <div className='space-x-1 font-semibold'>
           <span className='text-gray-600'>Difficulty:</span><span className='capitalize'>{difficulty}</span>
         </div>
@@ -51,7 +50,7 @@ const GlobalRecipeItem = ({ recipeItem, setChosenRecipe }) => {
         <div className='gap-2 flex flex-wrap max-h-[5rem] overflow-auto'>
           {tags.map((tag) => {
             return (
-              <p key={tag.tagId} className='border rounded-full py-0.5 px-3 border-green-variant text-green-accent font-semibold'>
+              <p key={tag.tagId} className='border rounded-full py-0.5 px-3 border-green-variant text-accent font-semibold'>
                 {tag.tagName}
               </p>)
           })}

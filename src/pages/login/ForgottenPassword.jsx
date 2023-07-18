@@ -28,7 +28,7 @@ const ForgottenPassword = ({ openForgottenPasswordBox, setOpenForgottenPasswordB
           <div className='space-y-4'>
             <div className='text-2xl font-semibold'>Please enter your email address to send new passowrd.</div>
             <span className='text-green-variant text-lg'>{forgettenMessage}</span>
-            <input type="text" className='pb-2 pt-4 text-lg px-2 bg-gray-50 border-b-2 focus:outline-gray-200 w-full' placeholder='Email'
+            <input type="text" className='pb-2 pt-4 text-lg px-2 bg-container border-b-2 focus:outline-gray-200 w-full' placeholder='Email'
               value={forgottenEmail} onChange={(e) => setForgottenEmail(e.target.value)} ref={forgottenEmailRef} />
             <button className='button-contained-square space-x-4'
               onClick={handleForgottenPassword}>

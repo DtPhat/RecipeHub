@@ -67,13 +67,13 @@ const RecipeExport = () => {
   }
   return (
     <section className='flex justify-center py-4'>
-      <div className='border-gray-400 rounded max-w-8xl w-full space-y-6 bg-gray-50 p-8'>
+      <div className='border-gray-400 rounded max-w-8xl w-full space-y-6 bg-container p-8 min-h-[90vh]'>
         <h1 className='text-4xl font-semibold'>Choose your recipes to export</h1>
         <SearchBar keyword={keyword} setKeyword={setKeyword} />
         <div>
           <div className='flex gap-4 font-semibold text-2xl flex-col sm:flex-row '>
             <h1 className='underline underline-offset-4'>Exporting list:</h1>
-            <div className='flex flex-wrap gap-2 text-green-accent'>
+            <div className='flex flex-wrap gap-2 text-accent'>
               {exportingIds.map(id =>
                 <span key={id} onClick={() => setExportingIds(prevList => prevList.filter(prevId => prevId !== id))}
                   className='hover:line-through cursor-pointer'>{id}</span>
@@ -95,10 +95,10 @@ const RecipeExport = () => {
             const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
             return (
               <div key={recipe_id} seach
-                className='w-full h-68 flex flex-col border-2 border-gray-200 rounded p-2 space-y-1 bg-gray-100 hover:border-green-accent cursor-pointer relative'
+                className='w-full h-68 flex flex-col border-2 border-gray rounded p-2 space-y-1 bg-item hover:border-accent cursor-pointer relative'
                 onClick={() => setChosenRecipe(recipe)}>
                 <img src={recipeImage} alt="" className='w-full h-40 object-cover rounded' />
-                <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
+                <h1 className='text-xl font-bold text-accent truncate'>{title}</h1>
                 <span className='text-normal font-bold truncate'>ID: {recipe_id}</span>
                 <button className={`button-outlined-square py-0 ${exportingIds.includes(recipe_id) ? 'color-secondary' : ''}`} onClick={(e) => handleAddingToList(e, recipe_id)}>
                   {exportingIds.includes(recipe_id) ? 'Remove' : 'Add to list'}
@@ -108,7 +108,7 @@ const RecipeExport = () => {
           <RecipeModal chosenRecipe={chosenRecipe} setChosenRecipe={setChosenRecipe} />
         </section>
         <div className='flex flex-col sm:flex-row py-2 items-center gap-4 pt-4 border-t-2 border-gray-300'>
-          <h1 className='text-2xl font-semibold text-gray-600'>Export all recipes at 1 click:</h1>
+          <h1 className='text-2xl font-semibold text-gray-500'>Export all recipes at 1 click:</h1>
           <button className='button-outlined-square w-40 color-secondary py-1'
             onClick={exportAll}>
             <span>Export all</span>

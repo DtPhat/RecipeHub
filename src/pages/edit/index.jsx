@@ -101,7 +101,7 @@ const EditRecipe = () => {
       </button>
       {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
         onClick={() => setTagList(list => list.filter(prevTag => prevTag !== tag))}>
-        <XCircleIcon style='w-8 h-8 fill-green-100 text-green-accent opacity-50 hover:opacity-100' />
+        <XCircleIcon style='w-8 h-8 fill-green-100 text-accent opacity-50 hover:opacity-100' />
       </button>}
     </div>
   ))
@@ -242,19 +242,19 @@ const EditRecipe = () => {
   }
 
   const style = {
-    input: 'bg-gray-100 rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
-    heading: 'font-semibold text-green-accent text-xl pb-1',
-    input2: `w-28 bg-gray-50 border-b-2 border-gray-400 py-1 focus:outline-none focus:border-green-accent`,
+    heading: 'font-semibold text-accent text-xl pb-1',
+    input: 'bg-item rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
+    input2: `w-28 bg-container border-b-2 border-gray-400 py-1 focus:outline-none focus:border-accent`,
   }
   console.log(recipeData);
 
   return (
-    <section className='py-2 flex justify-center'>
+    <section className='py-2 flex justify-center min-h-[100vh]'>
       {loading ?
         <Skeleton />
-        : <div className='max-w-8xl px-4 lg:px-8 pt-2 pb-8 rounded bg-gray-50'>
+        : <div className='max-w-8xl px-4 lg:px-8 pt-2 pb-8 rounded bg-container'>
           <div className=' pb-2 font-semibold mb-4 border-b-2 flex justify-between'>
-            <h1 className='text-3xl text-gray-600'>Edit recipe at ID {recipeId}</h1>
+            <h1 className='text-3xl text-gray-500'>Edit recipe at ID {recipeId}</h1>
             <div className='my-auto'>
               <button className='button-outlined-square w-28 py-0.5 color-secondary opacity-50 hover:opacity-100'
                 onClick={() => navigate(-1)}>
@@ -279,11 +279,11 @@ const EditRecipe = () => {
                 <h1 className={`${style.heading}`}>Tags</h1>
                 <div className='flex flex-wrap gap-3'>
                   {tagListElement}
-                  <div className='flex space-x-1 border-gray-200'>
+                  <div className='flex space-x-1 border-gray'>
                     <input type='text' placeholder='Tag name' className={`${style.input2} text-center `}
                       onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
                       onChange={(e) => setTagInput(e.target.value)} value={tagInput} />
-                    <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-green-accent' /></button>
+                    <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-accent' /></button>
                   </div>
                 </div>
               </div>
@@ -301,7 +301,7 @@ const EditRecipe = () => {
                 <div className='flex flex-wrap gap-2 max-w-2xl'>
                   {photosElement}
                   {(recipeData.photos.length < 8) &&
-                    <div className='w-40 h-40 border-4 group bg-gray-100 border-gray-300 border-dashed hover:border-solid rounded-xl flex items-center justify-center cursor-pointer'
+                    <div className='w-40 h-40 border-4 group bg-gray-100 dark:bg-gray-700 border-gray-300 border-dashed hover:border-solid rounded-xl flex items-center justify-center cursor-pointer'
                       onClick={() => imgInput.current.click()}>
                       <PlusCircleIcon style='w-24 h-24 text-gray-200 group-hover:text-gray-300' />
                     </div>}
@@ -355,7 +355,7 @@ const EditRecipe = () => {
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" className="sr-only peer" checked={recipeData.isFavourite}
                       onChange={() => { setRecipeData(prevData => { return { ...prevData, isFavourite: !prevData.isFavourite } }) }} />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-variant"></div>
+                    <div className="w-11 h-6 bg-gray peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-variant"></div>
                   </label>
                 </div>
                 <div>
@@ -372,24 +372,24 @@ const EditRecipe = () => {
                 </ul>
                 <div className='flex space-x-2 text-lg'>
                   <div className='flex flex-col w-7/12'>
-                    <label htmlFor='name' className='font-medium text-green-accent'>Name</label>
+                    <label htmlFor='name' className='font-medium text-accent'>Name</label>
                     <input type='text' placeholder='Ingredient name' className={`w-full ${style.input2}`} name='ingredientName'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientName} />
                   </div>
                   <div className='flex flex-col w-2/12'>
-                    <label htmlFor='quantity' className='font-medium text-green-accent'>Quantity</label>
+                    <label htmlFor='quantity' className='font-medium text-accent'>Quantity</label>
                     <input type='number' placeholder='1' className={` ${style.input2}`} name='ingredientQuantity'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientQuantity} />
                   </div>
                   <div className='flex flex-col w-2/12'>
-                    <label htmlFor='metric' className='font-medium text-green-accent '>Metric</label>
+                    <label htmlFor='metric' className='font-medium text-accent '>Metric</label>
                     <input type='text' placeholder='tsp' className={` ${style.input2}`} name='ingredientMetric'
                       onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                       onChange={handleChange} value={recipeData.ingredientMetric} />
                   </div>
-                  <button className='flex items-center mt-6' onClick={addIngredient}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-green-accent' /></button>
+                  <button className='flex items-center mt-6' onClick={addIngredient}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-accent' /></button>
                 </div>
               </div>
               <div className='flex flex-col justify-center'>
@@ -403,7 +403,7 @@ const EditRecipe = () => {
                 <Tooltip content='Public recipes can be seen by everyone in cooking network' style='auto' >
                   <div className='flex items-center gap-2'>
                     <h1 className={`${style.heading}`}>Status:</h1>
-                    <button className='flex items-center gap-2 border border-green-variant text-green-accent px-1 rounded-md font-medium hover:bg-green-100'
+                    <button className='flex items-center gap-2 border border-green-variant text-accent px-1 rounded-md font-medium hover:bg-green-100 dark:hover:bg-green-900'
                       onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
                       <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />
                       <span className=''>{recipeData.isPrivate ? "Private" : "Public"}</span>

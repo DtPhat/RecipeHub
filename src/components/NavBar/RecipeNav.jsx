@@ -39,7 +39,7 @@ const RecipeNav = () => {
 	const optionsElement = options.map(sideOption => {
 		const { Icon, text, keyword, onClickFunction } = sideOption
 		return (
-			<div className='flex sm:space-x-4 cursor-pointer hover:text-green-200  py-2 bg-green-accent justify-center' onClick={onClickFunction} key={text}>
+			<div className='flex sm:space-x-4 cursor-pointer text-green-200 hover:text-white py-2 bg-green-accent dark:bg-green-dark justify-center' onClick={onClickFunction} key={text}>
 				<div className='hidden sm:block'>{Icon}</div>
 				<span className={`text-lg font-semibold hidden lg:block`}>{text}</span>
 				<span className={`text-lg font-semibold lg:hidden`}>{keyword}</span>

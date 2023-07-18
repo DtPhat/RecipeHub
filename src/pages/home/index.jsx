@@ -15,7 +15,7 @@ const Home = () => {
 		ReactGA.pageview(window.location.pathname + window.location.search)
 	}, []);
 	return (
-		<section>
+		<section className='bg-gray-100'>
 			<div className='text-green-50 bg-homepage h-[45rem] bg-cover bg-no-repeat flex flex-col items-center justify-center space-y-14'>
 				<h1 className='text-5xl font-bold text-center px-1 sm:w-4/5'>
 					Organize your favorite recipes online

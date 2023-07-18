@@ -13,7 +13,7 @@
     "@react-oauth/google": "^0.11.0",
     "axios": "^1.4.0",
     "flowbite": "^1.7.0",
-    "flowbite-react": "^0.4.10",
+    "flowbite-react": "^0.4.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga": "^3.3.1",

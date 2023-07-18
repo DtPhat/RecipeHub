@@ -27,11 +27,10 @@ import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
 import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
 import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
 import ReactGA, { pageview } from 'react-ga';
-
+import Layout from "./pages/Layout.jsx";
+import { useThemeContext } from "./contexts/ThemeContext.jsx";
 export const TRACKING_ID = 'G-FVY5ZCWNMT'
 ReactGA.initialize(TRACKING_ID);
-
-
 
 
 const App = () => {
@@ -39,7 +38,7 @@ const App = () => {
 	const { auth } = useAuth()
 	const isAdmin = auth?.user.role === "ADMIN"
 	return (
-		<main>
+		<main className="app">
 			{!isAdmin && <UserHeader />}
 			<Routes>
 				<Route index element={<Home />} />

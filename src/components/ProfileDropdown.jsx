@@ -1,19 +1,22 @@
 import { Avatar, Dropdown } from 'flowbite-react'
 import React from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { useThemeContext } from '../contexts/ThemeContext'
 import useAuth from '../hooks/useAuth'
 import { emailToUsername } from '../utils/StringUtils'
+import SwitchButton from './SwitchButton'
 
 const ProfileDropdown = () => {
   const navigate = useNavigate()
   const { auth, logout } = useAuth()
-  // const username = auth && emailToUsername(auth.user.email);
+  const { toggleDarkMode, isDarkMode } = useThemeContext();
+ 
   return (
     <Dropdown
       arrowIcon={false}
       inline
       label={
-        <div className='flex items-center space-x-2 p-2 hover:bg-gray-200 rounded'>
+        <div className='flex items-center space-x-2 p-2 hover:bg-gray rounded pr-8'>
           <Avatar img={auth.user.profileImage} rounded />
           <span className='w-36 truncate text-lg font-medium hidden xl:block'>
             {auth.user.fullName}
@@ -30,7 +33,12 @@ const ProfileDropdown = () => {
           </span>
         </div>
       </Dropdown.Header>
-      <Dropdown.Item >Dark mode</Dropdown.Item>
+      <Dropdown.Item>
+        <button onClick={(e) => e.stopPropagation()} className='flex'>
+          <span className='pr-4 font-semibold'>Dark mode: </span>
+          <SwitchButton isOn={isDarkMode} customFunc={toggleDarkMode} />
+        </button>
+      </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item onClick={() => { navigate(`/user/profile`) }}>
         Profile

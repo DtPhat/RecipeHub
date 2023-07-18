@@ -50,15 +50,15 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
     const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = meal.recipe
     const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
     return (
-      <div key={meal.mealPlannerId} className='flex border-2 border-green-variant p-2 rounded bg-gray-100 relative cursor-pointer group'
+      <div key={meal.mealPlannerId} className='flex border-2 border-green-variant p-2 rounded bg-item relative cursor-pointer group'
         onClick={() => !confirmRemovePlannedRecipe && setChosenRecipe(meal.recipe)}>
         <img src={recipeImage} alt="" className='w-32 h-32 rounded' />
         <div className='flex flex-col ml-4 overflow-hidden gap-2'>
           <h1 className='text-lg font-bold text-green-variant capitalize'>{meal.mealType}</h1>
-          <h1 className='text-xl font-bold text-green-accent truncate'>{title}</h1>
+          <h1 className='text-xl font-bold text-accent truncate'>{title}</h1>
           <div className='flex flex-col font-medium'>
-            <div className='flex items-center space-x-2 flex-wrap'><span className='text-gray-600'>Cook time:</span><span>{msToTime(cook_time)}</span></div>
-            <div className='flex items-center space-x-2 flex-wrap'><span className='text-gray-600'>Prep time:</span><span>{msToTime(pre_time)}</span></div>
+            <div className='flex items-center space-x-2 flex-wrap'><span className='text-gray-500'>Cook time:</span><span>{msToTime(cook_time)}</span></div>
+            <div className='flex items-center space-x-2 flex-wrap'><span className='text-gray-500'>Prep time:</span><span>{msToTime(pre_time)}</span></div>
           </div>
         </div>
         <div className='hidden group-hover:flex gap-2 absolute right-2 top-2'>
@@ -90,13 +90,13 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe })
             <div className="flex items-center justify-between py-4">
               <div className='w-full'>
                 <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 max-w-7xl w-full mb-2.5"></div>
-                <div className="max-w-6xl w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                <div className="max-w-6xl w-full h-2 bg-gray rounded-full dark:bg-gray-700"></div>
               </div>
             </div>
             <div className="flex items-center justify-between py-4">
               <div className='w-full'>
                 <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 max-w-7xl w-full mb-2.5"></div>
-                <div className="max-w-6xl w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                <div className="max-w-6xl w-full h-2 bg-gray rounded-full dark:bg-gray-700"></div>
               </div>
             </div>
           </div>

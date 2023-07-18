@@ -32,22 +32,25 @@ export const ThemeProvider = ({ children }) => {
 				profile: 'rounded-full'
 			},
 		},
+
 	};
 
 
 	return (
-		<Flowbite theme={{ theme: customTheme }}>
-			<ThemeContext.Provider
-				value={{
-					activeMenu,
-					setActiveMenu,
-					isDarkMode,
-					toggleDarkMode,
-				}}
-			>
-				{children}
-			</ThemeContext.Provider>
-		</Flowbite>
+		<section className={isDarkMode ? 'dark' : 'light'}>
+			<Flowbite theme={{ theme: customTheme }}>
+				<ThemeContext.Provider
+					value={{
+						activeMenu,
+						setActiveMenu,
+						isDarkMode,
+						toggleDarkMode,
+					}}>
+					{children}
+				</ThemeContext.Provider>
+			</Flowbite>
+		</section >
+
 	);
 };
 

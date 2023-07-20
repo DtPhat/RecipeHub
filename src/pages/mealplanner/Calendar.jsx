@@ -44,7 +44,7 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
 
   const style = {
     cell: 'w-full border border-green-900 dark:border-green-300 h-16 p-2 cursor-pointer text-lg relative',
-    header: 'w-full border border-green-900 dark:border-green-300 dark:border-green-300 h-16 p-2 sm:text-xl sm:px-4 font-semibold bg-green-variant dark:bg-green-900',
+    header: 'w-full border border-green-900 dark:border-green-300 h-16 p-2 sm:text-xl sm:px-4 font-semibold bg-green-variant dark:bg-green-900',
     today: 'rounded-full border bg-green-accent text-white'
   }
   const daysOfWeekElement = DAYS.map(dayOfWeek =>

@@ -9,6 +9,7 @@ import usePrivateAxios from '../../hooks/usePrivateAxios'
 import GlobalRecipeFilter from './GlobalRecipeFilter'
 import GlobalView from './GlobalView'
 import ReactGA from 'react-ga'
+import dummyRecipes from '../../dummyRecipes'
 
 const GlobalRecipes = () => {
   const privateAxios = usePrivateAxios()
@@ -72,7 +73,7 @@ const GlobalRecipes = () => {
         <div className='min-h-[70vh]'>
           {loading ?
             <Skeleton />
-            : <GlobalView recipeData={globalRecipes} />
+            : <GlobalView recipeData={dummyRecipes} />
           }
         </div>
         <div className='flex justify-end'>

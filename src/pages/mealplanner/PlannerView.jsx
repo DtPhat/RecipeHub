@@ -22,7 +22,7 @@ const PlannerView = ({ recipeData, chosenRecipe, setChosenRecipe }) => {
             stars.push(i < rating ? true : false)
           }
           return (
-            <div key={recipe_id} className={`${chosenRecipe?.recipe_id == recipe_id ? 'outline outline-green-accent' : 'hover:border-accent'} flex items-center border-2 border-gray-300 rounded m-1 p-1 bg-gray-100  cursor-pointer relative`}
+            <div key={recipe_id} className={`${chosenRecipe?.recipe_id == recipe_id ? 'outline outline-green-accent' : 'hover:border-accent'} flex items-center border-2 border-gray-300 rounded m-1 p-1 bg-item  cursor-pointer relative`}
               onClick={() => { setChosenRecipe(recipe) }}>
               <div className='w-32 h-32'>
                 <img src={recipeImage} alt="" className='w-full h-full rounded' />

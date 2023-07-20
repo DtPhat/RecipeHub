@@ -76,7 +76,7 @@ const RecipeSelections = ({ chosenDate, setOpenRecipeSelections, setNewPlannedRe
       </div>
       <div className='flex gap-4 justify-end pt-2 pr-4'>
         <button className='button-outlined color-secondary opacity-50 hover:opacity-100 w-32' onClick={() => { setOpenRecipeSelections(false) }}>Cancel</button>
-        <button className={`button-contained w-32 ${!chosenRecipe ? 'bg-container0 border-gray-300' : ''}`} onClick={() => uploadMealPlanner()} disabled={submitting}>
+        <button className={`button-contained w-32`} onClick={() => uploadMealPlanner()} disabled={submitting || !chosenRecipe}>
           {submitting ?
             <Spinner color='success' />
             : <span>Plan</span>}

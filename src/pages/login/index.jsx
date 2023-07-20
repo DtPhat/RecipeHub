@@ -18,7 +18,8 @@ const Login = () => {
   const [submitting, setSubmitting] = useState(false)
   const [serverError, setServerError] = useState('')
   const [openForgottenPasswordBox, setOpenForgottenPasswordBox] = useState(false)
-console.log(loginData);
+  const [loading, setLoading] = useState(false)
+  console.log(loginData);
   const handleLoginDataChange = (e) => {
     const { name, value, type } = e.target
     setLoginData(prevData => { return { ...prevData, [name]: type == 'checkbox' ? !prevData[name] : value } })
@@ -35,13 +36,16 @@ console.log(loginData);
         error.request.status == 403 && setServerError('Wrong email or password')
       }).finally(() => setSubmitting(false))
   }
-  const loginWithGoogle = useGoogleLogin({
+  const googleLogin = useGoogleLogin({
     onSuccess: tokenResponse => axios
       .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
-      .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath) }),
-    onError: (error) => console.log("Login google fail", error)
+      .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath) }).finally(() => setSubmitting(false)),
+    onError: (error) => { console.log("Login google fail", error); setSubmitting(false) }
   });
-
+  const loginWithGoogle = () => {
+    setSubmitting(true)
+    googleLogin()
+  }
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
@@ -84,7 +88,7 @@ console.log(loginData);
               </div>
               <span className='text-red-500 font-semibold m-auto'>{serverError}</span>
               <div className='flex justify-center'>
-                <button className='button-contained-square'
+                <button className='button-contained-square' disabled={submitting}
                   onClick={loginWithAccount}>
                   {submitting ?
                     <Spinner color='success' />

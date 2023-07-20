@@ -34,21 +34,6 @@ const dummyRecipes = [
   steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5',
   privacyStatus: 'PUBLIC'
 },
-{
-  recipe_id: 3,
-  images: [],
-  title: 'No images added',
-  tags: [{ tagId: 4, tagName: 'dessert' }, { tagId: 5, tagName: 'appetizer' }, { tagId: 6, tagName: 'snack' }, { tagId: 7, tagName: 'drink' }],
-  pre_time: 1000000,
-  cook_time: 30000000,
-  recipe_yield: 4,
-  unit: 'bowl',
-  ingredients: [{ ingredientName: 'chicken thighs', ingredientId: 3, amount: '4' }, { ingredientName: 'crispy powder', ingredientId: 4, amount: '1' }],
-  rating: 1,
-  is_favourite: true,
-  description: 'This is the description of this recipe, this is the description of this recipe',
-  steps: 'Step 1 \n Step 2 \n Step 3 \n Step 4 \n Step 5',
-  privacyStatus: 'PRIVATE'
-}]
+]
 
 export default dummyRecipes

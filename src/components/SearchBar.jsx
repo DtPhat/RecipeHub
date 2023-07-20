@@ -3,7 +3,7 @@ import SearchingIcon from '../assets/SearchingIcon'
 import XCircleIcon from '../assets/XCircleIcon'
 
 const SearchBar = ({ keyword, setKeyword, handleEnter, placeholder, autoFocus }) => {
-  const searchRef = useRef()
+  const searchRef = useRef(null)
   autoFocus && useEffect(() => {
     searchRef.current.focus()
   }, [keyword]);

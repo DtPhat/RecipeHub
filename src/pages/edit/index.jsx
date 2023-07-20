@@ -276,15 +276,15 @@ const EditRecipe = () => {
                   onChange={handleChange} />
               </div>
               <div className='flex flex-col space-y-2'>
-                <h1 className={`${style.heading}`}>Tags</h1>
+                <h1 className={`${style.heading}`}>Tags ({recipeData.tags?.length}/12)</h1>
                 <div className='flex flex-wrap gap-3'>
                   {tagListElement}
-                  <div className='flex space-x-1 border-gray'>
-                    <input type='text' placeholder='Tag name' className={`${style.input2} text-center `}
+                  {tagList.length < 12 && <div className='flex space-x-1 border-gray'>
+                    <input type='text' placeholder='Tag name' className={`${style.input2} text-center`} name='tag' id='tag'
                       onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
-                      onChange={(e) => setTagInput(e.target.value)} value={tagInput} />
+                      onChange={(e) => setTagInput(e.target.value.substring(0, 20))} value={tagInput} />
                     <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-accent' /></button>
-                  </div>
+                  </div>}
                 </div>
               </div>
               <div className='flex flex-col'>

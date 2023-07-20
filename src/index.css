@@ -30,6 +30,18 @@
     .border-gray{
         @apply border-gray-200 dark:border-gray-600
     }
+
+    @media print {
+        .print-container{
+            @apply p-8
+        }
+        .print-hidden{
+            @apply hidden !important
+        }
+        .print-only{
+            @apply inline !important
+        }
+    }
 }
 
 @layer components {
@@ -101,3 +113,4 @@
     }
 
 }
+

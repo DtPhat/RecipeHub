@@ -5,16 +5,10 @@ const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const INITIAL_AUTH = localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")) : null
-    const [auth, setAuth] = useState({
-        user: {
-            fullName: "Pham Tran Son Nguyen",
-            role: "USER",
-            userId: 44
-        }
-    });
-    // useEffect(() => {
-    //     auth && localStorage.setItem('auth', JSON.stringify(auth))
-    // }, [auth]);
+    const [auth, setAuth] = useState(INITIAL_AUTH);
+    useEffect(() => {
+        auth && localStorage.setItem('auth', JSON.stringify(auth))
+    }, [auth]);
     console.log(auth);
 
     const logout = () => {

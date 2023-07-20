@@ -9,7 +9,6 @@ import usePrivateAxios from '../../hooks/usePrivateAxios'
 import GlobalRecipeFilter from './GlobalRecipeFilter'
 import GlobalView from './GlobalView'
 import ReactGA from 'react-ga'
-import dummyRecipes from '../../dummyRecipes'
 
 const GlobalRecipes = () => {
   const privateAxios = usePrivateAxios()
@@ -43,7 +42,8 @@ const GlobalRecipes = () => {
       sortBy: '',
       direction: 'asc',
       title: filter.title,
-      privacyStatus: 'PUBLIC'
+      privacyStatus: 'PUBLIC',
+      verified: true
     }
     privateAxios.post(`/api/v1/global/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
       .then(response => setGlobalRecipes(response.data))
@@ -73,7 +73,7 @@ const GlobalRecipes = () => {
         <div className='min-h-[70vh]'>
           {loading ?
             <Skeleton />
-            : <GlobalView recipeData={dummyRecipes} />
+            : <GlobalView recipeData={globalRecipes} />
           }
         </div>
         <div className='flex justify-end'>

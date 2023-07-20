@@ -25,7 +25,7 @@ export const defaultTagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'des
 
 const Recipe = () => {
   const [filter, setFilter] = useState(initialFilter)
-  const [recipes, setRecipes] = useState(dummyRecipes)
+  const [recipes, setRecipes] = useState([])
   const [viewOption, setViewOption] = useState('list')
   const [showingFilter, setShowingFilter] = useState(true)
   const [keyword, setKeyword] = useState('')
@@ -35,32 +35,27 @@ const Recipe = () => {
   const [totalRecipes, setTotalRecipes] = useState(1)
   const pageSize = 10
   const totalPages = Math.ceil(totalRecipes / pageSize) || 1
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    setLoading(true)
+    const requestFilter = {
+      tags: filter.tags,
+      ingredients: filter.ingredients,
+      favorite: filter.isFavourite,
+      sortBy: filter.sortingBy,
+      direction: filter.isAscending ? 'asc' : 'desc',
+      title: filter.title,
+      privacyStatus: null
+    }
+    privateAxios.post(`/api/v1/user/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
+      .then((response) => { setRecipes(response.data) })
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false))
 
-
-  // const [loading, setLoading] = useState(true)
-  const [loading, setLoading] = useState(false)
-
-
-  // useEffect(() => {
-  //   setLoading(true)
-  //   const requestFilter = {
-  //     tags: filter.tags,
-  //     ingredients: filter.ingredients,
-  //     favorite: filter.isFavourite,
-  //     sortBy: filter.sortingBy,
-  //     direction: filter.isAscending ? 'asc' : 'desc',
-  //     title: filter.title,
-  //     privacyStatus: null
-  //   }
-  //   privateAxios.post(`/api/v1/user/recipes/filter?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
-  //     .then((response) => { setRecipes(response.data) })
-  //     .catch((error) => console.log(error))
-  //     .finally(() => setLoading(false))
-
-  //   privateAxios.post(`/api/v1/user/recipes/filter/total-item?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
-  //     .then((response) => { setTotalRecipes(response.data) })
-  //     .catch((error) => console.log(error))
-  // }, [filter, currentPage]);
+    privateAxios.post(`/api/v1/user/recipes/filter/total-item?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
+      .then((response) => { setTotalRecipes(response.data) })
+      .catch((error) => console.log(error))
+  }, [filter, currentPage]);
 
   console.log(recipes);
   console.log(filter)

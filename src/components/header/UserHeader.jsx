@@ -49,7 +49,7 @@ const UserHeader = () => {
 
         {
           auth ?
-            <div className='flex items-center space-x-2 pl-2 my-2 border-gray border-l-2'>
+            <div className='flex items-center xs:space-x-2 xs:pl-2 my-2 border-gray border-l-2'>
               <button className='hover:bg-gray p-1 rounded hidden xs:block'
                 onClick={() => { navigate('/recipe/add') }}>
                 <Tooltip content='Create new recipe'>

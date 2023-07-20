@@ -1,6 +1,7 @@
-import { Carousel } from 'flowbite-react'
-import React, { useState } from 'react'
+import { Carousel, Spinner } from 'flowbite-react'
+import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useReactToPrint } from 'react-to-print'
 import BeakerIcon from '../assets/BeakerIcon'
 import ClockIcon from '../assets/ClockIcon'
 import EditingIcon from '../assets/EditingIcon'
@@ -11,6 +12,7 @@ import LeafIcon from '../assets/LeafIcon'
 import MinusCircleIcon from '../assets/MinusCircleIcon'
 import PlanningIcon from '../assets/PlanningIcon'
 import PlusCircleIcon from '../assets/PlusCircleIcon'
+import PrinterIcon from '../assets/PrinterIcon'
 import SharingIcon from '../assets/SharingIcon'
 import StarIcon from '../assets/StarIcon'
 import TrashIcon from '../assets/TrashIcon'
@@ -20,15 +22,25 @@ import { msToTime } from '../utils/TimeUtil'
 import ConfirmBox from './ConfirmBox'
 import RecipePlanner from './RecipePlanner'
 import SharingModal from './SharingModal'
+
 const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
+  const privateAxios = usePrivateAxios()
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
   const [customeYield, setCustomYield] = useState(recipe_yield)
   const [completedSteps, setCompletedSteps] = useState([])
   const [openSharingBox, setOpenSharingBox] = useState(false)
   const [openRecipePlanner, setOpenRecipePlanner] = useState(false)
-  const navigate = useNavigate()
-  const privateAxios = usePrivateAxios()
   const [confirmDeletion, setConfirmDeletion] = useState(false)
+  const [printing, setPrinting] = useState(false)
+  const componentRef = useRef()
+  const navigate = useNavigate()
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    onAfterPrint: () => setPrinting(false),
+    documentTitle: title
+  });
+  console.log(componentRef.current);
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
@@ -39,11 +51,12 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
       .then(response => console.log(response.data))
       .catch(error => console.log(error))
   }
+
   return (
-    <section className='min-h-[85vh]'>
-      <div className='text-lg flex space-x-1 xs:space-x-6 justify-end'>
+    <section className='min-h-[85vh] print-container' ref={componentRef}>
+      <div className='text-lg flex space-x-1 xs:space-x-6 justify-end print-hidden md:pb-1'>
         {setRecipes !== undefined &&
-          <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100'
+          <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100 '
             onClick={(e) => {
               e.stopPropagation();
               // window.confirm('Are you sure to delete this recipe?') && (deleteRecipe(recipe_id) && setChosenRecipe(undefined))
@@ -51,7 +64,16 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
             }}>
             <TrashIcon style='w-6 h-6' />
           </button>}
-        <div className='flex space-x-1 xs:space-x-2'>
+        <div className='flex space-x-1 xs:space-x-2 print-hidden'>
+          <button className='button-outlined-square py-0.5 w-12 sm:w-24' disabled={printing}
+            onClick={() => { setPrinting(true); handlePrint() }}>
+            <PrinterIcon style='w-6 h-6 ' />
+            {
+              printing ?
+                <Spinner color='success' />
+                : <span className='hidden sm:block'>Print</span>
+            }
+          </button>
           <button className='button-outlined-square py-0.5 w-12 sm:w-24'
             onClick={() => setOpenRecipePlanner(true)}>
             <PlanningIcon style='w-6 h-6' />
@@ -73,13 +95,16 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
       </div>
       <div className='flex flex-col gap-8'>
         <div className='flex flex-col md:flex-row gap-4 md:gap-8'>
-          <div className=' w-64 h-64 xs:w-96 xs:h-96 border rounded-xl mt-2 md:mt-1'>
-            <Carousel>
+          <div className='w-64 h-64 xs:w-96 xs:h-96 border rounded-xl mt-2 md:mt-1'>
+            <Carousel className='print-hidden'>
               {images.map((image) => (
                 <div key={image.imageId} className='relative rounded-r-xl w-64 h-64 xs:w-96 xs:h-96'>
                   <img src={image.imageUrl} className='w-full h-full' />
                 </div>))}
             </Carousel>
+            <div className='relative hidden print-only rounded-r-xl w-64 h-64 xs:w-96 xs:h-96'>
+              <img src={images[0]?.imageUrl} className='w-full h-full' />
+            </div>
           </div>
           <div className='space-y-6 flex-1 pt-2'>
             <h1 className='text-3xl font-bold text-accent break-words pt-2'>{title}</h1>
@@ -117,7 +142,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
         <div className='flex flex-col md:flex-row gap-4'>
           <div className='w-full md:w-96'>
             <h1 className={`${style.heading} text-center`}>Ingredients</h1>
-            <div className='flex justify-center gap-8 py-1 text-lg '>
+            <div className='flex justify-center gap-8 py-1 text-lg print-hidden'>
               <button className='rounded-full text-accent hover:bg-green-100'
                 onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
               </button>

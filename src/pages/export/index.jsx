@@ -68,7 +68,7 @@ const RecipeExport = () => {
   return (
     <section className='flex justify-center py-4'>
       <div className='border-gray-400 rounded max-w-8xl w-full space-y-6 bg-container p-8 min-h-[90vh]'>
-        <h1 className='text-4xl font-semibold'>Choose your recipes to export</h1>
+        <h1 className='text-4xl font-semibold'>Export your chosen recipes to Excel</h1>
         <SearchBar keyword={keyword} setKeyword={setKeyword} />
         <div>
           <div className='flex gap-4 font-semibold text-2xl flex-col sm:flex-row '>
@@ -94,8 +94,7 @@ const RecipeExport = () => {
             const { recipe_id, images, title, tags, rating, prep_time, cook_time, recipe_yield, ingredients, is_favourite, unit } = recipe
             const recipeImage = images.length ? images[0].imageUrl : '/img/default-recipe.jpg'
             return (
-              <div key={recipe_id} seach
-                className='w-full h-68 flex flex-col border-2 border-gray rounded p-2 space-y-1 bg-item hover:border-accent cursor-pointer relative'
+              <div key={recipe_id} className='w-full h-68 flex flex-col justify-between border-2 border-gray rounded p-2 space-y-1 bg-item hover:border-accent cursor-pointer relative'
                 onClick={() => setChosenRecipe(recipe)}>
                 <img src={recipeImage} alt="" className='w-full h-40 object-cover rounded' />
                 <h1 className='text-xl font-bold text-accent truncate'>{title}</h1>
@@ -109,7 +108,7 @@ const RecipeExport = () => {
         </section>
         <div className='flex flex-col sm:flex-row py-2 items-center gap-4 pt-4 border-t-2 border-gray-300'>
           <h1 className='text-2xl font-semibold text-gray-500'>Export all recipes at 1 click:</h1>
-          <button className='button-outlined-square w-40 color-secondary py-1'
+          <button className='button-outlined-square w-40 color-secondary py-1' disabled={!recipes.length}
             onClick={exportAll}>
             <span>Export all</span>
             <ExportingIcon style='w-8 h-8' />

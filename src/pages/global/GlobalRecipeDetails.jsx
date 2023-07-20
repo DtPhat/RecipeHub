@@ -115,7 +115,7 @@ const GlobalRecipeDetails = () => {
                     const metric = ingredient.amount.replace(quantity, '').trim()
                     const originalYield = recipe_yield
                     return (
-                      <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                      <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-item' : ''}`}>
                         <span>{adjustQuantity(quantity, customeYield, originalYield)} {metric} {ingredient.ingredientName}</span>
                       </li>)
                   })

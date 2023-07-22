@@ -5,6 +5,7 @@ import Button from '../Button';
 import useAuth from '../../hooks/useAuth';
 import { Avatar, Dropdown, Tooltip } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
+import BellIcon from '../../assets/BellIcon';
 
 function TopNav() {
 	const navigate = useNavigate();
@@ -13,6 +14,10 @@ function TopNav() {
 		useThemeContext();
 
 	const handleToggleMenu = () => setActiveMenu(!activeMenu);
+
+	const handleToggleNotification = () => {
+
+	}
 
 	const menuToggleIcon = (
 		<svg
@@ -41,29 +46,41 @@ function TopNav() {
 				/>
 			</Tooltip>
 
-			{/* toggleAvatarDropdownButton */}
-			<Dropdown
-				inline
-				label={
-					<Avatar rounded alt='avatar' img={auth.user.profileImage}>
-						{`hello, ${auth.user.fullName}`}
-					</Avatar>
-				}
-			>
-				<Dropdown.Header>
-					<span className='block text-sm'>{auth.user.fullName}</span>
-					<span className='block truncate text-sm font-medium'>
-						{auth.user.email}
-					</span>
-				</Dropdown.Header>
 			
-				<Dropdown.Item>
-					<Tooltip content='Change theme'>
-						<SwitchButton isOn={isDarkMode} customFunc={toggleDarkMode} />
-					</Tooltip>
-				</Dropdown.Item>
-				<Dropdown.Item onClick={logout}>Log out</Dropdown.Item>
-			</Dropdown>
+			<div className='flex'>
+				{/* notification*/}
+				<Tooltip content='Notification'>
+					<Button icon={<BellIcon/>} customFunc={handleToggleNotification}>
+
+					</Button>
+				</Tooltip>
+				{/* toggleAvatarDropdownButton */}
+				<Dropdown
+					inline
+					label={
+						<Avatar rounded alt='avatar' img={auth.user.profileImage}>
+							{`hello, ${auth.user.fullName}`}
+						</Avatar>
+					}
+				>
+					<Dropdown.Header>
+						<span className='block text-sm'>{auth.user.fullName}</span>
+						<span className='block truncate text-sm font-medium'>
+							{auth.user.email}
+						</span>
+					</Dropdown.Header>
+
+					<Dropdown.Item>
+						<Tooltip content='Change theme'>
+							<SwitchButton
+								isOn={isDarkMode}
+								customFunc={toggleDarkMode}
+							/>
+						</Tooltip>
+					</Dropdown.Item>
+					<Dropdown.Item onClick={logout}>Log out</Dropdown.Item>
+				</Dropdown>
+			</div>
 		</div>
 	);
 }

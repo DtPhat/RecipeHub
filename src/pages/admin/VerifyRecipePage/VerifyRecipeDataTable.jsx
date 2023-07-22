@@ -1,34 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
 import Pagination from '../../../components/DataTable/Pagination';
 import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
-import TypeSelector from '../../../components/DataTable/TypeSelector';
-import FeedbackDetail from './FeedbackDetail';
+import AdminRecipeDetailModal from '../RecipeManagementPage/AdminRecipeDetail';
 
 const columns = [
 	{
+		key: 'title',
+		name: 'Title',
+	},
+	{
 		key: '',
-		name: 'Feedback',
+		name: 'Tags',
 	},
 	{
-		key: 'author',
-		name: 'Author',
-	},
-	{
-		key: 'status',
-		name: 'Status',
+		key: 'rating',
+		name: 'Rating',
 	},
 ];
 
-const typeOptions = [
-	{ value: 'PENDING', html: 'Pending' },
-	{ value: 'ACCEPTED', html: 'Accepted' },
-];
-
-function FeedbackDataTable() {
+function VerifyRecipeDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
 	const [modalType, setModalType] = useState(null);
@@ -38,16 +32,15 @@ function FeedbackDataTable() {
 
 	const [pagination, setPagination] = useState({
 		page: 1,
-		size: 5,
-		totalItem: 5,
+		size: 10,
+		totalItem: 4,
 	});
 
 	const [filter, setFilter] = useState({
 		page: 1,
-		size: 5,
-		sort: 'support_ticket_id',
+		size: 10,
+		sort: 'recipe_id',
 		direction: 'asc',
-		status: 'PENDING',
 		query: '',
 	});
 
@@ -63,24 +56,25 @@ function FeedbackDataTable() {
 	function handleConfirm(argument) {
 		if (argument === 'yes') {
 			if (actionableRow) {
-				if (modalType === 'accept') {
-					var id = actionableRow.supportTicketId;
-					let index = rows.findIndex((row) => row.supportTicketId === id);
-					let updatedFeedback = {
+				if (modalType === 'verify') {
+					var id = actionableRow.recipe_id;
+					let currentVerifyStatus = actionableRow.verified;
+					let index = rows.findIndex((row) => row.recipe_id === id);
+					let updatedRecipe = {
 						...rows[index],
-						status: 'ACCEPTED',
+						verified: !currentVerifyStatus,
 					};
 					let updatedRows = [...rows];
-					updatedRows[index] = updatedFeedback;
+					updatedRows[index] = updatedRecipe;
 					setRows(updatedRows);
-					privateAxios.post(`/api/v1/admin/support-ticket/accept/${id}`);
+					privateAxios.post(`/api/v1/admin/recipe/` + id + '/verify');
 				}
-				if (modalType === 'finish') {
-					var id = actionableRow.supportTicketId;
+				if (modalType === 'remove') {
+					var id = actionableRow.recipe_id;
 					setRows((current) =>
-						current.filter((row) => row.supportTicketId !== id)
+						current.filter((row) => row.recipe_id !== id)
 					);
-					privateAxios.post(`/api/v1/admin/support-ticket/reject/${id}`);
+					privateAxios.delete(`/api/v1/admin/recipe/${id}`);
 				}
 			}
 			resetRowModalSelect();
@@ -91,13 +85,12 @@ function FeedbackDataTable() {
 	}
 
 	function handleClick(argument, item) {
-		if (argument === 'accept' || argument === 'finish') {
+		if (argument === 'verify' || argument === 'remove') {
 			setActionableRow(item);
 			setOpenModal(true);
 			setModalType(argument);
 		}
 	}
-
 	function handlePageChange(newPage) {
 		setFilter({
 			...filter,
@@ -109,13 +102,6 @@ function FeedbackDataTable() {
 		setFilter({
 			...filter,
 			size: event.target.value,
-		});
-	}
-
-	function handleSelectType(event) {
-		setFilter({
-			...filter,
-			status: event.target.value,
 		});
 	}
 
@@ -148,38 +134,31 @@ function FeedbackDataTable() {
 			});
 		}
 	}
-	//
+
 	useEffect(() => {
-		async function fetchFeedbacks() {
-			setIsLoading(true);
+		async function fetchRecipes() {
+			setIsLoading(false);
 			let resp = await privateAxios.get(
-				`/api/v1/admin/support-tickets?page=${filter.page - 1}&size=${
+				`/api/v1/admin/recipes?page=${filter.page - 1}&size=${
 					filter.size
-				}&sortBy=${filter.sort}&direction=${filter.direction}&query=${
+				}&sort=${filter.sort}&direction=${filter.direction}&query=${
 					filter.query
-				}&status=${filter.status}`,
+				}`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
 			setIsLoading(false);
-			setRows(resp.data.supportTickets);
+			setRows(resp.data.recipes);
 			setPagination({
 				page: filter.page,
 				size: filter.size,
 				totalItem: resp.data.totalItem,
 			});
 		}
-		fetchFeedbacks();
+		fetchRecipes();
 	}, [filter]);
 
 	return (
 		<>
-			<div className='flex justify-between max-h-12 mb-1	'>
-				<TypeSelector
-					label='Feedback status: '
-					options={typeOptions}
-					onTypeSelect={handleSelectType}
-				/>
-			</div>
 			<div className='flex justify-between max-h-12	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
@@ -208,74 +187,95 @@ function FeedbackDataTable() {
 				{isLoading && <Spinner size='xl' className='flex content-center' />}
 				<Table.Body className='divide-y'>
 					{!isLoading &&
-						rows.map((item, i) => {
-							if (filter.status === item.status) {
-								return (
-									<Table.Row
-										key={i}
-										className='dark:border-gray-700 dark:bg-gray-800'
-									>
-										<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
-											<span>{item.message}</span>
-										</Table.Cell>
-										<Table.Cell>{item.email}</Table.Cell>
-										<Table.Cell>{item.status}</Table.Cell>
-										<Table.Cell>
-											{item?.status === 'PENDING' ? (
-												<div className='flex gap-1'>
-													<Button
-														color='success'
-														size='sm'
-														outline
-														onClick={() =>
-															handleClick('accept', item)
-														}
-													>
-														Accept
-													</Button>
-													<Button
-														color='failure'
-														size='sm'
-														outline
-														onClick={() =>
-															handleClick('finish', item)
-														}
-													>
-														Reject
-													</Button>
-												</div>
-											) : (
-												<Button
-													color='success'
-													size='sm'
-													outline
-													onClick={() => handleClick('finish', item)}
-												>
-													Finish
-												</Button>
-											)}
-										</Table.Cell>
-									</Table.Row>
-								);
-							}
-						})}
+						rows.map((item, i) => (
+							<Table.Row
+								key={i}
+								className='dark:border-gray-700 dark:bg-gray-800'
+							>
+								<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
+									<img
+										src={
+											item.images.length > 0
+												? item.images[0].imageUrl
+												: ''
+										}
+										className='inline rounded-full aspect-square w-10 mr-4'
+									/>
+									<span>{item.title}</span>
+								</Table.Cell>
+								<Table.Cell className='max-w-xs flex flex-wrap'>
+									{item.tags.map((tag) => {
+										return (
+											<span
+												key={tag.tagId}
+												className='border rounded-full py-0.5 px-3 my-1 inline-block border-green-variant'
+											>
+												{tag.tagName}
+											</span>
+										);
+									})}
+								</Table.Cell>
+								<Table.Cell>{item.rating}</Table.Cell>
+								<Table.Cell>
+									<Dropdown label='Action' placement='bottom'>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												size='sm'
+												outline
+												onClick={() => setSelectedRow(item)}
+											>
+												View
+											</Button>
+										</Dropdown.Item>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												color='success'
+												size='sm'
+												outline
+												onClick={() => handleClick('verify', item)}
+											>
+												Verify
+											</Button>
+										</Dropdown.Item>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												color='failure'
+												size='sm'
+												outline
+												onClick={() => handleClick('remove', item)}
+											>
+												Remove
+											</Button>
+										</Dropdown.Item>
+									</Dropdown>
+								</Table.Cell>
+							</Table.Row>
+						))}
 				</Table.Body>
 			</Table>
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
-			<FeedbackDetail chosenFeedback={selectedRow} onClose={resetRowModalSelect} action={handleClick}/>
+			<AdminRecipeDetailModal
+				chosenRecipe={selectedRow}
+				onClose={resetRowModalSelect}
+				action={handleClick}
+				verifiable='true'
+			/>
 
-			{modalType === 'accept' && (
+			{modalType === 'verify' && (
 				<ConfirmModal
-					content='Do you want to accept this feedback?'
+					content='Do you want to verify this recipe?'
 					isOpened={openModal}
 					handleClick={handleConfirm}
 				/>
 			)}
-			{modalType === 'finish' && (
+			{modalType === 'remove' && (
 				<ConfirmModal
-					content='Do you want to finish this feedback?'
+					content='Do you want to remove this recipe?'
 					isOpened={openModal}
 					handleClick={handleConfirm}
 				/>
@@ -284,4 +284,4 @@ function FeedbackDataTable() {
 	);
 }
 
-export default FeedbackDataTable;
+export default VerifyRecipeDataTable;

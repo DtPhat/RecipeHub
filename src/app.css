@@ -1,6 +1,6 @@
 .sidebar {
-  z-index: 10000;
-  @apply transition-all duration-100 shadow-lg;
+ 
+  @apply transition-all duration-100 z-40 shadow-lg;
 }
 
 .switch-btn-label {

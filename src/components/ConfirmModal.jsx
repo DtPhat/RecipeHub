@@ -16,6 +16,7 @@ function ConfirmModal(props) {
 		<>
 			<Modal
 				show={isOpened}
+				dismissible
 				size='md'
 				popup
 				onClose={() => handleModalClick('cancel')}

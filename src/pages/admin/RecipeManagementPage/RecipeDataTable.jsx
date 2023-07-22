@@ -5,6 +5,8 @@ import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
 import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
+import AdminRecipeDetailModal from './AdminRecipeDetail';
+import TypeSelector from '../../../components/DataTable/TypeSelector';
 
 const columns = [
 	{
@@ -21,45 +23,81 @@ const columns = [
 	},
 ];
 
+const typeOptions = [
+	{ value: '', html:'All'},
+	{ value: true, html:'Verified'},
+	{ value: false, html:'Not verified'},
+	
+]
+
 function RecipeDataTable() {
 	const [rows, setRows] = useState([]);
 	const [openModal, setOpenModal] = useState(false);
+	const [modalType, setModalType] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [selectedIndex, setSelectedIndex] = useState(-1);
+	const [selectedRow, setSelectedRow] = useState(null);
+	const [actionableRow, setActionableRow] = useState(null);
 
 	const [pagination, setPagination] = useState({
 		page: 1,
-		size: 5,
+		size: 10,
 		totalItem: 4,
 	});
 
 	const [filter, setFilter] = useState({
 		page: 1,
-		size: 5,
+		size: 10,
 		sort: 'recipe_id',
 		direction: 'asc',
 		query: '',
+		status: false,
 	});
 
 	const privateAxios = usePrivateAxios();
 
-	function handleClick(argument, index) {
-		if (argument === 'openConfirm') {
-			setOpenModal(true);
-			setSelectedIndex(index);
-		} else {
-			if (argument === 'yes') {
-				if (selectedIndex > -1) {
-					var id = rows[selectedIndex].recipe_id;
-					rows.splice(selectedIndex, 1);
-					privateAxios.delete(`/api/v1/admin/recipe/${id}`);
-					setSelectedIndex(-1);
+	function resetRowModalSelect() {
+		setOpenModal(false);
+		setSelectedRow(null);
+		setActionableRow(null);
+		setModalType(null);
+	}
+
+	function handleConfirm(argument) {
+		if (argument === 'yes') {
+			if (actionableRow) {
+				if (modalType === 'verify') {
+					var id = actionableRow.recipe_id;
+					let currentVerifyStatus = actionableRow.verified;
+					let index = rows.findIndex((row) => row.recipe_id === id);
+					let updatedRecipe = {
+						...rows[index],
+						verified: !currentVerifyStatus,
+					};
+					let updatedRows = [...rows];
+					updatedRows[index] = updatedRecipe;
+					setRows(updatedRows);
+					privateAxios.post(`/api/v1/admin/recipe/` + id + '/verify');
 				}
-				setOpenModal(false);
-			} else {
-				setOpenModal(false);
-				setSelectedIndex(-1);
+				if (modalType === 'remove') {
+					var id = actionableRow.recipe_id;
+					setRows((current) =>
+						current.filter((row) => row.recipe_id !== id)
+					);
+					privateAxios.delete(`/api/v1/admin/recipe/${id}`);
+				}
 			}
+			resetRowModalSelect();
+		} else {
+			setOpenModal(false);
+			setModalType(null);
+		}
+	}
+
+	function handleClick(argument, item) {
+		if (argument === 'verify' || argument === 'remove') {
+			setActionableRow(item);
+			setOpenModal(true);
+			setModalType(argument);
 		}
 	}
 
@@ -67,6 +105,13 @@ function RecipeDataTable() {
 		setFilter({
 			...filter,
 			page: newPage,
+		});
+	}
+
+	function handleSelectType(event) {
+		setFilter({
+			...filter,
+			status: event.target.value,
 		});
 	}
 
@@ -115,7 +160,7 @@ function RecipeDataTable() {
 					filter.size
 				}&sort=${filter.sort}&direction=${filter.direction}&query=${
 					filter.query
-				}`,
+				}&status=${filter.status}`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
 			setIsLoading(false);
@@ -131,6 +176,13 @@ function RecipeDataTable() {
 
 	return (
 		<>
+		<div className='flex justify-between max-h-12 mb-1	'>
+				<TypeSelector
+					label='Recipe verify status: '
+					options={typeOptions}
+					onTypeSelect={handleSelectType}
+				/>
+			</div>
 			<div className='flex justify-between max-h-12	'>
 				<PageSizeSelector onPageSizeSelect={handleSelectPageSize} />
 				<SearchBar onSearch={handleTableSearch} />
@@ -192,15 +244,40 @@ function RecipeDataTable() {
 								</Table.Cell>
 								<Table.Cell>{item.rating}</Table.Cell>
 								<Table.Cell>
-									{' '}
-									<Button
-										color='failure'
-										size='sm'
-										outline
-										onClick={() => handleClick('openConfirm', i)}
-									>
-										Remove
-									</Button>{' '}
+									<Dropdown label='Action' placement='bottom'>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												size='sm'
+												outline
+												onClick={() => setSelectedRow(item)}
+											>
+												View
+											</Button>
+										</Dropdown.Item>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												color='success'
+												size='sm'
+												outline
+												onClick={() => handleClick('verify', item)}
+											>
+												Verify
+											</Button>
+										</Dropdown.Item>
+										<Dropdown.Item>
+											<Button
+												className='w-full'
+												color='failure'
+												size='sm'
+												outline
+												onClick={() => handleClick('remove', item)}
+											>
+												Remove
+											</Button>
+										</Dropdown.Item>
+									</Dropdown>
 								</Table.Cell>
 							</Table.Row>
 						))}
@@ -209,11 +286,26 @@ function RecipeDataTable() {
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
-			<ConfirmModal
-				content='Are you sure you want to delete this item?'
-				isOpened={openModal}
-				handleClick={handleClick}
+			<AdminRecipeDetailModal
+				chosenRecipe={selectedRow}
+				onClose={resetRowModalSelect}
+				action={handleClick}
 			/>
+
+			{modalType === 'verify' && (
+				<ConfirmModal
+					content='Do you want to verify this recipe?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
+			{modalType === 'remove' && (
+				<ConfirmModal
+					content='Do you want to remove this recipe?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
 		</>
 	);
 }

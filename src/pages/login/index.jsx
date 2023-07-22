@@ -82,7 +82,7 @@ const Login = () => {
                   <label htmlFor='isRememberMe'>Remmeber me</label>
                 </div>
                 <div className='text-accent cursor-pointer flex justify-center px-2' onClick={() => setOpenForgottenPasswordBox(true)}>
-                  <span className='underline'>Forgotten password?</span>
+                  <span className='underline'>Forgot password?</span>
                 </div>
                 <ForgottenPassword openForgottenPasswordBox={openForgottenPasswordBox} setOpenForgottenPasswordBox={setOpenForgottenPasswordBox} />
               </div>

@@ -37,7 +37,8 @@ function UserDataTable() {
 	const [openModal, setOpenModal] = useState(false);
 	const [modalType, setModalType] = useState(null);
 
-	const [selectedIndex, setSelectedIndex] = useState(-1);
+	const [selectedRow, setSelectedRow] = useState(null);
+	const [actionableRow, setActionableRow] = useState(null);
 
 	const [pagination, setPagination] = useState({
 		page: 1,
@@ -63,7 +64,7 @@ function UserDataTable() {
 				filter.size
 			}&sort=${filter.sort}&direction=${filter.direction}&query=${
 				filter.query
-			}`,
+			}&blocked=${filter.blocked}`,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 		setIsLoading(false);
@@ -105,13 +106,14 @@ function UserDataTable() {
 
 	function resetRowModalSelect() {
 		setOpenModal(false);
-		setSelectedIndex(-1);
+		setSelectedIndex(null);
+		setActionableRow(null);
 		setModalType(null);
 	}
 
-	function handleClick(argument, index) {
+	function handleClick(argument, item) {
 		if (argument === 'block' || argument === 'unblock') {
-			setSelectedIndex(index);
+			setActionableRow(item);
 			setOpenModal(true);
 			setModalType(argument);
 		}
@@ -119,21 +121,37 @@ function UserDataTable() {
 
 	function handleConfirm(argument) {
 		if (argument === 'yes') {
-			if (selectedIndex > -1) {
+			if (actionableRow) {
 				if (modalType === 'block') {
-					var id = rows[selectedIndex].userId;
-					rows[selectedIndex].blocked = true;
+					var id = actionableRow.userId;
+					let index = rows.findIndex((row) => row.user_id === id);
+					let updatedUser = {
+						...rows[index],
+						blocked: true,
+					};
+					let updatedRows = [...rows];
+					updatedRows[index] = updatedUser;
+					setRows(updatedRows);
 					privateAxios.post(`/api/v1/admin/user/block/${id}`);
 				}
 				if (modalType === 'unblock') {
-					var id = rows[selectedIndex].userId;
-					rows[selectedIndex].blocked = false;
+					var id = actionableRow.userId;
+					let index = rows.findIndex((row) => row.user_id === id);
+					let updatedUser = {
+						...rows[index],
+						blocked: false,
+					};
+					let updatedRows = [...rows];
+					updatedRows[index] = updatedUser;
+					setRows(updatedRows);
 					privateAxios.post(`/api/v1/admin/user/unblock/${id}`);
 				}
 			}
 			resetRowModalSelect();
 		} else {
-			resetRowModalSelect();
+			setOpenModal(false);
+			setModalType(null);
+			setActionableRow(null);
 		}
 	}
 
@@ -168,7 +186,7 @@ function UserDataTable() {
 		<>
 			<div className='flex justify-between max-h-12 mb-1	'>
 				<TypeSelector
-				label='User status: '
+					label='User status: '
 					options={typeOptions}
 					onTypeSelect={handleSelectType}
 				/>
@@ -225,7 +243,7 @@ function UserDataTable() {
 											color='failure'
 											size='sm'
 											outline
-											onClick={() => handleClick('unblock', i)}
+											onClick={() => handleClick('unblock', item)}
 										>
 											Unblock
 										</Button>
@@ -234,7 +252,7 @@ function UserDataTable() {
 											color='failure'
 											size='sm'
 											outline
-											onClick={() => handleClick('block', i)}
+											onClick={() => handleClick('block', item)}
 										>
 											Block
 										</Button>
@@ -246,6 +264,8 @@ function UserDataTable() {
 			</Table>
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
+
+			<UserDetail chosenUser={selectedRow} action={handleClick} onClose={resetRowModalSelect}/>
 
 			{modalType === 'block' && (
 				<ConfirmModal

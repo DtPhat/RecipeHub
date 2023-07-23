@@ -81,7 +81,7 @@ const AdminRecipeDetailModal = ({
 										{msToTime(chosenRecipe.cook_time)}
 									</span>
 								</p>
-								<p className='font-bold'>
+								<div className='font-bold'>
 									Ingredients:{' '}
 									<ol className='font-normal'>
 										{chosenRecipe.ingredients.map((ingredient, i) => (
@@ -90,7 +90,7 @@ const AdminRecipeDetailModal = ({
 											</li>
 										))}
 									</ol>
-								</p>
+								</div>
 								<p className='font-bold'>
 									Yield:{' '}
 									<span className='font-normal'>
@@ -128,9 +128,9 @@ const AdminRecipeDetailModal = ({
 									</span>
 								</p>
 								<p className='font-bold'>
-									Favorite:{' '}
+									Verify status:{' '}
 									<span className='font-normal'>
-										{chosenRecipe.is_favourite}
+										{chosenRecipe.verified ? 'Verified' : 'Not verified' }
 									</span>
 								</p>
 							</div>

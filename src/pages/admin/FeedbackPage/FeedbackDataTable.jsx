@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
 import Pagination from '../../../components/DataTable/Pagination';
 import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
@@ -221,39 +221,61 @@ function FeedbackDataTable() {
 										<Table.Cell>{item.email}</Table.Cell>
 										<Table.Cell>{item.status}</Table.Cell>
 										<Table.Cell>
-											{item?.status === 'PENDING' ? (
-												<div className='flex gap-1'>
+											<Dropdown label='Action' placement='bottom'>
+												<Dropdown.Item>
 													<Button
 														color='success'
 														size='sm'
 														outline
 														onClick={() =>
-															handleClick('accept', item)
+															setSelectedRow(item)
 														}
 													>
-														Accept
+														View
 													</Button>
-													<Button
-														color='failure'
-														size='sm'
-														outline
-														onClick={() =>
-															handleClick('finish', item)
-														}
-													>
-														Reject
-													</Button>
-												</div>
-											) : (
-												<Button
-													color='success'
-													size='sm'
-													outline
-													onClick={() => handleClick('finish', item)}
-												>
-													Finish
-												</Button>
-											)}
+												</Dropdown.Item>
+												{item.status === 'PENDING' ? (
+													<>
+														<Dropdown.Item>
+															<Button
+																color='success'
+																size='sm'
+																outline
+																onClick={() =>
+																	handleClick('accept', item)
+																}
+															>
+																Accept
+															</Button>
+														</Dropdown.Item>
+														<Dropdown.Item>
+															<Button
+																color='failure'
+																size='sm'
+																outline
+																onClick={() =>
+																	handleClick('finish', item)
+																}
+															>
+																Reject
+															</Button>
+														</Dropdown.Item>
+													</>
+												) : (
+													<Dropdown.Item>
+														<Button
+															color='failure'
+															size='sm'
+															outline
+															onClick={() =>
+																handleClick('finish', item)
+															}
+														>
+															Finish
+														</Button>
+													</Dropdown.Item>
+												)}
+											</Dropdown>
 										</Table.Cell>
 									</Table.Row>
 								);
@@ -264,7 +286,11 @@ function FeedbackDataTable() {
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
-			<FeedbackDetail chosenFeedback={selectedRow} onClose={resetRowModalSelect} action={handleClick}/>
+			<FeedbackDetail
+				chosenFeedback={selectedRow}
+				onClose={resetRowModalSelect}
+				action={handleClick}
+			/>
 
 			{modalType === 'accept' && (
 				<ConfirmModal

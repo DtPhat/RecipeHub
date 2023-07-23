@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
 import Pagination from '../../../components/DataTable/Pagination';
 import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';

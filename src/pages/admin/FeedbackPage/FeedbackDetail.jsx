@@ -23,14 +23,14 @@ function FeedbackDetail({ chosenFeedback, onClose, action }) {
 				dismissible
 				show={chosenFeedback}
 				onClose={onClose}
-				size='7xl'
+				size='xl'
 				className={isDarkMode ? 'dark' : ''}
 			>
 				<Modal.Header>
 					<span>Feedback from {chosenFeedback.email}</span>
 				</Modal.Header>
 				<Modal.Body className='no-scrollbar'>
-					<div className='flex gap-4 flex-col h-[70vh] z-50 overflow-auto no-scrollbar dark:text-white'>
+					<div className='flex gap-4 flex-col z-50 overflow-auto no-scrollbar dark:text-white'>
                         <p>
                             <p className='font-bold'>
                                 Message:

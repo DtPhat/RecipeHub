@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Spinner, Table } from 'flowbite-react';
+import { Button, Dropdown, Spinner, Table } from 'flowbite-react';
 import Pagination from '../../../components/DataTable/Pagination';
 import usePrivateAxios from '../../../hooks/usePrivateAxios';
 import PageSizeSelector from '../../../components/DataTable/PageSizeSelector';
@@ -7,6 +7,7 @@ import SearchBar from '../../../components/DataTable/SearchBar';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { convertLongToDatetime } from '../../../utils/DateUtils';
 import TypeSelector from '../../../components/DataTable/TypeSelector';
+import UserDetail from './UserDetail';
 
 const columns = [
 	{
@@ -106,7 +107,7 @@ function UserDataTable() {
 
 	function resetRowModalSelect() {
 		setOpenModal(false);
-		setSelectedIndex(null);
+		setSelectedRow(null);
 		setActionableRow(null);
 		setModalType(null);
 	}
@@ -238,25 +239,46 @@ function UserDataTable() {
 									{convertLongToDatetime(item.birthday)}
 								</Table.Cell>
 								<Table.Cell>
-									{item?.blocked ? (
-										<Button
-											color='failure'
-											size='sm'
-											outline
-											onClick={() => handleClick('unblock', item)}
-										>
-											Unblock
-										</Button>
-									) : (
-										<Button
-											color='failure'
-											size='sm'
-											outline
-											onClick={() => handleClick('block', item)}
-										>
-											Block
-										</Button>
-									)}
+									<Dropdown label='Action' placement='bottom'>
+										<Dropdown.Item>
+											<Button
+												color='success'
+												size='sm'
+												outline
+												onClick={() => setSelectedRow(item)}
+											>
+												View
+											</Button>
+										</Dropdown.Item>
+
+										{item?.blocked ? (
+											<Dropdown.Item>
+												<Button
+													color='failure'
+													size='sm'
+													outline
+													onClick={() =>
+														handleClick('unblock', item)
+													}
+												>
+													Unblock
+												</Button>
+											</Dropdown.Item>
+										) : (
+											<Dropdown.Item>
+												<Button
+													color='failure'
+													size='sm'
+													outline
+													onClick={() =>
+														handleClick('block', item)
+													}
+												>
+													Block
+												</Button>
+											</Dropdown.Item>
+										)}
+									</Dropdown>
 								</Table.Cell>
 							</Table.Row>
 						))}
@@ -265,7 +287,11 @@ function UserDataTable() {
 
 			<Pagination onPageChange={handlePageChange} pagination={pagination} />
 
-			<UserDetail chosenUser={selectedRow} action={handleClick} onClose={resetRowModalSelect}/>
+			<UserDetail
+				chosenUser={selectedRow}
+				action={handleClick}
+				onClose={resetRowModalSelect}
+			/>
 
 			{modalType === 'block' && (
 				<ConfirmModal

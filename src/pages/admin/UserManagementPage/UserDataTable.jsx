@@ -52,7 +52,7 @@ function UserDataTable() {
 		size: 5,
 		sort: 'user_id',
 		direction: 'asc',
-		blocked: 0,
+		blocked: '',
 		query: '',
 	});
 
@@ -92,10 +92,24 @@ function UserDataTable() {
 	}
 
 	function handleSelectType(event) {
-		setFilter({
-			...filter,
-			blocked: event.target.value,
-		});
+		let value = event.target.value;
+		if (value === '0') {
+			setFilter({
+				...filter,
+				blocked: false,
+			});
+		} else if (value === '1') {
+			setFilter({
+				...filter,
+				blocked: true,
+			});
+		} else {
+			setFilter({
+				...filter,
+				blocked: '',
+			});
+		}
+		console.log(filter);
 	}
 
 	function handleTableSearch(value) {
@@ -124,8 +138,9 @@ function UserDataTable() {
 		if (argument === 'yes') {
 			if (actionableRow) {
 				if (modalType === 'block') {
+					setIsLoading(true);
 					var id = actionableRow.userId;
-					let index = rows.findIndex((row) => row.user_id === id);
+					let index = rows.findIndex((row) => row.userId === id);
 					let updatedUser = {
 						...rows[index],
 						blocked: true,
@@ -134,10 +149,13 @@ function UserDataTable() {
 					updatedRows[index] = updatedUser;
 					setRows(updatedRows);
 					privateAxios.post(`/api/v1/admin/user/block/${id}`);
+					setIsLoading(false);
 				}
 				if (modalType === 'unblock') {
+					setIsLoading(true);
 					var id = actionableRow.userId;
-					let index = rows.findIndex((row) => row.user_id === id);
+					console.log(id);
+					let index = rows.findIndex((row) => row.userId === id);
 					let updatedUser = {
 						...rows[index],
 						blocked: false,
@@ -146,6 +164,7 @@ function UserDataTable() {
 					updatedRows[index] = updatedUser;
 					setRows(updatedRows);
 					privateAxios.post(`/api/v1/admin/user/unblock/${id}`);
+					setIsLoading(false);
 				}
 			}
 			resetRowModalSelect();
@@ -220,68 +239,77 @@ function UserDataTable() {
 				{isLoading && <Spinner size='xl' className='flex content-center' />}
 				<Table.Body className='divide-y'>
 					{!isLoading &&
-						rows.map((item, i) => (
-							<Table.Row
-								key={i}
-								className='dark:border-gray-700 dark:bg-gray-800'
-							>
-								<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
-									<img
-										src={item.profileImage}
-										className='inline rounded-full aspect-square w-10 mr-4'
-									/>
-									<span>{item.fullName}</span>
-								</Table.Cell>
-								<Table.Cell className='max-w-xs flex flex-wrap'>
-									{item.email}
-								</Table.Cell>
-								<Table.Cell>
-									{convertLongToDatetime(item.birthday)}
-								</Table.Cell>
-								<Table.Cell>
-									<Dropdown label='Action' placement='bottom'>
-										<Dropdown.Item>
-											<Button
-												color='success'
-												size='sm'
-												outline
-												onClick={() => setSelectedRow(item)}
-											>
-												View
-											</Button>
-										</Dropdown.Item>
+						rows.map((item, i) => {
+							if (
+								filter.blocked === item.blocked ||
+								filter.blocked === ''
+							) {
+								return (
+									<Table.Row
+										key={i}
+										className='dark:border-gray-700 dark:bg-gray-800'
+									>
+										<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
+											<img
+												src={item.profileImage}
+												className='inline rounded-full aspect-square w-10 mr-4'
+											/>
+											<span>{item.fullName}</span>
+										</Table.Cell>
+										<Table.Cell className='max-w-xs flex flex-wrap'>
+											{item.email}
+										</Table.Cell>
+										<Table.Cell>
+											{convertLongToDatetime(item.birthday)}
+										</Table.Cell>
+										<Table.Cell>
+											<Dropdown label='Action' placement='bottom'>
+												<Dropdown.Item>
+													<Button
+														className='w-full'
+														size='sm'
+														outline
+														onClick={() => setSelectedRow(item)}
+													>
+														View
+													</Button>
+												</Dropdown.Item>
 
-										{item?.blocked ? (
-											<Dropdown.Item>
-												<Button
-													color='failure'
-													size='sm'
-													outline
-													onClick={() =>
-														handleClick('unblock', item)
-													}
-												>
-													Unblock
-												</Button>
-											</Dropdown.Item>
-										) : (
-											<Dropdown.Item>
-												<Button
-													color='failure'
-													size='sm'
-													outline
-													onClick={() =>
-														handleClick('block', item)
-													}
-												>
-													Block
-												</Button>
-											</Dropdown.Item>
-										)}
-									</Dropdown>
-								</Table.Cell>
-							</Table.Row>
-						))}
+												{item?.blocked ? (
+													<Dropdown.Item>
+														<Button
+															className='w-full'
+															color='success'
+															size='sm'
+															outline
+															onClick={() =>
+																handleClick('unblock', item)
+															}
+														>
+															Unblock
+														</Button>
+													</Dropdown.Item>
+												) : (
+													<Dropdown.Item>
+														<Button
+															className='w-full'
+															color='failure'
+															size='sm'
+															outline
+															onClick={() =>
+																handleClick('block', item)
+															}
+														>
+															Block
+														</Button>
+													</Dropdown.Item>
+												)}
+											</Dropdown>
+										</Table.Cell>
+									</Table.Row>
+								);
+							}
+						})}
 				</Table.Body>
 			</Table>
 

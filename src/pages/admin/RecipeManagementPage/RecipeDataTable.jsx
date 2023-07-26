@@ -24,11 +24,10 @@ const columns = [
 ];
 
 const typeOptions = [
-	{ value: '', html:'All'},
-	{ value: true, html:'Verified'},
-	{ value: false, html:'Not verified'},
-	
-]
+	{ value: '', html: 'All' },
+	{ value: true, html: 'Verified' },
+	{ value: false, html: 'Not verified' },
+];
 
 function RecipeDataTable() {
 	const [rows, setRows] = useState([]);
@@ -50,7 +49,7 @@ function RecipeDataTable() {
 		sort: 'recipe_id',
 		direction: 'asc',
 		query: '',
-		status: false,
+		verified: '',
 	});
 
 	const privateAxios = usePrivateAxios();
@@ -109,10 +108,23 @@ function RecipeDataTable() {
 	}
 
 	function handleSelectType(event) {
-		setFilter({
-			...filter,
-			status: event.target.value,
-		});
+		let value = event.target.value;
+		if (value === 'false') {
+			setFilter({
+				...filter,
+				verified: false,
+			});
+		} else if (value === 'true') {
+			setFilter({
+				...filter,
+				verified: true,
+			});
+		} else {
+			setFilter({
+				...filter,
+				verified: '',
+			});
+		}
 	}
 
 	function handleSelectPageSize(event) {
@@ -160,7 +172,7 @@ function RecipeDataTable() {
 					filter.size
 				}&sort=${filter.sort}&direction=${filter.direction}&query=${
 					filter.query
-				}&status=${filter.status}`,
+				}&verified=${filter.verified}`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
 			setIsLoading(false);
@@ -176,7 +188,7 @@ function RecipeDataTable() {
 
 	return (
 		<>
-		<div className='flex justify-between max-h-12 mb-1	'>
+			<div className='flex justify-between max-h-12 mb-1	'>
 				<TypeSelector
 					label='Recipe verify status: '
 					options={typeOptions}
@@ -211,76 +223,83 @@ function RecipeDataTable() {
 				{isLoading && <Spinner size='xl' className='flex content-center' />}
 				<Table.Body className='divide-y'>
 					{!isLoading &&
-						rows.map((item, i) => (
-							<Table.Row
-								key={i}
-								className='dark:border-gray-700 dark:bg-gray-800'
-							>
-								{/* <Table.Cell className='!p-4'>
+						rows.map((item, i) => {
+							if (filter.verified === item.verified || filter.verified === '')
+								return (
+									<Table.Row
+										key={i}
+										className='dark:border-gray-700 dark:bg-gray-800'
+									>
+										{/* <Table.Cell className='!p-4'>
 									<Checkbox checked={allSelected} />
 								</Table.Cell> */}
-								<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
-									<img
-										src={
-											item.images.length > 0
-												? item.images[0].imageUrl
-												: ''
-										}
-										className='inline rounded-full aspect-square w-10 mr-4'
-									/>
-									<span>{item.title}</span>
-								</Table.Cell>
-								<Table.Cell className='max-w-xs flex flex-wrap'>
-									{item.tags.map((tag) => {
-										return (
-											<span
-												key={tag.tagId}
-												className='border rounded-full py-0.5 px-3 my-1 inline-block border-green-variant'
-											>
-												{tag.tagName}
-											</span>
-										);
-									})}
-								</Table.Cell>
-								<Table.Cell>{item.rating}</Table.Cell>
-								<Table.Cell>
-									<Dropdown label='Action' placement='bottom'>
-										<Dropdown.Item>
-											<Button
-												className='w-full'
-												size='sm'
-												outline
-												onClick={() => setSelectedRow(item)}
-											>
-												View
-											</Button>
-										</Dropdown.Item>
-										<Dropdown.Item>
-											<Button
-												className='w-full'
-												color='success'
-												size='sm'
-												outline
-												onClick={() => handleClick('verify', item)}
-											>
-												Verify
-											</Button>
-										</Dropdown.Item>
-										<Dropdown.Item>
-											<Button
-												className='w-full'
-												color='failure'
-												size='sm'
-												outline
-												onClick={() => handleClick('remove', item)}
-											>
-												Remove
-											</Button>
-										</Dropdown.Item>
-									</Dropdown>
-								</Table.Cell>
-							</Table.Row>
-						))}
+										<Table.Cell className='max-w-xs whitespace-nowrap content-center overflow-x-scroll no-scrollbar'>
+											<img
+												src={
+													item.images.length > 0
+														? item.images[0].imageUrl
+														: ''
+												}
+												className='inline rounded-full aspect-square w-10 mr-4'
+											/>
+											<span>{item.title}</span>
+										</Table.Cell>
+										<Table.Cell className='max-w-xs flex flex-wrap'>
+											{item.tags.map((tag) => {
+												return (
+													<span
+														key={tag.tagId}
+														className='border rounded-full py-0.5 px-3 my-1 inline-block border-green-variant'
+													>
+														{tag.tagName}
+													</span>
+												);
+											})}
+										</Table.Cell>
+										<Table.Cell>{item.rating}</Table.Cell>
+										<Table.Cell>
+											<Dropdown label='Action' placement='bottom'>
+												<Dropdown.Item>
+													<Button
+														className='w-full'
+														size='sm'
+														outline
+														onClick={() => setSelectedRow(item)}
+													>
+														View
+													</Button>
+												</Dropdown.Item>
+												<Dropdown.Item>
+													<Button
+														className='w-full'
+														color='success'
+														size='sm'
+														outline
+														onClick={() =>
+															handleClick('verify', item)
+														}
+													>
+														Verify
+													</Button>
+												</Dropdown.Item>
+												<Dropdown.Item>
+													<Button
+														className='w-full'
+														color='failure'
+														size='sm'
+														outline
+														onClick={() =>
+															handleClick('remove', item)
+														}
+													>
+														Remove
+													</Button>
+												</Dropdown.Item>
+											</Dropdown>
+										</Table.Cell>
+									</Table.Row>
+								);
+						})}
 				</Table.Body>
 			</Table>
 

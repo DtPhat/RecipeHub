@@ -33,7 +33,10 @@ function UserDetail({ chosenUser, onClose, action }) {
 					</Modal.Header>
 					<Modal.Body className='no-scrollbar'>
 						<div className='flex gap-4 flex-row z-50 overflow-auto no-scrollbar dark:text-white'>
-							<div>
+							<div className='w-2/5 h-auto aspect-square'>
+								<img src={chosenUser.profileImage} />
+							</div>
+							<div className='w-3/5 h-auto'>
 								<p>
 									<span className='font-bold'>User ID: </span>
 									<span>{chosenUser.userId}</span>
@@ -64,9 +67,6 @@ function UserDetail({ chosenUser, onClose, action }) {
 										)}
 									</span>
 								</p>
-							</div>
-							<div>
-								<img src={chosenUser.profileImage}/>
 							</div>
 						</div>
 					</Modal.Body>

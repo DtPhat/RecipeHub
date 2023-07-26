@@ -224,12 +224,9 @@ function FeedbackDataTable() {
 											<Dropdown label='Action' placement='bottom'>
 												<Dropdown.Item>
 													<Button
-														color='success'
 														size='sm'
 														outline
-														onClick={() =>
-															setSelectedRow(item)
-														}
+														onClick={() => setSelectedRow(item)}
 													>
 														View
 													</Button>
@@ -238,6 +235,7 @@ function FeedbackDataTable() {
 													<>
 														<Dropdown.Item>
 															<Button
+																className='w-full'
 																color='success'
 																size='sm'
 																outline
@@ -250,6 +248,7 @@ function FeedbackDataTable() {
 														</Dropdown.Item>
 														<Dropdown.Item>
 															<Button
+																className='w-full'
 																color='failure'
 																size='sm'
 																outline
@@ -264,7 +263,8 @@ function FeedbackDataTable() {
 												) : (
 													<Dropdown.Item>
 														<Button
-															color='failure'
+															className='w-full'
+															color='success'
 															size='sm'
 															outline
 															onClick={() =>

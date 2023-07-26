@@ -26,10 +26,7 @@ import DashBoard from './pages/admin/DashBoard.jsx';
 import RecipeMP from './pages/admin/RecipeManagementPage/RecipeMP.jsx';
 import FeedbackPage from './pages/admin/FeedbackPage/FeedbackPage.jsx';
 import UserMP from './pages/admin/UserManagementPage/UserMP.jsx';
-import VerifyRecipePage from './pages/admin/VerifyRecipePage/verifyRecipePage.jsx'
 import ReactGA, { pageview } from 'react-ga';
-import Layout from "./pages/Layout.jsx";
-import { useThemeContext } from "./contexts/ThemeContext.jsx";
 export const TRACKING_ID = 'G-FVY5ZCWNMT'
 ReactGA.initialize(TRACKING_ID);
 
@@ -72,7 +69,6 @@ const App = () => {
 						<Route path='recipeManagement' element={<RecipeMP />} />
 						<Route path='feedback' element={<FeedbackPage />} />
 						<Route path='userManagement' element={<UserMP />} />
-						{/* <Route path='verifyRecipe' element={<VerifyRecipePage />}/> */}
 					</Route>
 				</Route>
 				<Route path="/*" element={<NotFound />} />

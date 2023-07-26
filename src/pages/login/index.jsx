@@ -17,8 +17,8 @@ const Login = () => {
   const navigate = useNavigate()
   const [submitting, setSubmitting] = useState(false)
   const [serverError, setServerError] = useState('')
+  const [showingError, setShowingError] = useState(false)
   const [openForgottenPasswordBox, setOpenForgottenPasswordBox] = useState(false)
-  const [loading, setLoading] = useState(false)
   console.log(loginData);
   const handleLoginDataChange = (e) => {
     const { name, value, type } = e.target
@@ -26,6 +26,10 @@ const Login = () => {
   }
 
   const loginWithAccount = () => {
+    if (errorMessages.email || errorMessages.password) {
+      setShowingError(true)
+      return
+    }
     setSubmitting(true)
     axios.post('/api/v1/auth/basic/login', loginData)
       .then(response => {
@@ -46,6 +50,12 @@ const Login = () => {
     setSubmitting(true)
     googleLogin()
   }
+  const { email, password } = loginData
+  const errorMessages = {
+    email: !email ? 'Please enter your email' : '',
+    password: !password ? 'Please enter your password' : '',
+  }
+
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search)
   }, [])
@@ -65,7 +75,7 @@ const Login = () => {
               <div>
                 <input type="text" className='pb-2 pt-4 text-lg px-2 bg-inherit border-b-2 focus:outline-gray-200 w-full' name='email' id='email' placeholder='Email'
                   onChange={handleLoginDataChange} />
-                <span className='invisible text-sm'>Warning here</span>
+                <div className='text-orange-accent text-sm h-4'>{showingError && errorMessages.email}</div>
               </div>
               <div className='relative'>
                 <input type={showingPassword ? 'text' : 'password'} className='pb-2 pt-4 text-lg px-2 bg-inherit border-b-2 focus:outline-gray-200 w-full pr-12' name='password' id='password' placeholder='Password'
@@ -74,7 +84,7 @@ const Login = () => {
                   onClick={() => setShowingPassword(prevState => !prevState)}>
                   <EyeIcon style='w-6 h-6' isOn={showingPassword} />
                 </button>}
-                <span className='invisible text-sm'>Warning here</span>
+                <div className='text-orange-accent text-sm h-4'>{showingError && errorMessages.password}</div>
               </div>
               <div className='flex justify-between'>
                 <div className='space-x-2 flex items-center text-gray select-none'>

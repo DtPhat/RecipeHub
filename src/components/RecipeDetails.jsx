@@ -1,9 +1,10 @@
-import { Carousel, Spinner } from 'flowbite-react'
+import { Carousel, Spinner, Tooltip } from 'flowbite-react'
 import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
 import BeakerIcon from '../assets/BeakerIcon'
 import ClockIcon from '../assets/ClockIcon'
+import CopyingIcon from '../assets/CopyingIcon'
 import EditingIcon from '../assets/EditingIcon'
 import EyeIcon from '../assets/EyeIcon'
 import HeartIcon from '../assets/HeartIcon'
@@ -16,6 +17,7 @@ import PrinterIcon from '../assets/PrinterIcon'
 import SharingIcon from '../assets/SharingIcon'
 import StarIcon from '../assets/StarIcon'
 import TrashIcon from '../assets/TrashIcon'
+import VerifyingIcon from '../assets/VerifyingIcon'
 import usePrivateAxios from '../hooks/usePrivateAxios'
 import { adjustQuantity } from '../utils/StringUtils'
 import { msToTime } from '../utils/TimeUtil'
@@ -25,22 +27,23 @@ import SharingModal from './SharingModal'
 
 const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
   const privateAxios = usePrivateAxios()
-  const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
+  const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus, verified } = chosenRecipe
   const [customeYield, setCustomYield] = useState(recipe_yield)
   const [completedSteps, setCompletedSteps] = useState([])
   const [openSharingBox, setOpenSharingBox] = useState(false)
   const [openRecipePlanner, setOpenRecipePlanner] = useState(false)
   const [confirmDeletion, setConfirmDeletion] = useState(false)
   const [printing, setPrinting] = useState(false)
+  const [copying, setCopying] = useState(false)
+
   const componentRef = useRef()
   const navigate = useNavigate()
-
+  console.log(chosenRecipe);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     onAfterPrint: () => setPrinting(false),
     documentTitle: title
   });
-  console.log(componentRef.current);
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
@@ -51,42 +54,48 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
       .then(response => console.log(response.data))
       .catch(error => console.log(error))
   }
-
+  const copyRecipe = () => {
+    setCopying(true)
+    privateAxios.post(`/api/v1/user/copy-recipe/${recipe_id}`)
+      .then((responseId) => navigate(`/recipe/edit?recipe_id=${responseId.data}`))
+      .catch(error => console.log(error))
+      .finally(() => setCopying(false))
+  }
   return (
     <section className='min-h-[85vh] print-container' ref={componentRef}>
-      <div className='text-lg flex space-x-1 xs:space-x-6 justify-end print-hidden md:pb-1'>
+      <div className='text-lg flex space-x-1 sm:space-x-6 justify-end print-hidden md:pb-1'>
         {setRecipes !== undefined &&
           <button className='button-outlined-square py-0.5 w-12 color-danger opacity-70 hover:opacity-100 '
             onClick={(e) => {
               e.stopPropagation();
-              // window.confirm('Are you sure to delete this recipe?') && (deleteRecipe(recipe_id) && setChosenRecipe(undefined))
               setConfirmDeletion(true)
             }}>
             <TrashIcon style='w-6 h-6' />
           </button>}
-        <div className='flex space-x-1 xs:space-x-2 print-hidden'>
-          <button className='button-outlined-square py-0.5 w-12 sm:w-24' disabled={printing}
+        <div className='flex space-x-1 xs:space-x-2 overflow-auto'>
+          <button className='button-outlined-square py-0.5 sm:w-12 md:w-24' disabled={printing}
             onClick={() => { setPrinting(true); handlePrint() }}>
             <PrinterIcon style='w-6 h-6 ' />
-            {
-              printing ?
-                <Spinner color='success' />
-                : <span className='hidden sm:block'>Print</span>
-            }
+            {printing ? <Spinner color='success' /> : <span className='hidden md:block'>Print</span>}
           </button>
-          <button className='button-outlined-square py-0.5 w-12 sm:w-24'
+          <button className='button-outlined-square py-0.5 sm:w-12 md:w-24'
             onClick={() => setOpenRecipePlanner(true)}>
             <PlanningIcon style='w-6 h-6' />
-            <span className='hidden sm:block'>Plan</span>
+            <span className='hidden md:block'>Plan</span>
           </button>
-          <button className='button-outlined-square py-0.5 w-12 sm:w-24'
+          <button className='button-outlined-square py-0.5 sm:w-12 md:w-24'
             onClick={() => setOpenSharingBox(true)}>
             <SharingIcon style='w-6 h-6' />
-            <span className='hidden sm:block'>Share</span>
+            <span className='hidden md:block'>Share</span>
           </button>
-          <button className='button-outlined-square py-0.5 w-12 sm:w-24' onClick={() => navigate(`/recipe/edit?recipe_id=${recipe_id}`)}>
+          <button className={`button-outlined-square py-0.5 sm:w-12 md:w-24`} disabled={copying}
+            onClick={copyRecipe}>
+            <CopyingIcon style='w-6 h-6' />
+            {copying ? <Spinner color='success' /> : <span className='hidden md:block'>Clone</span>}
+          </button>
+          <button className='button-outlined-square py-0.5 sm:w-12 md:w-24' onClick={() => navigate(`/recipe/edit?recipe_id=${recipe_id}`)}>
             <EditingIcon style='w-6 h-6' />
-            <span className='hidden sm:block'>Edit</span>
+            <span className='hidden md:block'>Edit</span>
           </button>
         </div>
         <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
@@ -108,7 +117,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           </div>
           <div className='space-y-6 flex-1 pt-2'>
             <h1 className='text-3xl font-bold text-accent break-words pt-2'>{title}</h1>
-            <div className='flex flex-wrap items-center justify-between gap-2'>
+            <div className='flex flex-wrap items-center justify-between gap-2 print-hidden'>
               <p className='flex gap-1'>
                 {Array.apply(null, Array(5)).map((star, i) => <StarIcon key={i} style={`w-6 h-6 stroke-transparent ${i < rating ? 'fill-orange-accent' : 'fill-gray-300 outline-none'}`} />)}
               </p>
@@ -116,6 +125,13 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
                 <EyeIcon isOn={privacyStatus === 'PUBLIC'} style='w-6 h-6' />
                 <span className='text-lg font-semibold'>{privacyStatus}</span>
               </div>
+              {verified && <Tooltip content='This recipe is available in Cooking Network'>
+                <div className='flex items-center space-x-2'>
+                  <VerifyingIcon style='w-6 h-6 fill-green-200 dark:fill-green-800' />
+                  <span className='text-lg font-semibold'>VERIFIED</span>
+                </div>
+              </Tooltip>}
+
               {is_favourite ? <div className='flex items-center space-x-2'>
                 <HeartIcon style='w-6 h-6 fill-red-500' />
                 <span className='text-lg font-semibold'>FAVOURITE</span>
@@ -143,14 +159,14 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           <div className='w-full md:w-96'>
             <h1 className={`${style.heading} text-center`}>Ingredients</h1>
             <div className='flex justify-center gap-8 py-1 text-lg print-hidden'>
-              <button className='rounded-full text-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100 dark:hover:bg-green-900'
                 onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
               </button>
               <div className='flex gap-2'>
                 <span>Yield:</span>
                 <h2 className='font-bold text-accent'>{customeYield}</h2>
               </div>
-              <button className='rounded-full text-accent hover:bg-green-100'
+              <button className='rounded-full text-accent hover:bg-green-100 dark:hover:bg-green-900'
                 onClick={() => setCustomYield(preYield => preYield + 1)}><PlusCircleIcon style='w-8 w-8' />
               </button>
             </div>

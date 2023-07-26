@@ -37,6 +37,7 @@ const AddRecipe = () => {
     isPrivate: true,
   })
   const [tagList, setTagList] = useState(defaultTagList)
+  const [showingError, setShowingError] = useState(false)
   const [tagInput, setTagInput] = useState('')
   const imgInput = useRef()
   const navigate = useNavigate()
@@ -52,7 +53,11 @@ const AddRecipe = () => {
         {tag}
       </button>
       {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
-        onClick={() => setTagList(list => list.filter(prevTag => prevTag !== tag))}>
+        onClick={(e) => {
+          e.stopPropagation()
+          setTagList(list => list.filter(prevTag => prevTag !== tag))
+          setRecipeData(prevData => ({ ...prevData, tags: prevData.tags.filter(prevTag => prevTag !== tag) }))
+        }}>
         <XCircleIcon style='w-8 h-8 fill-green-100 text-accent opacity-50 hover:opacity-100' />
       </button>}
     </div>
@@ -104,7 +109,7 @@ const AddRecipe = () => {
   const addIngredient = () => {
     const { ingredientName, ingredientQuantity, ingredientMetric } = recipeData
 
-    if (!ingredientName) return
+    if (!ingredientName || !ingredientQuantity) return
     const newIngredient = {
       name: ingredientName,
       amount: ingredientQuantity ?
@@ -126,8 +131,10 @@ const AddRecipe = () => {
     let { name, value, type } = e.target
     if (type === 'number') {
       if (name.includes('Time')) {
-        if (name.includes('Hour')) value = value < 0 ? '' : value > 24 ? 24 : value
-        else value = value < 0 ? '' : value > 60 ? 60 : value
+        if (name.includes('Hour')) value = value < 0 ? 0 : value > 24 ? 24 : value
+        else value = value < 0 ? 0 : value > 60 ? 60 : value
+      } else if (name === 'yield') {
+        value = value < 1 ? '' : value > 100 ? 100 : value
       } else {
         value = value < 0 ? '' : value > 99999 ? 99999 : value
       }
@@ -145,6 +152,12 @@ const AddRecipe = () => {
   }
 
   const uploadRecipe = () => {
+    for (let key in errorMessages) {
+      if (errorMessages.hasOwnProperty(key) && errorMessages[key]) {
+        setShowingError(true)
+        return
+      }
+    }
     setSubmitting(true)
     const formData = new FormData()
     const data = {
@@ -162,7 +175,7 @@ const AddRecipe = () => {
       title: recipeData.title,
       pre_time: timeToMs(recipeData.prepTimeHour, recipeData.prepTimeMinute, recipeData.prepTimeSecond),
       cook_time: timeToMs(recipeData.cookTimeHour, recipeData.cookTimeMinute, recipeData.cookTimeSecond),
-      recipe_yield: recipeData.yield,
+      recipe_yield: recipeData.yield || 1,
       rating: recipeData.rating,
       is_favourite: recipeData.isFavourite,
       description: recipeData.description,
@@ -188,11 +201,18 @@ const AddRecipe = () => {
       .finally(() => setSubmitting(false))
 
   }
-
+  const errorMessages = {
+    title: !recipeData.title ? 'Title should not be empty' : '',
+    tags: !recipeData.tags.length ? 'Each recipe should have at least 1 tag' : '',
+    cookTime: !Number(recipeData.cookTimeHour) && !Number(recipeData.cookTimeMinute) && !Number(recipeData.cookTimeSecond) ? 'Cook time should be estimated' : '',
+    ingredients: !recipeData.ingredients.length ? 'Each recipe should have at least 1 ingredient' : '',
+    instruction: !recipeData.steps ? 'Instruction should not be empty' : '',
+  }
   const style = {
     heading: 'font-semibold text-accent text-xl pb-1',
-    input: 'bg-item rounded border border-gray-400 py-1 px-2 focus:outline-green-accent',
+    input: `bg-item rounded border border-gray-400 py-1 px-2 focus:outline-green-accent`,
     input2: `w-28 bg-container border-b-2 border-gray-400 py-1 focus:outline-none focus:border-accent`,
+    error: `text-orange-accent text-md py-1`
   }
   console.log(recipeData);
   return (
@@ -214,9 +234,10 @@ const AddRecipe = () => {
               <label className={`${style.heading}`} htmlFor='title'>Title</label>
               <input type='text' id='title' className={`${style.input}`} placeholder='Recipe name' name='title' value={recipeData.title}
                 onChange={handleChange} />
+              <div className={style.error}>{showingError && errorMessages.title}</div>
             </div>
             <div className='flex flex-col'>
-              <label className={`${style.heading}`} htmlFor='description'>Description</label>
+              <label className={`${style.heading}`} htmlFor='description'>Description <span className='font-normal'>(optional)</span></label>
               <input type='text' id='description' className={`pb-4 ${style.input}`} placeholder='Recipe description' name='description' value={recipeData.description}
                 onChange={handleChange} />
             </div>
@@ -224,13 +245,14 @@ const AddRecipe = () => {
               <h1 className={`${style.heading}`}>Tags ({recipeData.tags?.length}/12)</h1>
               <div className='flex flex-wrap gap-3'>
                 {tagListElement}
-                {tagList.length < 12 && <div className='flex space-x-1 border-gray'>
+                {recipeData.tags.length < 12 && <div className='flex space-x-1 border-gray'>
                   <input type='text' placeholder='Tag name' className={`${style.input2} text-center`} name='tag' id='tag'
                     onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
                     onChange={(e) => setTagInput(e.target.value.substring(0, 20))} value={tagInput} />
                   <button className='flex items-center' onClick={addTag}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-accent' /></button>
                 </div>}
               </div>
+              <div className={style.error}>{showingError && errorMessages.tags}</div>
             </div>
             <div className='flex flex-col'>
               <h1 className={`${style.heading}`}>Yield</h1>
@@ -261,7 +283,7 @@ const AddRecipe = () => {
               </div>
             </div>
             <div className='flex flex-col'>
-              <label htmlFor='nutritions' className={`${style.heading}`}>Nutrition</label>
+              <label htmlFor='nutritions' className={`${style.heading}`}>Nutrition <span className='font-normal'>(optional)</span></label>
               <textarea rows={5} className={`${style.input}`} placeholder='100 Calories' id='nutritions' name='nutritions' onChange={handleChange} value={recipeData.nutritions}></textarea>
             </div>
           </div>
@@ -292,6 +314,7 @@ const AddRecipe = () => {
                   <input type='number' className={`w-14 text-center ${style.input}`} placeholder='00' name='cookTimeSecond' value={recipeData.cookTimeSecond}
                     onChange={handleChange} />
                 </div>
+                <div className={style.error}>{showingError && errorMessages.cookTime}</div>
               </div>
             </div>
             <div className='flex space-x-4 xs:space-x-28'>
@@ -330,12 +353,13 @@ const AddRecipe = () => {
                 </div>
                 <div className='flex flex-col w-2/12'>
                   <label htmlFor='metric' className='font-medium text-accent '>Metric</label>
-                  <input type='text' placeholder='tsp' className={` ${style.input2}`} name='ingredientMetric'
+                  <input type='text' placeholder='(optional)' className={` ${style.input2}`} name='ingredientMetric'
                     onKeyDown={(e) => { e.key === 'Enter' && addIngredient() }}
                     onChange={handleChange} value={recipeData.ingredientMetric} />
                 </div>
                 <button className='flex items-center mt-6' onClick={addIngredient}><PlusCircleIcon style='w-10 h-10 text-gray-400 hover:text-accent' /></button>
               </div>
+              <div className={style.error}>{showingError && errorMessages.ingredients}</div>
             </div>
             <div className='flex flex-col justify-center'>
               <h1 className={`${style.heading}`}>Instructions</h1>
@@ -343,11 +367,12 @@ const AddRecipe = () => {
               <textarea name="steps" rows='10' className={`w-full ${style.input}`}
                 placeholder='Step-by-step instructions for this recipe'
                 onChange={handleChange} value={recipeData.steps}></textarea>
+              <div className={style.error}>{showingError && errorMessages.instruction}</div>
             </div>
             <div className='flex justify-between pr-4'>
               <div className='flex items-center gap-2'>
                 <h1 className={`${style.heading}`}>Status:</h1>
-                <Tooltip content='Public recipes can be seen by everyone in cooking network' style='auto' >
+                <Tooltip content='Public recipes can be seen by everyone in Cooking Network' style='auto' >
                   <button className='flex items-center gap-2 border border-green-variant text-accent px-1 rounded-md font-medium hover:bg-green-100 dark:hover:bg-green-900'
                     onClick={() => { setRecipeData(prevData => { return { ...prevData, isPrivate: !prevData.isPrivate } }) }}>
                     <EyeIcon style='w-6 h-6' isOn={!recipeData.isPrivate} />

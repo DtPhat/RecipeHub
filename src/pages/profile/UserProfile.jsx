@@ -43,7 +43,7 @@ const UserProfile = () => {
       sortBy: '',
       direction: 'asc',
       title: '',
-      privacyStatus: 'PUBLIC'
+      privacyStatus: 'PUBLIC',
     }
 
     privateAxios.post(`/api/v1/global/recipes/filter/${userId}?page=${currentPage - 1}&size=${pageSize}`, requestFilter)

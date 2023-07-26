@@ -53,7 +53,6 @@ const GlobalRecipes = () => {
     privateAxios.post(`/api/v1/global/recipes/filter/total-item?page=${currentPage - 1}&size=${pageSize}`, requestFilter)
       .then((response) => { setTotalRecipes(response.data) })
       .catch((error) => console.log(error))
-
   }, [filter, currentPage]);
 
 

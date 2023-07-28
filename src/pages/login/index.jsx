@@ -89,7 +89,7 @@ const Login = () => {
               <div className='flex justify-between'>
                 <div className='space-x-2 flex items-center text-gray select-none'>
                   <input type="checkbox" name='isRememberMe' id='isRememberMe' className='w-5 h-5 accent-gray-300' checked={loginData.isRememberMe} onChange={handleLoginDataChange} />
-                  <label htmlFor='isRememberMe'>Remmeber me</label>
+                  <label htmlFor='isRememberMe'>Remember me</label>
                 </div>
                 <div className='text-accent cursor-pointer flex justify-center px-2' onClick={() => setOpenForgottenPasswordBox(true)}>
                   <span className='underline'>Forgot password?</span>

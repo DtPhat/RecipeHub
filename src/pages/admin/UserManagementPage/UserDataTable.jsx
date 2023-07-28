@@ -25,9 +25,8 @@ const columns = [
 ];
 
 const typeOptions = [
-	{ value: '', html: 'All' },
-	{ value: 0, html: 'Not blocked' },
-	{ value: 1, html: 'Blocked' },
+	{ value: '0', html: 'Not blocked' },
+	{ value: '1', html: 'Blocked' },
 ];
 
 function UserDataTable() {
@@ -44,7 +43,7 @@ function UserDataTable() {
 	const [pagination, setPagination] = useState({
 		page: 1,
 		size: 5,
-		totalItem: 5,
+		totalItem: 0,
 	});
 
 	const [filter, setFilter] = useState({
@@ -52,7 +51,7 @@ function UserDataTable() {
 		size: 5,
 		sort: 'user_id',
 		direction: 'asc',
-		blocked: '',
+		blocked: '0',
 		query: '',
 	});
 
@@ -65,7 +64,7 @@ function UserDataTable() {
 				filter.size
 			}&sort=${filter.sort}&direction=${filter.direction}&query=${
 				filter.query
-			}&blocked=${filter.blocked}`,
+			}&isBlocked=${filter.blocked}`,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 		setIsLoading(false);
@@ -92,24 +91,10 @@ function UserDataTable() {
 	}
 
 	function handleSelectType(event) {
-		let value = event.target.value;
-		if (value === '0') {
-			setFilter({
-				...filter,
-				blocked: false,
-			});
-		} else if (value === '1') {
-			setFilter({
-				...filter,
-				blocked: true,
-			});
-		} else {
-			setFilter({
-				...filter,
-				blocked: '',
-			});
-		}
-		console.log(filter);
+		setFilter({
+			...filter,
+			blocked: event.target.value,
+		});
 	}
 
 	function handleTableSearch(value) {
@@ -154,7 +139,6 @@ function UserDataTable() {
 				if (modalType === 'unblock') {
 					setIsLoading(true);
 					var id = actionableRow.userId;
-					console.log(id);
 					let index = rows.findIndex((row) => row.userId === id);
 					let updatedUser = {
 						...rows[index],
@@ -241,8 +225,7 @@ function UserDataTable() {
 					{!isLoading &&
 						rows.map((item, i) => {
 							if (
-								filter.blocked === item.blocked ||
-								filter.blocked === ''
+								filter.blocked === '0' && !item?.blocked ||filter.blocked === '1' && item?.blocked
 							) {
 								return (
 									<Table.Row

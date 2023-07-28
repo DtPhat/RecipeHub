@@ -40,7 +40,7 @@ function RecipeDataTable() {
 	const [pagination, setPagination] = useState({
 		page: 1,
 		size: 10,
-		totalItem: 4,
+		totalItem: 0,
 	});
 
 	const [filter, setFilter] = useState({

@@ -39,7 +39,7 @@ function FeedbackDataTable() {
 	const [pagination, setPagination] = useState({
 		page: 1,
 		size: 5,
-		totalItem: 5,
+		totalItem: 0,
 	});
 
 	const [filter, setFilter] = useState({

@@ -75,6 +75,8 @@ function RecipeDataTable() {
 					let updatedRows = [...rows];
 					updatedRows[index] = updatedRecipe;
 					setRows(updatedRows);
+					console.log('check', updatedRecipe);
+					console.log('check row', updatedRows[index]);
 					privateAxios.post(`/api/v1/admin/recipe/` + id + '/verify');
 				}
 				if (modalType === 'unverify') {
@@ -106,7 +108,11 @@ function RecipeDataTable() {
 	}
 
 	function handleClick(argument, item) {
-		if (argument === 'verify' || argument === 'remove' || argument === 'unverify') {
+		if (
+			argument === 'verify' ||
+			argument === 'remove' ||
+			argument === 'unverify'
+		) {
 			setActionableRow(item);
 			setOpenModal(true);
 			setModalType(argument);
@@ -237,7 +243,10 @@ function RecipeDataTable() {
 				<Table.Body className='divide-y'>
 					{!isLoading &&
 						rows.map((item, i) => {
-							if (filter.verified === item.verified || filter.verified === '')
+							if (
+								filter.verified === item.verified ||
+								filter.verified === ''
+							)
 								return (
 									<Table.Row
 										key={i}
@@ -282,19 +291,35 @@ function RecipeDataTable() {
 														View
 													</Button>
 												</Dropdown.Item>
-												<Dropdown.Item>
-													<Button
-														className='w-full'
-														color='success'
-														size='sm'
-														outline
-														onClick={() =>
-															handleClick('verify', item)
-														}
-													>
-														Verify
-													</Button>
-												</Dropdown.Item>
+												{item?.verified ? (
+													<Dropdown.Item>
+														<Button
+															className='w-full'
+															color='failure'
+															size='sm'
+															outline
+															onClick={() =>
+																handleClick('unverify', item)
+															}
+														>
+															Un-verify
+														</Button>
+													</Dropdown.Item>
+												) : (
+													<Dropdown.Item>
+														<Button
+															className='w-full'
+															color='success'
+															size='sm'
+															outline
+															onClick={() =>
+																handleClick('verify', item)
+															}
+														>
+															Verify
+														</Button>
+													</Dropdown.Item>
+												)}
 												<Dropdown.Item>
 													<Button
 														className='w-full'

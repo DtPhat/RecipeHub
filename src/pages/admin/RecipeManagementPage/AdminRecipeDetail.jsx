@@ -109,12 +109,12 @@ const AdminRecipeDetailModal = ({
 										{chosenRecipe.rating}
 									</span>
 								</p>
-								<div className='gap-2 flex flex-wrap content-center'>
+								<div className='gap-2 flex flex-wrap items-center'>
 									<span className='text-center font-bold'>Tag: </span>
 									{chosenRecipe.tags.map((tag, i) => (
 										<span
 											key={tag.tagId}
-											className='border rounded-full py-0.5 px-3 my-1 inline-block border-green-variant'
+											className='border rounded-full px-3 my-1 inline-block border-green-variant'
 										>
 											{tag.tagName}
 										</span>
@@ -142,7 +142,7 @@ const AdminRecipeDetailModal = ({
 								{chosenRecipe.description}
 							</div>
 							<div className='md:w-2/3 w-full'>
-								<span className='font-bold'>Cooking steps: </span>
+								<span className='font-bold ml-2'>Cooking steps: </span>
 								<ol>
 									{chosenRecipe.steps
 										.split('\n')

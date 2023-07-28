@@ -46,11 +46,11 @@ function TopNav() {
 				/>
 			</Tooltip>
 
-			
+
 			<div className='flex'>
 				{/* notification*/}
 				<Tooltip content='Notification'>
-					<Button icon={<BellIcon/>} customFunc={handleToggleNotification}>
+					<Button icon={<BellIcon />} customFunc={handleToggleNotification}>
 
 					</Button>
 				</Tooltip>
@@ -72,16 +72,18 @@ function TopNav() {
 
 					<Dropdown.Item>
 						<Tooltip content='Change theme'>
-							<SwitchButton
-								isOn={isDarkMode}
-								customFunc={toggleDarkMode}
-							/>
+							<div onClick={(e) => e.stopPropagation()}>
+								<SwitchButton
+									isOn={isDarkMode}
+									customFunc={toggleDarkMode}
+								/>
+							</div>
 						</Tooltip>
 					</Dropdown.Item>
 					<Dropdown.Item onClick={logout}>Log out</Dropdown.Item>
 				</Dropdown>
 			</div>
-		</div>
+		</div >
 	);
 }
 

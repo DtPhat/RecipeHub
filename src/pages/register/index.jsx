@@ -68,7 +68,7 @@ const Register = () => {
   }
   const { fullName, email, password } = registerData
   const errorMessages = {
-    fullname: !fullName ? 'Full name is required' : !fullName.match(/^[A-Za-z0-9 ]*$/) ? 'Name should contain no special character' : '',
+    fullname: !fullName ? 'Full name is required' : !fullName.match(/^[\p{L}\s']+$/u) ? 'Name should contain no special characters' : '',
     email: !email ? 'Email is required' : !email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ? 'Email should be valid' : '',
     password: !password ? 'Password is required' : password.length < 6 ? 'Password should have at least 6 characters' : '',
   }

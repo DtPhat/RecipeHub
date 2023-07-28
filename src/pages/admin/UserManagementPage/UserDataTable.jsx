@@ -65,7 +65,7 @@ function UserDataTable() {
 				filter.size
 			}&sort=${filter.sort}&direction=${filter.direction}&query=${
 				filter.query
-			}&blocked=${filter.blocked}`,
+			}${filter.blocked === '' ? '' : `&isBlocked=${filter.blocked ? 1 : 0}`}`,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 		setIsLoading(false);
@@ -76,7 +76,7 @@ function UserDataTable() {
 			totalItem: resp.data.totalItem,
 		});
 	}
-
+	console.log(rows);
 	function handlePageChange(newPage) {
 		setFilter({
 			...filter,

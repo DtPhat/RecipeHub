@@ -41,15 +41,24 @@ const EditRecipe = () => {
   })
   const privateAxios = usePrivateAxios()
   const [tagList, setTagList] = useState(defaultTagList)
+  const [fixedTagList, setFixedTagList] = useState(defaultTagList)
+  useEffect(() => {
+    privateAxios.get(`/api/v1/global/tags/${userId}`)
+      .then(response => {
+        setTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)])
+        setFixedTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)])
+      })
+  }, []);
   const [showingError, setShowingError] = useState(false)
   const [tagInput, setTagInput] = useState('')
   const imgInput = useRef()
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
-
+  console.log(fixedTagList);
   useEffect(() => {
     recipeId && privateAxios.get(`/api/v1/user/recipe/${recipeId}`).then(response => setRecipeData((prevData) => {
       const editedRecipe = response.data
+      setFixedTagList(fixedList => fixedList.filter(tag => defaultTagList.includes(tag) || !editedRecipe.tags.map(tag => tag.tagName).includes(tag)))
       console.log(editedRecipe);
       return {
         title: editedRecipe.title,
@@ -59,12 +68,12 @@ const EditRecipe = () => {
         unit: editedRecipe.unit,
         photos: editedRecipe.images,
         nutrition: editedRecipe.nutrition,
-        prepTimeHour: msToTime(editedRecipe.pre_time).split(':')[0],
-        prepTimeMinute: msToTime(editedRecipe.pre_time).split(':')[1],
-        prepTimeSecond: msToTime(editedRecipe.pre_time).split(':')[2],
-        cookTimeHour: msToTime(editedRecipe.cook_time).split(':')[0],
-        cookTimeMinute: msToTime(editedRecipe.cook_time).split(':')[0],
-        cookTimeSecond: msToTime(editedRecipe.cook_time).split(':')[0],
+        prepTimeHour: Number(msToTime(editedRecipe.pre_time).split(':')[0]),
+        prepTimeMinute: Number(msToTime(editedRecipe.pre_time).split(':')[1]),
+        prepTimeSecond: Number(msToTime(editedRecipe.pre_time).split(':')[2]),
+        cookTimeHour: Number(msToTime(editedRecipe.cook_time).split(':')[0]),
+        cookTimeMinute: Number(msToTime(editedRecipe.cook_time).split(':')[1]),
+        cookTimeSecond: Number(msToTime(editedRecipe.cook_time).split(':')[2]),
         isFavourite: editedRecipe.is_favourite,
         rating: editedRecipe.rating,
         ingredientName: '',
@@ -86,10 +95,6 @@ const EditRecipe = () => {
     !recipeId && navigate('/')
   }, []);
 
-  useEffect(() => {
-    privateAxios.get(`/api/v1/global/tags/${userId}`).then(response => setTagList(prevList => [...prevList, ...response.data.map(tag => tag.tagName)]))
-  }, []);
-
   const tagListElement = tagList.map(tag => (
     <div key={tag} className='relative group'>
       <button className={`${recipeData.tags.includes(tag) ? 'button-contained-square' : 'button-outlined-square'} w-auto py-1`}
@@ -100,7 +105,7 @@ const EditRecipe = () => {
         })}>
         {tag}
       </button>
-      {!defaultTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
+      {!fixedTagList.includes(tag) && <button className='absolute top-[-12px] right-[-15px] hidden group-hover:block'
         onClick={(e) => {
           e.stopPropagation()
           setTagList(list => list.filter(prevTag => prevTag !== tag))
@@ -169,6 +174,7 @@ const EditRecipe = () => {
   }
 
   const addTag = () => {
+    if (!tagInput) return
     tagInput && !tagList.includes(tagInput.trim()) && setTagList(prevTagList => [...prevTagList, tagInput])
     setRecipeData(prevData => { return { ...prevData, tags: [...prevData.tags, tagInput] } })
     setTagInput('')
@@ -296,11 +302,11 @@ const EditRecipe = () => {
                 <input type='text' id='description' className={`pb-4 ${style.input}`} placeholder='Recipe description' name='description' value={recipeData.description}
                   onChange={handleChange} />
               </div>
-              <div className='flex flex-col'>
+              <div className='flex flex-col space-y-2'>
                 <h1 className={`${style.heading}`}>Tags ({recipeData.tags?.length}/12)</h1>
                 <div className='flex flex-wrap gap-3'>
                   {tagListElement}
-                  {recipeData.tags.length < 12 && <div className='flex space-x-1 border-gray'>
+                  {tagList.length < 20 && <div className='flex space-x-1 border-gray'>
                     <input type='text' placeholder='Tag name' className={`${style.input2} text-center`} name='tag' id='tag'
                       onKeyDown={(e) => { e.key === 'Enter' && addTag() }}
                       onChange={(e) => setTagInput(e.target.value.substring(0, 20))} value={tagInput} />

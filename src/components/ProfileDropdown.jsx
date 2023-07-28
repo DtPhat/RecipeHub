@@ -33,11 +33,11 @@ const ProfileDropdown = () => {
           </span>
         </div>
       </Dropdown.Header>
-      <Dropdown.Item>
-        <button onClick={(e) => e.stopPropagation()} className='flex'>
+      <Dropdown.Item >
+        <div onClick={(e) => e.stopPropagation()} className='flex'>
           <span className='pr-4 font-semibold'>Dark mode: </span>
           <SwitchButton isOn={isDarkMode} customFunc={toggleDarkMode} />
-        </button>
+        </div>
       </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item onClick={() => { navigate(`/user/profile`) }}>

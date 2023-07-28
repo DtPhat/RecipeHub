@@ -33,17 +33,29 @@ const Login = () => {
     setSubmitting(true)
     axios.post('/api/v1/auth/basic/login', loginData)
       .then(response => {
+        if (response.data.status == 'ACCOUNT_BLOCKED') {
+          setServerError('Account has been blocked')
+          return
+        }
         setAuth(response.data);
         response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath)
       }).catch(error => {
         console.log(error)
-        error.request.status == 403 && setServerError('Wrong email or password')
+        error.request.status == 403 || 400 && setServerError('Wrong email or password')
       }).finally(() => setSubmitting(false))
   }
   const googleLogin = useGoogleLogin({
     onSuccess: tokenResponse => axios
       .post(`/api/v1/auth/google/oauth/login/${tokenResponse.access_token}`)
-      .then(response => { setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath) }).finally(() => setSubmitting(false)),
+      .then(response => {
+        if (response.data.status == 'ACCOUNT_BLOCKED') {
+          setServerError('Account has been blocked')
+          return
+        }
+        setAuth(response.data); response?.data?.user?.role === "ADMIN" ? navigate('/admin') : navigate(fromPath)
+      })
+      .catch(error => console.log(error))
+      .finally(() => setSubmitting(false)),
     onError: (error) => { console.log("Login google fail", error); setSubmitting(false) }
   });
   const loginWithGoogle = () => {
@@ -62,7 +74,7 @@ const Login = () => {
 
 
   return (
-    <section className='flex justify-center mx-8 items-center'>
+    <section className='flex justify-center mx-8 items-center min-h-screen'>
       <div className='max-w-8xl w-full flex h-[56rem] py-8 relative'>
         {/* <img src="/img/logo-text-bottom.png" alt="" className='absolute top-12 left-4 w-20 h-24 select-none' /> */}
         <div className='w-full bg-container rounded-l-xl flex items-center justify-center px-4'>

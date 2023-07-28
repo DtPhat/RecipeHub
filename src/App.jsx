@@ -67,7 +67,7 @@ const App = () => {
 					<Route path='/admin' element={<AdminLayout />}>
 						<Route index element={<DashBoard />} />
 						<Route path='recipeManagement' element={<RecipeMP />} />
-						<Route path='feedback' element={<FeedbackPage />} />
+						<Route path='supportTickets' element={<FeedbackPage />} />
 						<Route path='userManagement' element={<UserMP />} />
 					</Route>
 				</Route>

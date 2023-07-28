@@ -64,8 +64,8 @@ export const links = [
 	},
 	{
 		id: 4,
-		path: './feedback',
-		title: 'Feedback',
+		path: './supportTickets',
+		title: 'Support Tickets',
 		icon: (
 			<svg
 				xmlns='http://www.w3.org/2000/svg'

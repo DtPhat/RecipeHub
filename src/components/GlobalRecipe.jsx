@@ -106,8 +106,7 @@ const GlobalRecipe = ({ chosenRecipe, setChosenRecipe }) => {
                   <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray' : ''}`}>
                     <span>{adjustQuantity(quantity, customeYield, originalYield)} {metric} {ingredient.ingredientName}</span>
                   </li>)
-              })
-              }
+              })}
             </div>
           </div>
           <div className='flex-1 max-w-[52rem]'>

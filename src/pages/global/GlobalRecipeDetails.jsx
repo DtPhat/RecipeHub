@@ -14,21 +14,22 @@ import CopyingIcon from '../../assets/CopyingIcon'
 import BeakerIcon from '../../assets/BeakerIcon'
 import { useParams } from 'react-router-dom'
 import Skeleton from '../../components/Skeleton'
+import useAuth from '../../hooks/useAuth'
 const GlobalRecipeDetails = () => {
   const privateAxios = usePrivateAxios()
   const { recipeId } = useParams()
   const [chosenRecipe, setChosenRecipe] = useState({})
   const { recipe_id, images, title, tags, rating, pre_time, cook_time, recipe_yield, ingredients, is_favourite, unit, description, steps, nutrition, privacyStatus } = chosenRecipe
-  const [customeYield, setCustomYield] = useState(recipe_yield)
+  const [customeYield, setCustomYield] = useState(1)
   const [completedSteps, setCompletedSteps] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
-
+  console.log(chosenRecipe);
   useEffect(() => {
-    recipeId && privateAxios.get(`/api/v1/user/recipe/${recipeId}`).then(response => setChosenRecipe(response.data))
-      .catch(error => console.log(error))
+    recipeId && privateAxios.get(`/api/v1/global/recipe/${recipeId}`).then(response => {setChosenRecipe(response.data); setCustomYield(response.data.recipe_yield)})
+      .catch(error => { console.log(error) && navigate('/global') })
       .finally(() => setLoading(false))
     !recipeId && navigate('/global')
   }, []);
@@ -36,9 +37,10 @@ const GlobalRecipeDetails = () => {
   const style = {
     heading: 'text-2xl font-bold underline underline-offset-4 pb-4'
   }
-
+  const { auth } = useAuth()
   const copyRecipe = () => {
     setSubmitting(true)
+    setShowingToast(true)
     privateAxios.post(`/api/v1/user/copy-recipe/${recipe_id}`)
       .then((responseId) => navigate(`/recipe/edit?recipe_id=${responseId.data}`))
       .catch(error => console.log(error))
@@ -51,7 +53,7 @@ const GlobalRecipeDetails = () => {
         : <section className='w-full max-w-7xl h-[85vh] p-4 my-4 bg-container rounded'>
           <div className='text-lg flex space-x-6 justify-end'>
             <div className='flex space-x-2'>
-              <button className='button-outlined-square py-0.5 w-auto' disabled={submitting}
+              <button className='button-outlined-square py-0.5 w-auto' disabled={submitting || !auth?.user}
                 onClick={copyRecipe}>
                 <CopyingIcon style='w-6 h-6' />
                 {
@@ -62,7 +64,7 @@ const GlobalRecipeDetails = () => {
               </button>
             </div>
             <button className='button-outlined-square w-10 py-0 color-secondary opacity-50 hover:opacity-100'
-              onClick={(e) => { e.stopPropagation(); setChosenRecipe(undefined) }}>X</button>
+              onClick={(e) => { e.stopPropagation(); navigate('/global') }}>X</button>
           </div>
           <div className='flex flex-col gap-8'>
             <div className='flex flex-col md:flex-row gap-4 md:gap-8'>
@@ -98,14 +100,14 @@ const GlobalRecipeDetails = () => {
               <div className='w-full md:w-96'>
                 <h1 className={`${style.heading} text-center`}>Ingredients</h1>
                 <div className='flex justify-center gap-8 py-1 text-lg '>
-                  <button className='rounded-full text-accent hover:bg-green-100'
+                  <button className='rounded-full text-accent hover:bg-green-100 dark:hover:bg-green-900'
                     onClick={() => setCustomYield(preYield => preYield > 1 ? preYield - 1 : preYield)}><MinusCircleIcon style='w-8 h-8' />
                   </button>
                   <div className='flex gap-2'>
                     <span>Yield:</span>
                     <h2 className='font-bold text-accent'>{customeYield}</h2>
                   </div>
-                  <button className='rounded-full text-accent hover:bg-green-100'
+                  <button className='rounded-full text-accent hover:bg-green-100 dark:hover:bg-green-900'
                     onClick={() => setCustomYield(preYield => preYield + 1)}><PlusCircleIcon style='w-8 w-8' />
                   </button>
                 </div>
@@ -115,7 +117,7 @@ const GlobalRecipeDetails = () => {
                     const metric = ingredient.amount.replace(quantity, '').trim()
                     const originalYield = recipe_yield
                     return (
-                      <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-item' : ''}`}>
+                      <li key={ingredient.ingredientId} className={`font-semibold px-2 break-words py-1 cursor-pointer ${i % 2 === 0 ? 'bg-gray' : ''}`}>
                         <span>{adjustQuantity(quantity, customeYield, originalYield)} {metric} {ingredient.ingredientName}</span>
                       </li>)
                   })
@@ -129,7 +131,7 @@ const GlobalRecipeDetails = () => {
                     (<li key={i} onClick={() => setCompletedSteps(prevCompletedSteps =>
                       prevCompletedSteps.includes(i) ? prevCompletedSteps.filter(stepIndex => stepIndex !== i) : [...prevCompletedSteps, i])}
                       className={`list-decimal capitalize font-semibold ml-8 pl-4 text-lg break-words hover:line-through py-1 cursor-pointer 
-                ${i % 2 === 0 ? 'bg-gray-100' : ''}
+                ${i % 2 === 0 ? 'bg-gray-' : ''}
                 ${completedSteps.includes(i) ? 'line-through' : 'hover:line-through'}`}>
                       <span>{step}</span>
                     </li>))}

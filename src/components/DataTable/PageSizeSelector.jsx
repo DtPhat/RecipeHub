@@ -19,7 +19,7 @@ function PageSizeSelector(props) {
 	}
 
 	return (
-		<div className='mb-2'>
+		<div className='mb-2 space-x-1'>
 			<label
 				htmlFor='size'
 				className='inline mb-2 text-sm font-medium text-gray-900 dark:text-white'

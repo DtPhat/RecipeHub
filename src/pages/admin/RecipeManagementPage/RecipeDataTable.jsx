@@ -244,7 +244,7 @@ function RecipeDataTable() {
 											/>
 											<span>{item.title}</span>
 										</Table.Cell>
-										<Table.Cell className='max-w-xs flex flex-wrap'>
+										<Table.Cell className='max-w-xs flex flex-wrap gap-1'>
 											{item.tags.map((tag) => {
 												return (
 													<span

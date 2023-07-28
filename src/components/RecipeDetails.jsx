@@ -76,7 +76,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           <button className='button-outlined-square py-0.5 sm:w-12 md:w-24' disabled={printing}
             onClick={() => { setPrinting(true); handlePrint() }}>
             <PrinterIcon style='w-6 h-6 ' />
-            {printing ? <Spinner color='success' /> : <span className='hidden md:block'>Print</span>}
+            {printing ? <Spinner color='success' size='sm' /> : <span className='hidden md:block'>Print</span>}
           </button>
           <button className='button-outlined-square py-0.5 sm:w-12 md:w-24'
             onClick={() => setOpenRecipePlanner(true)}>
@@ -91,7 +91,7 @@ const RecipeDetails = ({ chosenRecipe, setChosenRecipe, setRecipes }) => {
           <button className={`button-outlined-square py-0.5 sm:w-12 md:w-24`} disabled={copying}
             onClick={copyRecipe}>
             <CopyingIcon style='w-6 h-6' />
-            {copying ? <Spinner color='success' /> : <span className='hidden md:block'>Clone</span>}
+            {copying ? <Spinner color='success' size='sm'/> : <span className='hidden md:block'>Clone</span>}
           </button>
           <button className='button-outlined-square py-0.5 sm:w-12 md:w-24' onClick={() => navigate(`/recipe/edit?recipe_id=${recipe_id}`)}>
             <EditingIcon style='w-6 h-6' />

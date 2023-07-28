@@ -64,7 +64,7 @@ function UserDataTable() {
 				filter.size
 			}&sort=${filter.sort}&direction=${filter.direction}&query=${
 				filter.query
-			}${filter.blocked === '' ? '' : `&isBlocked=${filter.blocked ? 1 : 0}`}`,
+			}${filter.blocked === '' ? '' : `&isBlocked=${filter.blocked}`}`,
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 		setIsLoading(false);

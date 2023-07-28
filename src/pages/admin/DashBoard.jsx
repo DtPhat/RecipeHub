@@ -23,7 +23,6 @@ function DashBoard() {
 				`/api/v1/admin/support-ticket/total`,
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
-			console.log(feedbackResp)
 			setRecipeTotal(recipeResp.data);
 			setUserTotal(userResp.data);
 			setFeedbackTotal(feedbackResp.data);

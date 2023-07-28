@@ -75,9 +75,7 @@ function RecipeDataTable() {
 					let updatedRows = [...rows];
 					updatedRows[index] = updatedRecipe;
 					setRows(updatedRows);
-					console.log('check', updatedRecipe);
-					console.log('check row', updatedRows[index]);
-					privateAxios.post(`/api/v1/admin/recipe/` + id + '/verify');
+					privateAxios.post(`/api/v1/admin/recipe/${id}/verify`);
 				}
 				if (modalType === 'unverify') {
 					var id = actionableRow.recipe_id;
@@ -90,7 +88,7 @@ function RecipeDataTable() {
 					let updatedRows = [...rows];
 					updatedRows[index] = updatedRecipe;
 					setRows(updatedRows);
-					privateAxios.post(`/api/v1/admin/recipe/` + id + '/unverify');
+					privateAxios.post(`/api/v1/admin/recipe/${id}/unverify`);
 				}
 				if (modalType === 'remove') {
 					var id = actionableRow.recipe_id;
@@ -352,6 +350,13 @@ function RecipeDataTable() {
 			{modalType === 'verify' && (
 				<ConfirmModal
 					content='Do you want to verify this recipe?'
+					isOpened={openModal}
+					handleClick={handleConfirm}
+				/>
+			)}
+			{modalType === 'unverify' && (
+				<ConfirmModal
+					content='Do you want to un-verify this recipe?'
 					isOpened={openModal}
 					handleClick={handleConfirm}
 				/>

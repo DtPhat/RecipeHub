@@ -77,6 +77,19 @@ function RecipeDataTable() {
 					setRows(updatedRows);
 					privateAxios.post(`/api/v1/admin/recipe/` + id + '/verify');
 				}
+				if (modalType === 'unverify') {
+					var id = actionableRow.recipe_id;
+					let currentVerifyStatus = actionableRow.verified;
+					let index = rows.findIndex((row) => row.recipe_id === id);
+					let updatedRecipe = {
+						...rows[index],
+						verified: !currentVerifyStatus,
+					};
+					let updatedRows = [...rows];
+					updatedRows[index] = updatedRecipe;
+					setRows(updatedRows);
+					privateAxios.post(`/api/v1/admin/recipe/` + id + '/unverify');
+				}
 				if (modalType === 'remove') {
 					var id = actionableRow.recipe_id;
 					setRows((current) =>
@@ -93,7 +106,7 @@ function RecipeDataTable() {
 	}
 
 	function handleClick(argument, item) {
-		if (argument === 'verify' || argument === 'remove') {
+		if (argument === 'verify' || argument === 'remove' || argument === 'unverify') {
 			setActionableRow(item);
 			setOpenModal(true);
 			setModalType(argument);

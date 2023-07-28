@@ -59,9 +59,9 @@ function UserDetail({ chosenUser, onClose, action }) {
 									<span className='font-bold'>Status: </span>
 									<span>
 										{chosenUser.blocked ? (
-											<span className='text-red-900'>Blocked</span>
+											<span className='text-red-900 dark:text-red-300'>Blocked</span>
 										) : (
-											<span className='text-green-900'>
+											<span className='text-green-900 dark:text-green-300'>
 												Not Blocked
 											</span>
 										)}

@@ -20,6 +20,11 @@ const AdminRecipeDetailModal = ({
 			action('verify', chosenRecipe);
 		}
 	}
+	function handleUnverify(){
+		if (action){
+			action('unverify', chosenRecipe)
+		}
+	}
 
 	return (
 		chosenRecipe && (
@@ -170,7 +175,7 @@ const AdminRecipeDetailModal = ({
 							color='failure'
 							size='sm'
 							outline
-							onClick={handleVerify}
+							onClick={handleUnverify}
 						>
 							Un-verified
 						</Button>

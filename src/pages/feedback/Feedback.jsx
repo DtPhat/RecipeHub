@@ -1,9 +1,13 @@
+import { Spinner } from 'flowbite-react'
 import React, { useState } from 'react'
+import Toast from '../../components/Toast'
 import usePrivateAxios from '../../hooks/usePrivateAxios'
 
 
 const Feedback = () => {
   const privateAxios = usePrivateAxios()
+  const [submitting, setSubmitting] = useState(false)
+  const [showToast, setShowToast] = useState(false)
   const [feedback, setFeedback] = useState({
     email: '',
     message: '',
@@ -14,7 +18,8 @@ const Feedback = () => {
     setFeedback(feedback => ({ ...feedback, [name]: value }))
   }
   const sendFeedback = () => {
-    privateAxios.post(`/api/v1/global/support-ticket`, feedback).then(response => console.log(response))
+    setSubmitting(true)
+    privateAxios.post(`/api/v1/global/support-ticket`, feedback).then(response => console.log(response)).catch(error => console.log(error)).finally(()=>{setSubmitting(false); setShowToast(true)})
   }
 
   return (
@@ -37,7 +42,9 @@ const Feedback = () => {
               </div>
               <div className='flex justify-center'>
                 <button className='button-contained-square'
-                  onClick={sendFeedback}>Send support ticket</button>
+                  onClick={sendFeedback} disabled={submitting}>
+                  {submitting ? <Spinner color='success' /> : <span>Send support ticket</span>}
+                </button>
               </div>
             </div>
           </div>
@@ -51,7 +58,9 @@ const Feedback = () => {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id='email' fill='green' width="50"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"></path></svg>
           </a>
         </div>
+        {showToast && <Toast message='Send feedback successfully'/>}
       </div>
+      
     </section >
   )
 }

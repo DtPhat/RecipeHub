@@ -10,6 +10,7 @@ import PlannerView from './PlannerView'
 import Skeleton from '../../components/Skeleton'
 import { Spinner } from 'flowbite-react'
 const RecipeSelections = ({ chosenDate, setOpenRecipeSelections, setNewPlannedRecipe }) => {
+  console.log(chosenDate.getTime())
   const [recipes, setRecipes] = useState([])
   const [keyword, setKeyword] = useState('')
   const privateAxios = usePrivateAxios()

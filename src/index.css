@@ -4,14 +4,14 @@
 
 @layer base {
     body {
-        @apply bg-gray-100
+        @apply bg-gray-200
     }
     .app {
-        @apply bg-gray-100 dark:bg-gray-800 dark:text-whitegray
+        @apply bg-gray-200 dark:bg-gray-800 dark:text-whitegray
     }
 
     .bg-container{
-        @apply bg-gray-50 dark:bg-gray-900
+        @apply bg-gray-100 dark:bg-gray-900
     }
 
     .bg-item{
@@ -28,7 +28,10 @@
         @apply bg-gray-200 dark:bg-gray-700
     }
     .border-gray{
-        @apply border-gray-200 dark:border-gray-600
+        @apply border-gray-50 dark:border-gray-600
+    }
+    .border-neutral{
+        @apply border-gray-50 dark:border-gray-900
     }
 
     @media print {

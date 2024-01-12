@@ -9,7 +9,7 @@ import useAuth from '../../hooks/useAuth'
 import ConfirmBox from '../../components/ConfirmBox'
 import { splitIngredient } from '../../utils/StringUtils'
 
-const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe, setShoppingListAmount }) => {
+const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe, setShoppingListAmount }) => {  
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const date = DAYS[chosenDate.getDay()] + ' ' + chosenDate.getDate() + ' ' + MONTHS[chosenDate.getMonth()] + ' ' + chosenDate.getFullYear()
@@ -27,7 +27,7 @@ const PlannedMeals = ({ chosenDate, newPlannedRecipe, setRemovedPlannedRecipe, s
       .catch(error => console.log(error))
       .finally(() => setLoading(false))
   }, [chosenDate, newPlannedRecipe]);
-
+  
   const removeFromPlanner = (id) => {
     setPlannedMeals(meals => meals.filter(meal => meal.mealPlannerId != id))
     privateAxios.delete(`/api/v1/user/meal-planer/${id}`).then(response => console.log(response))

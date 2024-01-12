@@ -35,7 +35,7 @@ const RecipeNavigation = () => {
 	const optionsElement = options.map(sideOption => {
 		const { Icon, text, onClickFunction } = sideOption
 		return (
-			<div className='flex space-x-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-5 border-b border-gray' onClick={onClickFunction} key={text}>
+			<div className='flex space-x-4 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 p-5 border-b-2 border-gray-200 dark:border-gray-700' onClick={onClickFunction} key={text}>
 				{Icon}
 				<span className={`text-xl font-semibold`}>{text}</span>
 			</div>

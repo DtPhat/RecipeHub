@@ -72,32 +72,37 @@ const Recipe = () => {
       <div className='w-full flex justify-center'>
         <div className='max-w-8xl w-full flex space-x-4 rounded lg:px-4 py-4 justify-center'>
           <div className='border-gray-400 rounded max-w-6xl w-full justify-center space-y-4 bg-container py-4 px-8'>
-            <div className='select-none flex gap-4 justify-between pb-2 border-b-2 border-accent text-accent'>
-              <button className={`flex items-center rounded cursor-pointer p-2 hover:bg-gray ${isFiltering && !showingFilter ? 'underline underline-offset-2' : ''}`}
-                onClick={() => setShowingFilter(preState => !preState)}>
-                <FilteringIcon style='w-6 h-6' />
-                <span className='text-xl px-1 font-semibold hidden sm:block'>Filter</span>
-              </button>
+            <div className='select-none flex justify-between pb-2 border-b-2 border-accent text-accent'>
               <div className='max-w-[32rem] flex flex-1'>
                 <SearchBar keyword={keyword} setKeyword={setKeyword} handleEnter={searchByKeyword} />
               </div>
+              <div className='flex items-center divide-x-2'>
+                <div className='pr-1'>
+                  <button className='hover:bg-gray rounded cursor-pointer p-2 flex justify-center items-center'
+                    onClick={() => setViewOption(viewOption === 'list' ? 'gallery' : 'list')}>
+                    <span className='text-xl px-1 font-semibold hidden sm:block'>{viewOption === 'list' ? "List View" : "Gallery View"}</span>
+                    <ViewIcon style='w-6 h-6' viewOption={viewOption} />
+                  </button>
+                </div>
+                <div className='pl-1'>
+                  <button className={`flex items-center rounded cursor-pointer p-2 hover:bg-gray ${showingFilter ? 'bg-gray' : isFiltering ? 'underline underline-offset-2' : ''}`}
+                    onClick={() => setShowingFilter(preState => !preState)}>
+                    <FilteringIcon style='w-6 h-6' />
+                    <span className='text-xl px-1 font-semibold hidden sm:block'>Filter</span>
+                  </button>
+                </div>
+              </div>
+
               {/* <div className='flex items-center border-2 border-accent rounded-xl relative bottom-1 left-4 px-2 flex-1 max-w-[32rem] cursor-pointer'>
               <label htmlFor='search'><SearchingIcon style='w-8 h-8 cursor-pointer' /></label>
               <input className='bg-transparent focus:outline-none rounded-full w-full text-lg p-2 text-black' placeholder='Search recipes' id='search' autoComplete='off'
                 value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={searchByKeyword} />
               <button onClick={() => setKeyword('')}><XCircleIcon style='w-8 h-8 text-gray-500 hover:fill-gray-200' /></button>
             </div> */}
-              <div className='wp-auto sm:w-44 flex justify-end items-center'>
-                <button className='hover:bg-gray rounded cursor-pointer p-2 flex justify-center items-center'
-                  onClick={() => setViewOption(viewOption === 'list' ? 'gallery' : 'list')}>
-                  <span className='text-xl px-1 font-semibold hidden sm:block'>{viewOption === 'list' ? "List View" : "Gallery View"}</span>
-                  <ViewIcon style='w-6 h-6' viewOption={viewOption} />
-                </button>
-              </div>
             </div>
             {showingFilter && <div>
               <RecipeFilter filter={filter} setFilter={setFilter} />
-              <div className='flex w-32 space-x-1 rounded p-2 border-gray bg-gray hover:bg-gray-300 dark:hover:bg-gray-600 cursor-pointer text-gray'
+              <div className='flex w-32 space-x-1 rounded p-2 border-gray bg-gray hover:bg-gray-300 dark:hover:bg-gray-600 hover:underline underline-offset-2 cursor-pointer text-gray mt-1'
                 onClick={() => setFilter(initialFilter)}>
                 <XCircleIcon style='w-6 h-6' />
                 <span className='font-semibold'>Clear filter</span>

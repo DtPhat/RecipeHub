@@ -6,7 +6,7 @@ const GlobalRecipeFilter = ({ filter, setFilter }) => {
   const tagList = ['breakfast', 'lunch', 'dinner', 'appetizer', 'dessert', 'drink', 'snack']
   const tagListElement = tagList.map(tag => (
     <button key={tag} className={`px-4 py-2 capitalize text-xl font-semibold rounded
-      ${filter.tags.includes(tag) ? ' bg-gray' : 'text-gray-600 dark:text-gray-400 hover:underline underline-offset-2'}`}
+      ${filter.tags.includes(tag) ? ' bg-gray' : 'text-accent dark:text-gray-400 hover:underline underline-offset-2'}`}
       onClick={() => setFilter(preFilter => {
         const tagList = [...preFilter.tags]
         tagList.includes(tag) ? tagList.splice(tagList.indexOf(tag), 1) : tagList.push(tag)

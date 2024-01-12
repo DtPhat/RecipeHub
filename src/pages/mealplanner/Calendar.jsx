@@ -44,7 +44,7 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
 
   const style = {
     cell: 'w-full border border-green-900 dark:border-green-300 h-16 p-2 cursor-pointer text-lg relative',
-    header: 'w-full border border-green-900 dark:border-green-300 h-16 p-2 sm:text-xl sm:px-4 font-semibold bg-green-variant dark:bg-green-900',
+    header: 'w-full border border-green-900 dark:border-green-300 h-16 p-2 sm:text-xl sm:px-4 font-semibold bg-green-800 text-white',
     today: 'rounded-full border bg-green-accent text-white'
   }
   const daysOfWeekElement = DAYS.map(dayOfWeek =>
@@ -101,26 +101,26 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
 
   return (
     <section className='font-semibold border border-green-900 dark:border-green-300 rounded'>
-      <div className='flex justify-between border border-green-900 dark:border-green-300 items-center rounded-t-sm bg-green-50 dark:bg-green-950 '>
+      <div className='flex justify-between border border-green-900 dark:border-green-300 items-center rounded-t-sm bg-gray'>
         <div className='flex py-3 px-2'>
-          <button className='hover:bg-green-100 dark:hover:bg-green-800 p-1 rounded'
+          <button className='p-1 rounded'
             onClick={() => {
               daysDisplay === 'month' && movePrevMonth(navigationDate, setNavigationDate)
               daysDisplay === 'week' && movePrevWeek(navigationDate, setNavigationDate)
             }}>
-            <ArrowCircleIcon style='w-8 h-8 text-accent' />
+            <ArrowCircleIcon style='hover:fill-green-500 w-8 h-8 text-accent' />
           </button>
-          <button className='hover:bg-green-100 dark:hover:bg-green-800 p-1 rounded'
+          <button className='p-1 rounded'
             onClick={() => {
               daysDisplay === 'month' && moveNextMonth(navigationDate, setNavigationDate)
               daysDisplay === 'week' && moveNextWeek(navigationDate, setNavigationDate)
             }}>
-            <ArrowCircleIcon style='w-8 h-8 text-accent scale-[-1]' />
+            <ArrowCircleIcon style='hover:fill-green-500 w-8 h-8 text-accent scale-[-1]' />
           </button>
           <button className='px-2'
             onClick={() => setNavigationDate(today)}>
             <span className={`border-2 py-0 px-1 sm:p-1 sm:px-2 rounded 
-            ${areSameDay(navigationDate, today) ? 'border-accent bg-green-200 dark:bg-green-700' : 'border-green-variant hover:bg-green-100 hover:dark:bg-green-700 text-accent'}`}>Today</span>
+            ${areSameDay(navigationDate, today) ? 'border-green-accent bg-green-accent text-white dark:bg-green-700' : 'border-green-accent hover:bg-green-accent hover:text-white hover:dark:bg-green-700 text-accent hover:opacity-80'}`}>Today</span>
           </button>
         </div>
         <h1 className='text-base xs:text-xl sm:text-3xl'>
@@ -129,10 +129,10 @@ const Calendar = ({ chosenDate, setChosenDate, newPlannedRecipe, setNewPlannedRe
         </h1>
         <div className='flex flex-wrap gap-1 sm:gap-2 px-2'>
           <button className={`border-2 py-0 px-1 sm:p-1 sm:px-2 rounded 
-          ${daysDisplay === 'month' ? 'border-accent bg-green-200 dark:bg-green-700' : 'border-green-variant hover:bg-green-100 hover:dark:bg-green-700 text-accent'}`}
+          ${daysDisplay === 'month' ? 'border-green-accent bg-green-accent text-white dark:bg-green-700' : 'border-green-accent hover:bg-green-accent hover:text-white hover:dark:bg-green-700 text-accent hover:opacity-80'}`}
             onClick={() => setDaysDisplay('month')}>Month</button>
           <button className={`border-2 py-0 px-1 sm:p-1 sm:px-2 rounded 
-          ${daysDisplay === 'week' ? 'border-accent bg-green-200 dark:bg-green-700' : 'border-green-variant hover:bg-green-100 hover:dark:bg-green-700 text-accent'}`}
+          ${daysDisplay === 'week' ? 'border-green-accent bg-green-accent text-white dark:bg-green-700' : 'border-green-accent hover:bg-green-accent hover:text-white hover:dark:bg-green-700 text-accent hover:opacity-80'}`}
             onClick={() => setDaysDisplay('week')}>Week</button>
         </div>
       </div>

@@ -9,6 +9,7 @@ import usePrivateAxios from '../../hooks/usePrivateAxios'
 import GlobalRecipeFilter from './GlobalRecipeFilter'
 import GlobalView from './GlobalView'
 import ReactGA from 'react-ga'
+import NoRecipes from '../../components/view/NoRecipes'
 
 const GlobalRecipes = () => {
   const privateAxios = usePrivateAxios()
@@ -60,7 +61,7 @@ const GlobalRecipes = () => {
     <section className='flex justify-center py-4 lg:mx-8 gap-6'>
       <div className='border-gray-400 rounded max-w-8xl w-full space-y-4 bg-container py-4 px-8 '>
         <div className='select-none flex flex-col 2xl:flex-row gap-4 justify-between pb-2 border-b-2 border-accent text-accent'>
-          <h1 className='text-2xl md:text-4xl font-semibold text-gray-500 '>Explore our network of various recipes</h1>
+          <h1 className='text-2xl md:text-4xl font-semibold'>Explore recipe network</h1>
           <div className='w-full 2xl:w-1/2'>
             <SearchBar keyword={keyword} setKeyword={setKeyword} handleEnter={searchByKeyword} autoFocus={true} placeholder='Search our public recipes' />
           </div>
@@ -72,7 +73,9 @@ const GlobalRecipes = () => {
         <div className='min-h-[70vh]'>
           {loading ?
             <Skeleton />
-            : <GlobalView recipeData={globalRecipes} />
+            : globalRecipes.length
+              ? <GlobalView recipeData={globalRecipes} />
+              :<NoRecipes />
           }
         </div>
         <div className='flex justify-end'>

@@ -1,7 +1,8 @@
 import axios from "axios";
 // const BASE_URL = 'https://recipehub.herokuapp.com'
-const BASE_URL = 'https://recipehub.up.railway.app'
+// const BASE_URL = 'https://recipehub.up.railway.app'
 // const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'https://recipehub-backend-7f6h.onrender.com'
 export default axios.create({
   baseURL: BASE_URL,
   withCredentials: true
